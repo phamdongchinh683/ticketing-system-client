@@ -3,16 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { constant } from '../../constants';
 import { AuthResponse } from '../../interfaces/auth';
+import { isDigitsOnly } from '../../../../shared/utils/validators';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-
   constructor(private http: HttpClient) {}
 
   signIn(input: string, password: string): Observable<AuthResponse> {
     const body: Record<string, string> = { password };
 
-    if (/^\d+$/.test(input)) {
+    if (isDigitsOnly(input)) {
       body['phone'] = input;
     } else if (input.includes('@')) {
       body['email'] = input;

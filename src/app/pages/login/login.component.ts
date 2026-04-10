@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { auth } from '../../data/services/index';
 import { SharedModule } from '../../../shared/shared.module';
+import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '../../../shared/utils/validators';
 
 @Component({
   selector: 'app-login',
@@ -79,9 +80,6 @@ export class LoginComponent {
     type: 'error',
   };
 
-  private readonly PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$%&!*?^_])(?!.*\s).+$/;
-  private readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   constructor(
     private api: auth.ApiService,
     private router: Router,
@@ -92,7 +90,7 @@ export class LoginComponent {
   }
 
   private validateText(text: string): string | null {
-    if (this.EMAIL_REGEX.test(text)) {
+    if (isEmail(text)) {
       return null; 
     }
     if (/^\+?\d+$/.test(text)) {
@@ -120,11 +118,8 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.PASSWORD_REGEX.test(password)) {
-      this.showNotification(
-        'Password must contain uppercase, lowercase, a number, and one special character (# @ $ % & ! * ? ^ _), and no spaces.',
-        'warning',
-      );
+    if (!isValidPassword(password)) {
+      this.showNotification(PASSWORD_MESSAGE, 'warning');
       return;
     }
 

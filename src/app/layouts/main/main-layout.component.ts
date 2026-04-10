@@ -297,7 +297,7 @@ export class MainLayoutComponent implements OnInit {
 
   private pageTitles: Record<string, string> = {
     '/home': 'Dashboard',
-    '/companies': 'Companies',
+    '/companies': 'Bus Companies',
     '/admins': 'Company Admins',
     '/users': 'Users',
   };
@@ -309,6 +309,7 @@ export class MainLayoutComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
+    
     this.loadUser();
 
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e) => {
@@ -316,6 +317,9 @@ export class MainLayoutComponent implements OnInit {
     });
     this.currentUrl = this.router.url;
   }
+
+
+
 
   private loadUser() {
     const raw = localStorage.getItem('user');

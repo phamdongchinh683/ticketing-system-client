@@ -1,0 +1,59 @@
+export type UserStatus = 'active' | 'inactive' | 'banned';
+export type UserRole = 'driver' | 'customer' | 'admin';
+
+export interface User {
+  id: number;
+  username: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  status: UserStatus;
+  role: UserRole;
+  password: string;
+}
+
+export interface UserListResponse {
+  users: User[];
+  next: number | null;
+}
+
+export interface CreateUserBody {
+  username: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  status: UserStatus;
+  password: string;
+  role: UserRole;
+}
+
+export interface CreateUserResponse {
+  message: string;
+  user: Omit<User, 'password'>;
+}
+
+export interface UpdateUserBody {
+  username: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  status: UserStatus;
+  role: UserRole;
+}
+
+export interface UpdateUserResponse {
+  user: Omit<User, 'password'>;
+}
+
+export interface UpdateUserPasswordResponse {
+  message: string;
+  password: string;
+}
+
+export interface DeleteUserResponse {
+  message: string;
+  user: Omit<User, 'password'>;
+}
+
+export const USER_STATUSES: UserStatus[] = ['active', 'inactive', 'banned'];
+export const USER_ROLES: UserRole[] = ['driver', 'customer', 'admin'];
