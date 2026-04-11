@@ -8,3 +8,10 @@ export interface DashboardOverview {
 export interface DashboardResponse {
   overview: DashboardOverview;
 }
+
+export type {
+  DashboardTimeType,
+  DashboardStatsQuery,
+  DashboardChartSeries,
+  DashboardTrendChartKind,
+} from './stats';

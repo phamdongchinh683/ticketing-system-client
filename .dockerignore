@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.gitignore
+.cursor
+*.md
+.DS_Store
+.vscode
+.idea
+coverage
+.angular

@@ -1,0 +1,45 @@
+<app-notification
+  *ngIf="notification.show"
+  [message]="notification.message"
+  [type]="notification.type"
+  (closed)="notification.show = false"
+></app-notification>
+
+<div class="page">
+  <div class="page-header">
+    <h2>Company accounts</h2>
+    <app-company-admin-toolbar
+      [limit]="limit"
+      [pageLimits]="pageLimits"
+      (limitChange)="onLimitChange($event)"
+      (search)="onSearchDebounced()"
+      (createClick)="openCreate()"
+    ></app-company-admin-toolbar>
+  </div>
+
+  <app-company-admin-table [admins]="admins" [loading]="loading" (updateClick)="onUpdateClick($event)"></app-company-admin-table>
+
+  <div class="pagination" *ngIf="!loading && admins.length > 0">
+    <button class="btn-load-more" [disabled]="nextCursor === null || loadingMore" type="button" (click)="loadMore()">
+      {{ nextCursor !== null ? (loadingMore ? 'Loading...' : 'Next') : 'No more data' }}
+    </button>
+  </div>
+</div>
+
+<app-company-admin-create-modal
+  [open]="showCreate"
+  (openChange)="onCreateOpenChange($event)"
+  [companies]="companies"
+  [submitting]="createSubmitting"
+  (submitted)="onCreateSubmit($event)"
+  (validateFailed)="onCreateValidateFailed($event)"
+></app-company-admin-create-modal>
+
+<app-company-admin-edit-modal
+  [open]="showEdit"
+  (openChange)="onEditOpenChange($event)"
+  [admin]="editingAdmin"
+  [submitting]="editSubmitting"
+  (submitted)="onEditSubmit($event)"
+  (validateFailed)="showNotification($event, 'warning')"
+></app-company-admin-edit-modal>

@@ -1,0 +1,21 @@
+      .page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .login-box {
+        width: 100%;
+        max-width: 380px;
+        padding: 32px;
+        background: var(--color-surface);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+      }
+      h1 {
+        text-align: center;
+        color: var(--color-text-dark);
+        margin-bottom: 24px;
+      }
+    

@@ -1,0 +1,9 @@
+<div class="chart-card">
+  <h3 class="chart-card__title">{{ title }}</h3>
+  <div class="chart-card__canvas">
+    <canvas #cv [class.chart-card__canvas--dim]="loading"></canvas>
+    <div *ngIf="loading" class="chart-card__overlay" aria-busy="true">
+      <div class="chart-card__spinner"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div *ngIf="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Loading...</p>
+</div>
+
+<div *ngIf="!loading && admins.length === 0" class="empty">
+  <h3>No company accounts</h3>
+  <p>Try adjusting search or create a new account.</p>
+</div>
+
+<div *ngIf="!loading && admins.length > 0" class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Full name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of admins; track a.id) {
+        <tr>
+          <td>{{ a.id }}</td>
+          <td>{{ a.username }}</td>
+          <td>{{ a.fullName }}</td>
+          <td>{{ a.email }}</td>
+          <td>{{ a.phone }}</td>
+          <td><span class="pill" [class]="'pill--' + a.status">{{ a.status }}</span></td>
+          <td>
+            <button class="btn-update" type="button" (click)="updateClick.emit(a)">Update</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

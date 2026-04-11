@@ -10,65 +10,8 @@ import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '../../../shared/util
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, SharedModule],
-  template: `
-    <app-notification
-      *ngIf="notification.show"
-      [message]="notification.message"
-      [type]="notification.type"
-      (closed)="notification.show = false"
-    ></app-notification>
-
-    <div class="page">
-      <div class="login-box">
-        <h1>Sign In</h1>
-        <form (ngSubmit)="onSubmit()">
-          <app-input
-            label="Username, Email or Phone"
-            type="text"
-            [(ngModel)]="text"
-            name="text"
-            placeholder="Enter your username, email or phone"
-            [disabled]="loading"
-          ></app-input>
-
-          <app-input
-            label="Password"
-            type="password"
-            [(ngModel)]="password"
-            name="password"
-            placeholder="••••••••"
-            [disabled]="loading"
-          ></app-input>
-
-          <app-button label="Sign In" type="submit" [loading]="loading" loadingText="Signing in..."></app-button>
-        </form>
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .page {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 20px;
-      }
-      .login-box {
-        width: 100%;
-        max-width: 380px;
-        padding: 32px;
-        background: var(--color-surface);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-md);
-      }
-      h1 {
-        text-align: center;
-        color: var(--color-text-dark);
-        margin-bottom: 24px;
-      }
-    `,
-  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   text = '';

@@ -1,0 +1,11 @@
+name: ticketing-system-client
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ticketing-system-client:latest
+    ports:
+      - "${CLIENT_PORT:-8080}:80"
+    restart: unless-stopped
