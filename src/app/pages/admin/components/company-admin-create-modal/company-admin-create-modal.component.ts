@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Company } from '../../../../data/interfaces/company';
 import { CreateCompanyAdminBody } from '../../../../data/interfaces/company-admin';
-import { emailValidator, PASSWORD_MESSAGE, passwordValidator } from '../../../../../shared/utils/validators';
+import { emailValidator, PASSWORD_MESSAGE, passwordValidator } from '@app/shared/utils/validators';
 import { digitsOnlyPhone } from '../../utils/company-admin.mapper';
 import { companyAdminEditPhoneValidator } from '../../utils/company-admin-edit.validators';
 

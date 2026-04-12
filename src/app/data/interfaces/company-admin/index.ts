@@ -7,11 +7,11 @@ export interface CompanyAdmin {
   email: string;
   phone: string;
   status: CompanyAdminStatus;
-  companyId?: number;
+  companyId: number;
+  companyName: string;
 }
 
 export interface CompanyAdminListResponse {
-  /** Raw API rows; may include nested `contactInfo` */
   companyAdmins?: unknown[];
   admins?: unknown[];
   next: number | null;

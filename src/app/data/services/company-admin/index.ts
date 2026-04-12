@@ -19,14 +19,16 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   private authHeaders() {
-    return { Authorization: `Bearer ${localStorage.getItem('token')}` };
+    return {
+      Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
+      Accept: 'application/json',
+    };
   }
 
   private jsonAuthHeaders() {
     return {
       ...this.authHeaders(),
       'Content-Type': 'application/json',
-      Accept: 'application/json',
     };
   }
 

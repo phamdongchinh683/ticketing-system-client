@@ -1,15 +1,14 @@
-    <div class="page">
-      <div class="card">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-        </div>
-        <h1>403</h1>
-        <h2>Unauthorized</h2>
-        <p>You don't have permission to access this page.</p>
-        <a routerLink="/login" class="btn-back">Back to Login</a>
-      </div>
+<div class="status-page">
+  <div class="status-page__card">
+    <div class="status-page__icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
     </div>
-  
+    <h1 class="status-page__code status-page__code--dark">403</h1>
+    <h2 class="status-page__title">Unauthorized</h2>
+    <p class="status-page__text">You do not have permission to access this page.</p>
+    <a routerLink="/login" class="status-page__btn">Back to login</a>
+  </div>
+</div>

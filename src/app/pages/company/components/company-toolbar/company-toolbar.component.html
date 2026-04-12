@@ -1,0 +1,23 @@
+<div class="toolbar">
+  <input
+    class="search-input"
+    type="text"
+    placeholder="Search by name..."
+    [ngModel]="searchName"
+    (ngModelChange)="searchNameChange.emit($event)"
+  />
+
+  <select class="limit-select" [ngModel]="limit" (ngModelChange)="limitChange.emit($event)">
+    @for (l of pageLimits; track l) {
+      <option [ngValue]="l">{{ l }}</option>
+    }
+  </select>
+
+  <button class="btn-add" type="button" (click)="addClick.emit()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+    Add
+  </button>
+</div>

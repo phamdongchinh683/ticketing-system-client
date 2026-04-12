@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { publicApi, user } from '../../data/services';
 import { Company } from '../../data/interfaces/company';
@@ -17,17 +17,33 @@ import {
 } from '../../data/interfaces/user';
 import { CompanyListResponse } from '../../data/interfaces/company';
 import { DEFAULT_PAGE_LIMIT, PAGE_LIMITS } from '../../data/constants';
-import { emailValidator, isValidPassword, PASSWORD_MESSAGE, phone10DigitsValidator } from '../../../shared/utils/validators';
-import { SharedModule } from '../../../shared/shared.module';
+import { emailValidator, PASSWORD_MESSAGE, passwordValidator, phone10DigitsValidator } from '@app/shared/utils/validators';
+import { SharedModule } from '@app/shared/shared.module';
+import { UserFiltersPanelComponent } from './components/user-filters-panel/user-filters-panel.component';
+import { UserListPanelComponent } from './components/user-list-panel/user-list-panel.component';
+import { UserCreateModalComponent } from './components/user-create-modal/user-create-modal.component';
+import { UserEditModalComponent } from './components/user-edit-modal/user-edit-modal.component';
+import { UserPasswordModalComponent } from './components/user-password-modal/user-password-modal.component';
+import { UserDeleteModalComponent } from './components/user-delete-modal/user-delete-modal.component';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SharedModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SharedModule,
+    UserFiltersPanelComponent,
+    UserListPanelComponent,
+    UserCreateModalComponent,
+    UserEditModalComponent,
+    UserPasswordModalComponent,
+    UserDeleteModalComponent,
+  ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent implements OnInit {
   statuses = USER_STATUSES;
   roles = USER_ROLES;
   pageLimits = PAGE_LIMITS;
@@ -48,11 +64,9 @@ export class UserComponent implements OnInit, OnDestroy {
   loadingMore = false;
   creatingUser = false;
   showCreateModal = false;
-  showCreatePassword = false;
   showEditModal = false;
   showPasswordModal = false;
   showDeleteModal = false;
-  showUpdatePassword = false;
   editingUserLoading = false;
   updatingPasswordLoading = false;
   deletingUserLoading = false;
@@ -92,7 +106,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }>;
   passwordForm!: FormGroup<{ password: FormControl<string | null> }>;
 
-  private sub = new Subscription();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly fb: FormBuilder,
@@ -112,7 +126,7 @@ export class UserComponent implements OnInit, OnDestroy {
       fullName: ['', [Validators.required, Validators.minLength(7)]],
       email: ['', [Validators.required, emailValidator()]],
       phone: ['', [Validators.required, phone10DigitsValidator()]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, passwordValidator()]],
       status: ['active' as (typeof USER_STATUSES)[number]],
       role: ['driver' as (typeof USER_ROLES)[number]],
     });
@@ -125,23 +139,21 @@ export class UserComponent implements OnInit, OnDestroy {
       role: ['driver' as (typeof USER_ROLES)[number]],
     });
     this.passwordForm = this.fb.group({
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, passwordValidator()]],
     });
   }
 
   ngOnInit(): void {
     this.fetchCompanies('');
 
-    this.sub.add(
-      this.filters.controls.companyName.valueChanges
-        .pipe(debounceTime(300), distinctUntilChanged())
-        .subscribe((name) => {
-          const term = (name ?? '').toString().trim();
-          this.companySearchTerm = term;
-          this.fetchCompanies(term);
-          this.companyDropdownOpen = true;
-        }),
-    );
+    this.filters.controls.companyName.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((name) => {
+        const term = (name ?? '').toString().trim();
+        this.companySearchTerm = term;
+        this.fetchCompanies(term);
+        this.companyDropdownOpen = true;
+      });
 
     this.applyFilters();
 
@@ -152,11 +164,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.companyDropdownOpen = false;
     };
     window.addEventListener('click', onClick);
-    this.sub.add({ unsubscribe: () => window.removeEventListener('click', onClick) });
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.destroyRef.onDestroy(() => window.removeEventListener('click', onClick));
   }
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
@@ -170,7 +178,6 @@ export class UserComponent implements OnInit, OnDestroy {
   closeCreateModal() {
     this.showCreateModal = false;
     this.creatingUser = false;
-    this.showCreatePassword = false;
     this.createForm.reset({
       username: '',
       fullName: '',
@@ -180,14 +187,6 @@ export class UserComponent implements OnInit, OnDestroy {
       status: 'active',
       role: 'driver',
     });
-  }
-
-  toggleCreatePassword() {
-    this.showCreatePassword = !this.showCreatePassword;
-  }
-
-  toggleUpdatePassword() {
-    this.showUpdatePassword = !this.showUpdatePassword;
   }
 
   openEditModal(u: User) {
@@ -212,14 +211,12 @@ export class UserComponent implements OnInit, OnDestroy {
   openPasswordModal(u: User) {
     this.selectedActionUser = u;
     this.showPasswordModal = true;
-    this.showUpdatePassword = false;
     this.passwordForm.reset({ password: '' });
   }
 
   closePasswordModal() {
     this.showPasswordModal = false;
     this.updatingPasswordLoading = false;
-    this.showUpdatePassword = false;
     this.selectedActionUser = null;
   }
 
@@ -263,10 +260,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
     const v = this.createForm.getRawValue();
     const password = (v.password ?? '').trim();
-    if (!isValidPassword(password)) {
-      this.showNotification(PASSWORD_MESSAGE, 'warning');
-      return;
-    }
 
     this.creatingUser = true;
     this.userApi
@@ -280,12 +273,12 @@ export class UserComponent implements OnInit, OnDestroy {
         role: (v.role ?? 'driver') as (typeof USER_ROLES)[number],
       })
       .subscribe({
-        next: (res: CreateUserResponse) => {
+        next: () => {
           this.showNotification('Created.', 'success');
           this.closeCreateModal();
           this.applyFilters();
         },
-        error: (err: any) => {
+        error: (err: { error?: { message?: string } }) => {
           this.showNotification(err.error?.message || 'Failed to create user.', 'error');
           this.creatingUser = false;
         },
@@ -303,6 +296,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (controls.phone.errors?.['required']) return 'Phone is required.';
     if (controls.phone.errors?.['phone10Digits']) return 'Phone must be exactly 10 digits.';
     if (controls.password.errors?.['required']) return 'Password is required.';
+    if (controls.password.errors?.['password']) return PASSWORD_MESSAGE;
     if (controls.status.errors?.['required']) return 'Status is required.';
     if (controls.role.errors?.['required']) return 'Role is required.';
 
@@ -333,7 +327,7 @@ export class UserComponent implements OnInit, OnDestroy {
           this.showNotification('Updated.', 'success');
           this.closeEditModal();
         },
-        error: (err: any) => {
+        error: (err: { error?: { message?: string } }) => {
           this.showNotification(err.error?.message || 'Failed to update user.', 'error');
           this.editingUserLoading = false;
         },
@@ -342,22 +336,22 @@ export class UserComponent implements OnInit, OnDestroy {
 
   submitUpdatePassword() {
     if (!this.selectedActionUser) return;
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      this.showNotification(
+        this.passwordForm.controls.password.errors?.['password'] ? PASSWORD_MESSAGE : 'Password is required.',
+        'warning',
+      );
+      return;
+    }
     const password = (this.passwordForm.controls.password.value ?? '').trim();
-    if (!password) {
-      this.showNotification('Password is required.', 'warning');
-      return;
-    }
-    if (!isValidPassword(password)) {
-      this.showNotification(PASSWORD_MESSAGE, 'warning');
-      return;
-    }
     this.updatingPasswordLoading = true;
     this.userApi.updatePassword(this.selectedActionUser.id, password).subscribe({
       next: (res: UpdateUserPasswordResponse) => {
         this.showNotification(`Password updated: ${res.password}`, 'success');
         this.closePasswordModal();
       },
-      error: (err: any) => {
+      error: (err: { error?: { message?: string } }) => {
         this.showNotification(err.error?.message || 'Failed to update password.', 'error');
         this.updatingPasswordLoading = false;
       },
@@ -373,7 +367,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.showNotification('Deleted.', 'success');
         this.closeDeleteModal();
       },
-      error: (err: any) => {
+      error: (err: { error?: { message?: string } }) => {
         this.showNotification(err.error?.message || 'Failed to delete user.', 'error');
         this.deletingUserLoading = false;
       },
@@ -407,7 +401,7 @@ export class UserComponent implements OnInit, OnDestroy {
           this.nextCursor = res.next ?? null;
           this.loading = false;
         },
-        error: (err: any) => {
+        error: (err: { error?: { message?: string } }) => {
           this.showNotification(err.error?.message || 'Failed to fetch users.', 'error');
           this.loading = false;
         },
@@ -436,7 +430,7 @@ export class UserComponent implements OnInit, OnDestroy {
           this.nextCursor = res.next ?? null;
           this.loadingMore = false;
         },
-        error: (err: any) => {
+        error: (err: { error?: { message?: string } }) => {
           this.showNotification(err.error?.message || 'Failed to load more users.', 'error');
           this.loadingMore = false;
         },
@@ -455,9 +449,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.companiesLoading || this.companiesLoadingMore) return;
 
     this.companiesLoadingMore = true;
-    this.companyApi
-      .getCompanies(this.COMPANY_PAGE_LIMIT, this.companyNextCursor, this.companySearchTerm || undefined)
-      .subscribe({
+    this.companyApi.getCompanies(this.COMPANY_PAGE_LIMIT, this.companyNextCursor, this.companySearchTerm || undefined).subscribe({
       next: (res: CompanyListResponse) => {
         const incoming = res.companies ?? [];
         const existingIds = new Set(this.companies.map((c) => c.id));

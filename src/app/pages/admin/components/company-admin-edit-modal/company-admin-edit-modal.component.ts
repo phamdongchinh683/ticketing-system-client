@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CompanyAdmin, COMPANY_ADMIN_STATUSES, UpdateCompanyAdminBody } from '../../../../data/interfaces/company-admin';
-import { emailValidator } from '../../../../../shared/utils/validators';
+import { emailValidator } from '@app/shared/utils/validators';
 import { digitsOnlyPhone } from '../../utils/company-admin.mapper';
 import { companyAdminEditPhoneValidator } from '../../utils/company-admin-edit.validators';
 

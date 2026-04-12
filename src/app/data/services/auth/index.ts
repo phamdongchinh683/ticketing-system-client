@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { constant } from '../../constants';
 import { AuthResponse } from '../../interfaces/auth';
-import { isDigitsOnly } from '../../../../shared/utils/validators';
+import { isDigitsOnly } from '@app/shared/utils/validators';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {

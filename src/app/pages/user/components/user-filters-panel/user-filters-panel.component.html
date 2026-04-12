@@ -1,0 +1,85 @@
+<form class="filters" [formGroup]="form" (ngSubmit)="applyFilters.emit()">
+  <div class="row">
+    <label class="field">
+      <span class="label">Email</span>
+      <input class="input" formControlName="email" placeholder="user@example.com" />
+      <span class="error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">Invalid email</span>
+    </label>
+
+    <label class="field">
+      <span class="label">Phone</span>
+      <input class="input" formControlName="phone" placeholder="eg. 0987654321" />
+      <span class="error" *ngIf="form.get('phone')?.touched && form.get('phone')?.errors?.['phone10Digits']">
+        Phone must be exactly 10 digits
+      </span>
+    </label>
+
+    <label class="field">
+      <span class="label">Company</span>
+      <input
+        class="input"
+        formControlName="companyName"
+        placeholder="Search company by name..."
+        (focus)="onCompanyFocus()"
+      />
+      <div class="dropdown" *ngIf="dropdownOpen" (scroll)="onScroll($event)">
+        <button class="dropdown-item" type="button" (click)="selectCompany.emit(null)">
+          <span class="company-name">All companies</span>
+          <span class="company-hotline">No company filter</span>
+        </button>
+
+        <div class="dropdown-loading" *ngIf="companiesLoading">Loading companies...</div>
+
+        @for (c of companies; track c.id) {
+          <button class="dropdown-item" type="button" (click)="selectCompany.emit(c)">
+            <span class="company-name">{{ c.name }}</span>
+            <span class="company-hotline">{{ c.hotline }}</span>
+          </button>
+        }
+
+        <div class="dropdown-empty" *ngIf="!companiesLoading && companies.length === 0">No companies</div>
+        <div class="dropdown-loading" *ngIf="companiesLoadingMore">Loading more...</div>
+      </div>
+      <div class="hint" *ngIf="selectedCompany">
+        Selected: <strong>{{ selectedCompany.name }}</strong>
+        <button class="btn-link" type="button" (click)="selectCompany.emit(null)">clear</button>
+      </div>
+    </label>
+  </div>
+
+  <div class="row">
+    <label class="field">
+      <span class="label">Status</span>
+      <select class="select" formControlName="status">
+        <option [ngValue]="null">Select status</option>
+        @for (s of statuses; track s) {
+          <option [ngValue]="s">{{ s }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="label">Role</span>
+      <select class="select" formControlName="role">
+        <option [ngValue]="null">Select role</option>
+        @for (r of roles; track r) {
+          <option [ngValue]="r">{{ r }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="label">Limit</span>
+      <select class="select" formControlName="limit">
+        @for (l of pageLimits; track l) {
+          <option [ngValue]="l">{{ l }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button class="btn" type="submit" [disabled]="listLoading">Apply</button>
+    <button class="btn btn--ghost" type="button" (click)="resetFilters.emit()">Reset</button>
+  </div>
+</form>

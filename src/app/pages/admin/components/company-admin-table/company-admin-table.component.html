@@ -17,6 +17,7 @@
         <th>Full name</th>
         <th>Email</th>
         <th>Phone</th>
+        <th>Company</th>
         <th>Status</th>
         <th></th>
       </tr>
@@ -29,6 +30,7 @@
           <td>{{ a.fullName }}</td>
           <td>{{ a.email }}</td>
           <td>{{ a.phone }}</td>
+          <td>{{ a.companyName }}</td>
           <td><span class="pill" [class]="'pill--' + a.status">{{ a.status }}</span></td>
           <td>
             <button class="btn-update" type="button" (click)="updateClick.emit(a)">Update</button>

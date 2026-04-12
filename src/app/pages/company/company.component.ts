@@ -1,15 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { company } from '../../data/services/index';
 import { Company } from '../../data/interfaces/company';
-import { SharedModule } from '../../../shared/shared.module';
-import { PAGE_LIMITS, DEFAULT_PAGE_LIMIT } from '../../data/constants/index';
+import { SharedModule } from '@app/shared/shared.module';
+import { PAGE_LIMITS, DEFAULT_PAGE_LIMIT, type PageLimit } from '../../data/constants/index';
+import { CompanyToolbarComponent } from './components/company-toolbar/company-toolbar.component';
+import { CompanyFormModalComponent } from './components/company-form-modal/company-form-modal.component';
+import { CompanyDeleteModalComponent } from './components/company-delete-modal/company-delete-modal.component';
 
 @Component({
   selector: 'app-company',
   standalone: true,
-  imports: [CommonModule, FormsModule, SharedModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SharedModule,
+    CompanyToolbarComponent,
+    CompanyFormModalComponent,
+    CompanyDeleteModalComponent,
+  ],
   templateUrl: './company.component.html',
   styleUrl: './company.component.css',
 })
@@ -20,14 +30,12 @@ export class CompanyComponent implements OnInit {
   loadingMore = false;
 
   searchName = '';
-  limit: number = DEFAULT_PAGE_LIMIT;
+  limit: PageLimit = DEFAULT_PAGE_LIMIT;
   pageLimits = PAGE_LIMITS;
 
   showModal = false;
   editingCompany: Company | null = null;
-  formName = '';
-  formHotline = '';
-  formLogoUrl = '';
+  companyForm: FormGroup;
   submitting = false;
 
   showDeleteConfirm = false;
@@ -41,7 +49,16 @@ export class CompanyComponent implements OnInit {
 
   private searchTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private readonly api: company.ApiService) {}
+  constructor(
+    private readonly api: company.ApiService,
+    private readonly fb: FormBuilder,
+  ) {
+    this.companyForm = this.fb.group({
+      name: [''],
+      hotline: [''],
+      logoUrl: [''],
+    });
+  }
 
   ngOnInit() {
     this.fetch();
@@ -51,12 +68,14 @@ export class CompanyComponent implements OnInit {
     this.notification = { show: true, message, type };
   }
 
-  onSearch() {
+  onSearchInput(value: string) {
+    this.searchName = value;
     if (this.searchTimer) clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(() => this.fetch(), 300);
   }
 
-  onLimitChange() {
+  onLimitChange(value: PageLimit) {
+    this.limit = value;
     this.fetch();
   }
 
@@ -78,7 +97,7 @@ export class CompanyComponent implements OnInit {
   }
 
   loadMore() {
-    if (this.nextCursor === null) return;
+    if (this.nextCursor === null || this.loadingMore) return;
     this.loadingMore = true;
 
     this.api.getCompanies(this.limit, this.nextCursor, this.searchName || undefined).subscribe({
@@ -95,17 +114,17 @@ export class CompanyComponent implements OnInit {
 
   openCreateModal() {
     this.editingCompany = null;
-    this.formName = '';
-    this.formHotline = '';
-    this.formLogoUrl = '';
+    this.companyForm.reset({ name: '', hotline: '', logoUrl: '' });
     this.showModal = true;
   }
 
   onEdit(c: Company) {
     this.editingCompany = c;
-    this.formName = c.name;
-    this.formHotline = c.hotline;
-    this.formLogoUrl = c.logoUrl;
+    this.companyForm.patchValue({
+      name: c.name,
+      hotline: c.hotline,
+      logoUrl: c.logoUrl,
+    });
     this.showModal = true;
   }
 
@@ -117,8 +136,10 @@ export class CompanyComponent implements OnInit {
   private readonly NAME_REGEX = /^[a-zA-ZÀ-ỹ\s]{5,}$/;
 
   onSubmit() {
-    const name = this.formName.trim();
-    const hotline = this.formHotline.trim();
+    const { name: rawName, hotline: rawHotline, logoUrl: rawLogo } = this.companyForm.getRawValue();
+    const name = (rawName ?? '').trim();
+    const hotline = (rawHotline ?? '').trim();
+    const logoUrl = (rawLogo ?? '').trim();
 
     if (!name) {
       this.showNotification('Name is required.', 'warning');
@@ -137,9 +158,9 @@ export class CompanyComponent implements OnInit {
 
     if (this.editingCompany) {
       const data: Record<string, string> = {};
-      if (this.formName.trim() !== this.editingCompany.name) data['name'] = this.formName.trim();
-      if (this.formHotline.trim() !== this.editingCompany.hotline) data['hotline'] = this.formHotline.trim();
-      if (this.formLogoUrl.trim() !== this.editingCompany.logoUrl) data['logoUrl'] = this.formLogoUrl.trim();
+      if (name !== this.editingCompany.name) data['name'] = name;
+      if (hotline !== this.editingCompany.hotline) data['hotline'] = hotline;
+      if (logoUrl !== this.editingCompany.logoUrl) data['logoUrl'] = logoUrl;
 
       this.api.updateCompany(this.editingCompany.id, data).subscribe({
         next: (res) => {
@@ -154,7 +175,7 @@ export class CompanyComponent implements OnInit {
         },
       });
     } else {
-      this.api.createCompany(this.formName.trim(), this.formHotline.trim(), this.formLogoUrl.trim()).subscribe({
+      this.api.createCompany(name, hotline, logoUrl).subscribe({
         next: (res) => {
           this.companies = [res.company, ...this.companies];
           this.showNotification('Company created!', 'success');
@@ -189,7 +210,6 @@ export class CompanyComponent implements OnInit {
         if (deleteId !== undefined) {
           this.companies = this.companies.filter((c) => c.id !== deleteId);
         }
-        this.companies = this.companies.filter((c) => c.id !== deleteId);
         this.showNotification('Company deleted!', 'success');
         this.cancelDelete();
         this.submitting = false;

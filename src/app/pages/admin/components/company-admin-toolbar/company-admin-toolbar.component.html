@@ -1,5 +1,5 @@
 <div class="toolbar">
-  <select class="limit-select" [ngModel]="limit" (ngModelChange)="onLimitSelect($event)" name="adminLimit">
+  <select class="limit-select" [ngModel]="limit" (ngModelChange)="limitChange.emit($event)" name="adminLimit">
     @for (l of pageLimits; track l) {
       <option [ngValue]="l">{{ l }}</option>
     }

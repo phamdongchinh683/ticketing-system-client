@@ -1,0 +1,20 @@
+<div class="charts-toolbar">
+  <h2 class="charts-section__heading">Trends</h2>
+  <div class="charts-toolbar__filters charts-toolbar__filters--global">
+    <label class="filter">
+      <span>Period</span>
+      <select class="select" [ngModel]="chartType" (ngModelChange)="emitChartType($event)">
+        <option [ngValue]="'monthly'">Monthly</option>
+        <option [ngValue]="'yearly'">Yearly</option>
+      </select>
+    </label>
+    <label class="filter" *ngIf="chartType === 'monthly'">
+      <span>Year</span>
+      <select class="select" [ngModel]="selectedYear" (ngModelChange)="emitYear($event)">
+        @for (y of yearOptions; track y) {
+          <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+    </label>
+  </div>
+</div>

@@ -12,61 +12,28 @@
   </div>
 
   <div *ngIf="!loading && overview" class="dashboard__body">
-    <div class="cards-grid">
-      <app-stat-card label="Total Users" [value]="overview.totalUsers" color="blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      </app-stat-card>
-
-      <app-stat-card label="Total Bookings" [value]="overview.totalBookings" color="green">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-          <line x1="1" y1="10" x2="23" y2="10" />
-        </svg>
-      </app-stat-card>
-
-      <app-stat-card label="Total Revenue" [value]="overview.totalRevenue | currency : 'VND' : 'symbol' : '1.0-0'" color="orange">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="1" x2="12" y2="23" />
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg>
-      </app-stat-card>
-
-      <app-stat-card label="Total Companies" [value]="overview.totalCompanies" color="purple">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-      </app-stat-card>
-    </div>
+    <app-dashboard-stats-grid [overview]="overview"></app-dashboard-stats-grid>
 
     <section class="charts-section">
-      <div class="charts-toolbar">
-        <h2 class="charts-section__heading">Trends</h2>
-        <div class="charts-toolbar__filters charts-toolbar__filters--global">
-          <label class="filter">
-            <span>Period</span>
-            <select class="select" [(ngModel)]="chartType" (ngModelChange)="onGlobalTrendFiltersChange()">
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-            </select>
-          </label>
-          <label class="filter" *ngIf="chartType === 'monthly'">
-            <span>Year</span>
-            <select class="select" [(ngModel)]="selectedYear" (ngModelChange)="onGlobalTrendFiltersChange()">
-              @for (y of yearOptions; track y) {
-                <option [ngValue]="y">{{ y }}</option>
-              }
-            </select>
-          </label>
-        </div>
-      </div>
+      <app-dashboard-charts-toolbar
+        [chartType]="chartType"
+        [selectedYear]="selectedYear"
+        [yearOptions]="yearOptions"
+        (chartTypeChange)="onChartTypeUpdated($event)"
+        (selectedYearChange)="onSelectedYearUpdated($event)"
+      />
+
       <div class="charts-stack">
-        <div class="chart-block">
+        <app-dashboard-trend-chart-panel
+          chartTitle="Users by period"
+          [labels]="userChart.labels"
+          [datasets]="userChart.datasets"
+          [loading]="userChartLoading"
+          [chartKind]="userChartKind"
+          [stacked]="userChartKind === 'bar' && userChart.datasets.length > 1"
+          [total]="trendTotal(userChart)"
+          summaryFormat="number"
+        >
           <div class="chart-block__filters">
             <label class="filter">
               <span>User status</span>
@@ -95,24 +62,18 @@
               </select>
             </label>
           </div>
-          <div class="chart-block__summary">
-            <span class="chart-block__summary-label">Total (this view)</span>
-            <strong class="chart-block__summary-value">
-              <ng-container *ngIf="userChartLoading">…</ng-container>
-              <ng-container *ngIf="!userChartLoading">{{ trendTotal(userChart) | number }}</ng-container>
-            </strong>
-          </div>
-          <app-dashboard-chart
-            title="Users by period"
-            [labels]="userChart.labels"
-            [datasets]="userChart.datasets"
-            [loading]="userChartLoading"
-            [chartKind]="userChartKind"
-            [stacked]="userChartKind === 'bar' && userChart.datasets.length > 1"
-          />
-        </div>
+        </app-dashboard-trend-chart-panel>
 
-        <div class="chart-block">
+        <app-dashboard-trend-chart-panel
+          chartTitle="Bookings by period"
+          [labels]="bookingChart.labels"
+          [datasets]="bookingChart.datasets"
+          [loading]="bookingChartLoading"
+          [chartKind]="bookingChartKind"
+          [stacked]="bookingChartKind === 'bar' && bookingChart.datasets.length > 1"
+          [total]="trendTotal(bookingChart)"
+          summaryFormat="number"
+        >
           <div class="chart-block__filters">
             <label class="filter">
               <span>Booking status</span>
@@ -132,24 +93,18 @@
               </select>
             </label>
           </div>
-          <div class="chart-block__summary">
-            <span class="chart-block__summary-label">Total (this view)</span>
-            <strong class="chart-block__summary-value">
-              <ng-container *ngIf="bookingChartLoading">…</ng-container>
-              <ng-container *ngIf="!bookingChartLoading">{{ trendTotal(bookingChart) | number }}</ng-container>
-            </strong>
-          </div>
-          <app-dashboard-chart
-            title="Bookings by period"
-            [labels]="bookingChart.labels"
-            [datasets]="bookingChart.datasets"
-            [loading]="bookingChartLoading"
-            [chartKind]="bookingChartKind"
-            [stacked]="bookingChartKind === 'bar' && bookingChart.datasets.length > 1"
-          />
-        </div>
+        </app-dashboard-trend-chart-panel>
 
-        <div class="chart-block">
+        <app-dashboard-trend-chart-panel
+          chartTitle="Revenue by period"
+          [labels]="revenueChart.labels"
+          [datasets]="revenueChart.datasets"
+          [loading]="revenueChartLoading"
+          [chartKind]="revenueChartKind"
+          [stacked]="revenueChartKind === 'bar' && revenueChart.datasets.length > 1"
+          [total]="trendTotal(revenueChart)"
+          summaryFormat="currency"
+        >
           <div class="chart-block__filters">
             <label class="filter">
               <span>Payment method</span>
@@ -178,25 +133,7 @@
               </select>
             </label>
           </div>
-          <div class="chart-block__summary">
-            <span class="chart-block__summary-label">Total (this view)</span>
-            <strong class="chart-block__summary-value chart-block__summary-value--currency">
-              <ng-container *ngIf="revenueChartLoading">…</ng-container>
-              <ng-container *ngIf="!revenueChartLoading">{{
-                trendTotal(revenueChart) | currency : 'VND' : 'symbol' : '1.0-0'
-              }}</ng-container>
-            </strong>
-          </div>
-          <app-dashboard-chart
-            title="Revenue by period"
-            [labels]="revenueChart.labels"
-            [datasets]="revenueChart.datasets"
-            [loading]="revenueChartLoading"
-            [chartKind]="revenueChartKind"
-            [stacked]="revenueChartKind === 'bar' && revenueChart.datasets.length > 1"
-            yFormat="currency"
-          />
-        </div>
+        </app-dashboard-trend-chart-panel>
       </div>
     </section>
   </div>

@@ -1,21 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { auth } from '../../data/services/index';
-import { SharedModule } from '../../../shared/shared.module';
-import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '../../../shared/utils/validators';
+import { SharedModule } from '@app/shared/shared.module';
+import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '@app/shared/utils/validators';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, SharedModule],
+  imports: [CommonModule, ReactiveFormsModule, SharedModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  text = '';
-  password = '';
+  private readonly fb = inject(FormBuilder);
+
+  loginForm = this.fb.nonNullable.group({
+    text: [''],
+    password: [''],
+  });
+
   loading = false;
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
@@ -24,8 +29,8 @@ export class LoginComponent {
   };
 
   constructor(
-    private api: auth.ApiService,
-    private router: Router,
+    private readonly api: auth.ApiService,
+    private readonly router: Router,
   ) {}
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
@@ -34,7 +39,7 @@ export class LoginComponent {
 
   private validateText(text: string): string | null {
     if (isEmail(text)) {
-      return null; 
+      return null;
     }
     if (/^\+?\d+$/.test(text)) {
       if (text.length < 10) return 'Phone number must be at least 10 digits.';
@@ -47,8 +52,8 @@ export class LoginComponent {
   onSubmit() {
     this.notification.show = false;
 
-    const text = this.text.trim();
-    const password = this.password;
+    const { text: rawText, password } = this.loginForm.getRawValue();
+    const text = rawText.trim();
 
     if (!text || !password) {
       this.showNotification('Please fill in all fields.', 'warning');
@@ -68,15 +73,15 @@ export class LoginComponent {
 
     this.loading = true;
 
-    this.api.signIn(this.text.trim(), this.password).subscribe({
-      next: (res: any) => {
+    this.api.signIn(text, password).subscribe({
+      next: (res: { token: string; user: unknown }) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
 
         this.showNotification('Success', 'success');
         this.router.navigate(['/dashboard']);
       },
-      error: (err: any) => {
+      error: (err: { error?: { message?: string } }) => {
         this.showNotification(err.error?.message || 'Failed to sign in.', 'error');
         this.loading = false;
       },

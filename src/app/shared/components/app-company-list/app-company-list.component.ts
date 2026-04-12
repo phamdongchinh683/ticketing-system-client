@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Company } from '../../../app/data/interfaces/company';
+import { Company } from '@app/data/interfaces/company';
 
 @Component({
   selector: 'app-company-list',

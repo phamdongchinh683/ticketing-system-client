@@ -1,0 +1,12 @@
+<div *ngIf="open" class="modal-overlay" (click)="close()">
+  <div class="modal modal--sm" (click)="stopPropagation($event)">
+    <h3>Delete User</h3>
+    <p>Are you sure you want to delete <strong>{{ user?.username }}</strong>?</p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" type="button" (click)="close()">Cancel</button>
+      <button class="btn btn--danger" type="button" [disabled]="deleting" (click)="confirmDelete.emit()">
+        {{ deleting ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+  </div>
+</div>

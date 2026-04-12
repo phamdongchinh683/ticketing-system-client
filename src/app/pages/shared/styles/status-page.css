@@ -1,0 +1,84 @@
+/* Centered status screens (404, 403, etc.) */
+
+.status-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--color-bg, #f3f4f6);
+}
+
+.status-page__card {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  padding: 48px 40px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.status-page__code {
+  margin: 0;
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-border, #e5e7eb);
+}
+
+.status-page__code--dark {
+  font-size: 48px;
+  color: var(--color-text-dark);
+}
+
+.status-page__title {
+  margin: 12px 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.status-page__text {
+  margin: 0 0 28px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.status-page__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.15s ease;
+}
+
+.status-page__btn:hover {
+  opacity: 0.92;
+}
+
+.status-page__icon-wrap {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-page__icon-wrap svg {
+  width: 28px;
+  height: 28px;
+}

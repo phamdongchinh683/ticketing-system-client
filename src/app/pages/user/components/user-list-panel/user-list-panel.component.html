@@ -1,0 +1,60 @@
+<div *ngIf="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Loading users...</p>
+</div>
+
+<div *ngIf="!loading" class="page-body">
+  <div class="summary">
+    <span>{{ users.length }} user(s)</span>
+  </div>
+
+  <div class="table-wrap" *ngIf="users.length > 0; else emptyState">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Full name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of users; track u.id) {
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.fullName }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.phone }}</td>
+            <td><span class="pill" [class]="'pill--' + u.status">{{ u.status }}</span></td>
+            <td><span class="pill pill--neutral">{{ u.role }}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="btn-row btn-row--edit" type="button" (click)="editUser.emit(u)">Edit</button>
+                <button class="btn-row btn-row--password" type="button" (click)="passwordUser.emit(u)">Password</button>
+                <button class="btn-row btn-row--delete" type="button" (click)="deleteUser.emit(u)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty">
+      <h3>No users</h3>
+      <p>Currently, there are no users in the system.</p>
+    </div>
+  </ng-template>
+
+  <div class="pagination">
+    <button class="btn-load-more" [disabled]="nextCursor === null || loadingMore" (click)="loadMore.emit()">
+      {{ nextCursor !== null ? (loadingMore ? 'Loading...' : 'Next') : 'No more data' }}
+    </button>
+  </div>
+</div>

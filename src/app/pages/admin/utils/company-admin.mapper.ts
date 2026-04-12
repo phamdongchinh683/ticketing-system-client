@@ -25,7 +25,8 @@ export function mapCompanyAdminRow(raw: Record<string, unknown>): CompanyAdmin {
     email: String(contact?.email ?? raw['email'] ?? ''),
     phone: digitsOnlyPhone(phoneSource) || phoneSource.trim(),
     status: normalizeStatus(raw['status']),
-    companyId: raw['companyId'] != null ? Number(raw['companyId']) : undefined,
+    companyId: Number(raw['companyId'] ?? ''),
+    companyName: String(raw['companyName'] ?? ''),
   };
 }
 

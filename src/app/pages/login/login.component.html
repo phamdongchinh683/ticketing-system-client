@@ -1,34 +1,33 @@
-    <app-notification
-      *ngIf="notification.show"
-      [message]="notification.message"
-      [type]="notification.type"
-      (closed)="notification.show = false"
-    ></app-notification>
+<app-notification
+  *ngIf="notification.show"
+  [message]="notification.message"
+  [type]="notification.type"
+  (closed)="notification.show = false"
+></app-notification>
 
-    <div class="page">
-      <div class="login-box">
-        <h1>Sign In</h1>
-        <form (ngSubmit)="onSubmit()">
-          <app-input
-            label="Username, Email or Phone"
-            type="text"
-            [(ngModel)]="text"
-            name="text"
-            placeholder="Enter your username, email or phone"
-            [disabled]="loading"
-          ></app-input>
+<div class="page">
+  <div class="login-box">
+    <h1>Sign In</h1>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <app-input
+        label="Username, Email or Phone"
+        type="text"
+        formControlName="text"
+        name="text"
+        placeholder="Enter your username, email or phone"
+        [disabled]="loading"
+      ></app-input>
 
-          <app-input
-            label="Password"
-            type="password"
-            [(ngModel)]="password"
-            name="password"
-            placeholder="••••••••"
-            [disabled]="loading"
-          ></app-input>
+      <app-input
+        label="Password"
+        type="password"
+        formControlName="password"
+        name="password"
+        placeholder="••••••••"
+        [disabled]="loading"
+      ></app-input>
 
-          <app-button label="Sign In" type="submit" [loading]="loading" loadingText="Signing in..."></app-button>
-        </form>
-      </div>
-    </div>
-  
+      <app-button label="Sign In" type="submit" [loading]="loading" loadingText="Signing in..."></app-button>
+    </form>
+  </div>
+</div>

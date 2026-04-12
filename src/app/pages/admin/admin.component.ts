@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from '../../../shared/shared.module';
+import { SharedModule } from '@app/shared/shared.module';
 import { companyAdmin, publicApi } from '../../data/services';
 import { Company } from '../../data/interfaces/company';
 import { CompanyAdmin, CreateCompanyAdminBody, UpdateCompanyAdminBody } from '../../data/interfaces/company-admin';
 import { normalizeCompanyAdminList } from './utils/company-admin.mapper';
-import { DEFAULT_PAGE_LIMIT, PAGE_LIMITS } from '../../data/constants';
+import { DEFAULT_PAGE_LIMIT, PAGE_LIMITS, type PageLimit } from '../../data/constants';
 import { CompanyAdminToolbarComponent } from './components/company-admin-toolbar/company-admin-toolbar.component';
 import { CompanyAdminTableComponent } from './components/company-admin-table/company-admin-table.component';
 import { CompanyAdminCreateModalComponent } from './components/company-admin-create-modal/company-admin-create-modal.component';
@@ -26,7 +26,7 @@ import { CompanyAdminEditModalComponent } from './components/company-admin-edit-
   styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent implements OnInit {
-  limit = DEFAULT_PAGE_LIMIT;
+  limit: PageLimit = DEFAULT_PAGE_LIMIT;
   pageLimits = PAGE_LIMITS;
 
   admins: CompanyAdmin[] = [];
@@ -48,8 +48,6 @@ export class AdminComponent implements OnInit {
     type: 'info',
   };
 
-  private searchTimer: ReturnType<typeof setTimeout> | null = null;
-
   constructor(
     private readonly api: companyAdmin.ApiService,
     private readonly publicCompanies: publicApi.ApiService,
@@ -64,12 +62,7 @@ export class AdminComponent implements OnInit {
     this.notification = { show: true, message, type };
   }
 
-  onSearchDebounced() {
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => this.fetch(), 300);
-  }
-
-  onLimitChange(value: number) {
+  onLimitChange(value: PageLimit) {
     this.limit = value;
     this.fetch();
   }
@@ -141,7 +134,7 @@ export class AdminComponent implements OnInit {
   }
 
   loadMore() {
-    if (this.nextCursor === null) return;
+    if (this.nextCursor === null || this.loadingMore) return;
     this.loadingMore = true;
     this.api
       .getCompanyAdmins({

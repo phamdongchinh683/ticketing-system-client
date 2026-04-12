@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { dashboard } from '../../data/services/index';
@@ -12,8 +11,10 @@ import type {
   DashboardTimeType,
   DashboardTrendChartKind,
 } from '../../data/interfaces/dashboard/stats';
-import { SharedModule } from '../../../shared/shared.module';
-import { DashboardChartComponent } from './components/dashboard-chart/dashboard-chart.component';
+import { SharedModule } from '@app/shared/shared.module';
+import { DashboardStatsGridComponent } from './components/dashboard-stats-grid/dashboard-stats-grid.component';
+import { DashboardChartsToolbarComponent } from './components/dashboard-charts-toolbar/dashboard-charts-toolbar.component';
+import { DashboardTrendChartPanelComponent } from './components/dashboard-trend-chart-panel/dashboard-trend-chart-panel.component';
 import {
   BOOKING_STATUS_KEYS,
   chartSeriesGrandTotal,
@@ -29,7 +30,14 @@ import {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, SharedModule, DashboardChartComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    DashboardStatsGridComponent,
+    DashboardChartsToolbarComponent,
+    DashboardTrendChartPanelComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -74,30 +82,17 @@ export class DashboardComponent implements OnInit {
     { value: 'pie', label: 'Pie' },
   ];
 
-  userName = '';
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
     message: '',
     type: 'error',
   };
 
-  constructor(
-    private api: dashboard.ApiService,
-    private router: Router,
-  ) {}
+  constructor(private api: dashboard.ApiService) {}
 
   ngOnInit() {
     const y = new Date().getFullYear();
     this.yearOptions = [y - 2, y - 1, y, y + 1];
-
-    const user = localStorage.getItem('user');
-    if (user) {
-      try {
-        this.userName = JSON.parse(user).fullName || JSON.parse(user).username || 'User';
-      } catch {
-        this.userName = 'User';
-      }
-    }
 
     this.api.getDashboard().subscribe({
       next: (res) => {
@@ -194,6 +189,16 @@ export class DashboardComponent implements OnInit {
     this.loadAllTrendCharts();
   }
 
+  onChartTypeUpdated(value: DashboardTimeType) {
+    this.chartType = value;
+    this.onGlobalTrendFiltersChange();
+  }
+
+  onSelectedYearUpdated(year: number) {
+    this.selectedYear = year;
+    this.onGlobalTrendFiltersChange();
+  }
+
   onUserChartFiltersChange() {
     this.loadUserChart();
   }
@@ -215,9 +220,4 @@ export class DashboardComponent implements OnInit {
     this.notification = { show: true, message, type };
   }
 
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
-  }
 }
