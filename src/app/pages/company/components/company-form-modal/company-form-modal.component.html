@@ -10,10 +10,38 @@
         <span class="field-label">Hotline</span>
         <input class="modal-input" formControlName="hotline" placeholder="e.g. 0987654321" />
       </label>
-      <label class="field">
-        <span class="field-label">Logo URL</span>
-        <input class="modal-input" formControlName="logoUrl" placeholder="https://..." />
-      </label>
+      <div class="field">
+        <span class="field-label">Logo</span>
+        <input type="hidden" formControlName="logoUrl" />
+        <div class="logo-upload">
+          <img
+            *ngIf="logoPreviewUrl"
+            class="logo-preview"
+            [src]="logoPreviewUrl"
+            alt=""
+          />
+          <div class="logo-upload-actions">
+            <button
+              class="btn-upload"
+              type="button"
+              [disabled]="!canUploadLogo || uploadingLogo"
+              (click)="triggerLogoFileInput(logoFileInput)"
+            >
+              {{ uploadingLogo ? 'Uploading…' : 'Upload logo' }}
+            </button>
+            <input
+              #logoFileInput
+              type="file"
+              class="sr-only"
+              accept="image/*"
+              (change)="onLogoFileChange($event)"
+            />
+          </div>
+          <p *ngIf="!canUploadLogo" class="field-hint">
+            Save the company first, then edit it to upload a logo (upload needs a company id).
+          </p>
+        </div>
+      </div>
       <div class="modal-footer">
         <button class="btn-cancel" type="button" (click)="close()">Cancel</button>
         <button class="btn-submit" type="submit" [disabled]="submitting">
