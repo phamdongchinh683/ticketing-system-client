@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-unauthorized',
@@ -9,4 +9,12 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['../shared/styles/status-page.css', './unauthorized.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UnauthorizedComponent {}
+export class UnauthorizedComponent {
+  constructor(private readonly router: Router) {}
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.router.navigate(['/login']);
+  }
+}

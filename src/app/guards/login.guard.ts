@@ -7,7 +7,7 @@ export const loginGuard: CanActivateFn = () => {
   if (token) {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if (user.staffProfileRole === 'super_admin' && user.role === 'admin') {
+      if (user.role === 'super_admin') {
         inject(Router).navigate(['/dashboard']);
         return false;
       }

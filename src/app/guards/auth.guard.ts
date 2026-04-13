@@ -12,7 +12,7 @@ export const authGuard: CanActivateFn = () => {
 
   try {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user.staffProfileRole === 'super_admin' && user.role === 'admin') return true;
+    if (user.role === 'super_admin' ) return true;
   } catch {}
 
   router.navigate(['/unauthorized']);
