@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const envPath = path.join(root, '.env');
-const configPath = path.join(root, 'public', 'firebase-config.js');
+const configPath = path.join(root, 'public', 'firebase-config.json');
 
 function parseEnv(filePath) {
   const out = {};
@@ -38,16 +38,14 @@ if (missing.length) {
   process.exit(1);
 }
 
-const configJs = `// AUTO-GENERATED FILE. DO NOT COMMIT REAL VALUES.
-self.__FIREBASE_CONFIG__ = {
-  apiKey: ${JSON.stringify(env.NG_APP_FIREBASE_API_KEY)},
-  authDomain: ${JSON.stringify(env.NG_APP_FIREBASE_AUTH_DOMAIN)},
-  projectId: ${JSON.stringify(env.NG_APP_FIREBASE_PROJECT_ID)},
-  storageBucket: ${JSON.stringify(env.NG_APP_FIREBASE_STORAGE_BUCKET)},
-  messagingSenderId: ${JSON.stringify(env.NG_APP_FIREBASE_MESSAGING_SENDER_ID)},
-  appId: ${JSON.stringify(env.NG_APP_FIREBASE_APP_ID)},
+const configJson = {
+  apiKey: env.NG_APP_FIREBASE_API_KEY,
+  authDomain: env.NG_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: env.NG_APP_FIREBASE_PROJECT_ID,
+  storageBucket: env.NG_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.NG_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.NG_APP_FIREBASE_APP_ID,
 };
-`;
 
-fs.writeFileSync(configPath, configJs, 'utf8');
-console.log('Generated public/firebase-config.js from .env');
+fs.writeFileSync(configPath, JSON.stringify(configJson, null, 2), 'utf8');
+console.log('Generated public/firebase-config.json from .env');

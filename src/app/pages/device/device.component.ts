@@ -87,8 +87,6 @@ export class DeviceComponent implements OnInit {
       return;
     }
 
-    console.log(token);
-
     if (this.tokens.some((item) => item.fcmToken === token)) {
       this.currentFcmToken = token;
       this.showNotification('This device token is already registered.', 'info');
