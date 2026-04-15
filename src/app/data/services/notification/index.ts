@@ -12,7 +12,7 @@ export class ApiService {
     const params: Record<string, string> = {};
     if (next !== undefined && next !== null) params['next'] = String(next);
 
-    return this.http.get<NotificationListResponse>(`${constant.baseUrl}/auth/notification`, {
+    return this.http.get<NotificationListResponse>(`${constant.baseUrl}/auth/notification?limit=20`, {
       params,
       headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` },
     });

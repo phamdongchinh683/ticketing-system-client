@@ -1,2 +1,2 @@
-export const baseUrl = 'https://my-server.serveminecraft.net';
+export const baseUrl = import.meta.env['NG_APP_API_URL'];
 

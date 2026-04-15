@@ -79,7 +79,6 @@ export class MainTopbarComponent implements OnInit {
   toggleNotifications() {
     this.isNotificationOpen = !this.isNotificationOpen;
     this.cdr.markForCheck();
-    // Only fetch on open when no prefetched data exists.
     if (this.isNotificationOpen && this.notifications.length === 0 && !this.isLoadingNotifications) {
       this.loadNotifications();
     }
@@ -196,6 +195,7 @@ export class MainTopbarComponent implements OnInit {
     };
     data?: Record<string, string>;
   }) {
+
     const incoming: NotificationItem = {
       id: payload.data?.['id'] ?? '',
       title: payload.notification?.title ?? '',
