@@ -2,11 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { constant } from '../../constants';
-import { NotificationListResponse, NotificationReadResponse } from '../../interfaces/notification';
+import {
+  NotificationListResponse,
+  NotificationReadResponse,
+  VerifyAccountRequest,
+  VerifyAccountResponse
+} from '../../interfaces/notification';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getNotifications(next?: number): Observable<NotificationListResponse> {
     const params: Record<string, string> = {};
@@ -22,6 +27,14 @@ export class ApiService {
     return this.http.put<NotificationReadResponse>(
       `${constant.baseUrl}/auth/notification/${encodeURIComponent(String(notificationId))}/read`,
       {},
+      { headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` } },
+    );
+  }
+
+  verifyAccount(payload: VerifyAccountRequest): Observable<VerifyAccountResponse> {
+    return this.http.post<VerifyAccountResponse>(
+      `${constant.baseUrl}/auth/verify-account`,
+      payload,
       { headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` } },
     );
   }

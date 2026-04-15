@@ -30,7 +30,7 @@
             class="notification-item"
             [class.notification-item--unread]="!noti.isRead"
             *ngFor="let noti of notifications; trackBy: trackByNotificationId"
-            (click)="readNotification(noti)"
+            (click)="onNotificationClick(noti)"
           >
             <span class="notification-item__content">
               <span class="notification-item__title">{{ notificationTitle(noti) }}</span>
@@ -64,3 +64,65 @@
     </button>
   </div>
 </header>
+
+<div class="verify-dialog-backdrop" *ngIf="isVerifyDialogOpen" (click)="closeVerifyDialog()">
+  <section class="verify-dialog" (click)="$event.stopPropagation()">
+    <button
+      type="button"
+      class="verify-dialog__close-top"
+      aria-label="Close dialog"
+      [disabled]="isVerifyingAccount"
+      (click)="closeVerifyDialog()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </button>
+    <h3 class="verify-dialog__title">Verify account</h3>
+    <p class="verify-dialog__body">{{ selectedNotification?.body || selectedNotification?.title || 'No content' }}</p>
+
+    <div class="verify-dialog__actions">
+      <button
+        type="button"
+        class="verify-btn verify-btn--active"
+        title="Set Active"
+        aria-label="Set account active"
+        [disabled]="isVerifyingAccount"
+        (click)="submitVerifyAccount('active')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8.5 12 2.5 2.5 4.5-4.5" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="verify-btn verify-btn--inactive"
+        title="Set Inactive"
+        aria-label="Set account inactive"
+        [disabled]="isVerifyingAccount"
+        (click)="submitVerifyAccount('inactive')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M8 12h8" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="verify-btn verify-btn--banner"
+        title="Set Banner"
+        aria-label="Set account banner"
+        [disabled]="isVerifyingAccount"
+        (click)="submitVerifyAccount('banner')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M8.8 8.8 15.2 15.2" />
+          <path d="M15.2 8.8 8.8 15.2" />
+        </svg>
+      </button>
+    </div>
+  </section>
+</div>

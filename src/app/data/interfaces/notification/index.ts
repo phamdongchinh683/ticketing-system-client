@@ -14,3 +14,13 @@ export interface NotificationListResponse {
 export interface NotificationReadResponse {
   message?: string;
 }
+
+export type VerifyAccountStatus = 'active' | 'inactive' | 'banner';
+
+export interface VerifyAccountRequest {
+  id: number;
+  status: VerifyAccountStatus;
+}
+
+export interface VerifyAccountResponse extends VerifyAccountRequest {
+}

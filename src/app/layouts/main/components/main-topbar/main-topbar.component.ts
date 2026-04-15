@@ -15,7 +15,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 import { notification } from '../../../../data/services';
-import { NotificationItem } from '../../../../data/interfaces/notification';
+import { NotificationItem, VerifyAccountStatus } from '../../../../data/interfaces/notification';
 import { Messaging } from '@angular/fire/messaging';
 import { onMessage } from 'firebase/messaging';
 
@@ -38,7 +38,18 @@ export class MainTopbarComponent implements OnInit {
   isLoadingNotifications = false;
   isLoadingMore = false;
   nextCursor: number | null = null;
+  lastRequestedCursor: number | null = null;
   isFetching = false;
+  selectedNotification: NotificationItem | null = null;
+  isVerifyDialogOpen = false;
+  isVerifyingAccount = false;
+  verifyActionError = '';
+
+  readonly verifyStatuses: Array<{ value: VerifyAccountStatus; label: string }> = [
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
+    { value: 'banner', label: 'Banner' },
+  ];
 
   private readonly notificationApi = inject(notification.ApiService);
   private readonly destroyRef = inject(DestroyRef);
@@ -68,7 +79,7 @@ export class MainTopbarComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
-    if (!this.isNotificationOpen) return;
+    if (!this.isNotificationOpen || this.isVerifyDialogOpen) return;
     const target = event.target as Node | null;
     if (!target) return;
     if (!this.host.nativeElement.contains(target)) {
@@ -92,18 +103,43 @@ export class MainTopbarComponent implements OnInit {
     this.loadMoreNotifications();
   }
 
-  readNotification(noti: NotificationItem) {
-    if (noti.isRead) return;
-    this.notifications = this.setReadStatus(noti.id, true);
-    this.cdr.markForCheck();
+  onNotificationClick(noti: NotificationItem) {
+    this.markNotificationAsRead(noti);
+    this.openVerifyDialog(noti);
+  }
 
+  closeVerifyDialog() {
+    if (this.isVerifyingAccount) return;
+    this.isVerifyDialogOpen = false;
+    this.selectedNotification = null;
+    this.verifyActionError = '';
+    this.cdr.markForCheck();
+  }
+
+  submitVerifyAccount(status: VerifyAccountStatus) {
+    if (!this.selectedNotification || this.isVerifyingAccount) return;
+    const userId = this.selectedNotification.userId;
+    if (userId === '' || userId === null || userId === undefined) {
+      this.verifyActionError = 'Cannot verify account because user id is missing.';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.isVerifyingAccount = true;
+    this.verifyActionError = '';
     this.notificationApi
-      .markAsRead(noti.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: () => {
-          this.notifications = this.setReadStatus(noti.id, false);
+      .verifyAccount({ id: Number(userId), status })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.isVerifyingAccount = false;
           this.cdr.markForCheck();
+        }),
+      )
+      .subscribe({
+        next: () => this.closeVerifyDialog(),
+        error: () => {
+          this.verifyActionError = 'Failed to update account status.';
         },
       });
   }
@@ -124,6 +160,7 @@ export class MainTopbarComponent implements OnInit {
     if (this.isFetching) return;
     this.isFetching = true;
     this.isLoadingNotifications = true;
+    this.lastRequestedCursor = null;
 
     this.notificationApi
       .getNotifications()
@@ -146,10 +183,12 @@ export class MainTopbarComponent implements OnInit {
 
   private loadMoreNotifications() {
     if (this.isFetching || this.nextCursor === null) return;
+    if (this.lastRequestedCursor === this.nextCursor && this.notifications.length > 0) return;
 
     this.isFetching = true;
     this.isLoadingMore = true;
     const next = this.nextCursor;
+    this.lastRequestedCursor = next;
 
     this.notificationApi
       .getNotifications(next)
@@ -164,7 +203,8 @@ export class MainTopbarComponent implements OnInit {
         next: (res) => {
           const incoming = res.notifications ? res.notifications : [];
           this.notifications = this.mergeNotifications(this.notifications, incoming);
-          this.nextCursor = this.parseNextCursor(res.next);
+          this.nextCursor = res.next ? res.next : null;
+          if (this.nextCursor !== next) this.lastRequestedCursor = null;
           this.cdr.markForCheck();
         },
       });
@@ -209,5 +249,28 @@ export class MainTopbarComponent implements OnInit {
 
   private setReadStatus(notificationId: NotificationItem['id'], isRead: boolean): NotificationItem[] {
     return this.notifications.map((item) => (item.id === notificationId ? { ...item, isRead } : item));
+  }
+
+  private markNotificationAsRead(noti: NotificationItem) {
+    if (noti.isRead) return;
+    this.notifications = this.setReadStatus(noti.id, true);
+    this.cdr.markForCheck();
+
+    this.notificationApi
+      .markAsRead(noti.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: () => {
+          this.notifications = this.setReadStatus(noti.id, false);
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  private openVerifyDialog(noti: NotificationItem) {
+    this.selectedNotification = noti;
+    this.isVerifyDialogOpen = true;
+    this.verifyActionError = '';
+    this.cdr.markForCheck();
   }
 }

@@ -17,6 +17,7 @@ export class MainLayoutComponent implements OnInit {
   collapsed = false;
   currentUrl = '';
   userName = 'User';
+  userEmail = '';
   userRole = '';
   userInitial = 'U';
 
@@ -61,8 +62,15 @@ export class MainLayoutComponent implements OnInit {
     const raw = localStorage.getItem('user');
     if (!raw) return;
     try {
-      const user = JSON.parse(raw) as { fullName?: string; username?: string; staffProfileRole?: string; role?: string };
+      const user = JSON.parse(raw) as {
+        fullName?: string;
+        username?: string;
+        email?: string;
+        staffProfileRole?: string;
+        role?: string;
+      };
       this.userName = user.fullName || user.username || 'User';
+      this.userEmail = user.email || '';
       this.userRole = (user.staffProfileRole || user.role || '').replace(/_/g, ' ');
       this.userInitial = this.userName.charAt(0).toUpperCase();
     } catch {

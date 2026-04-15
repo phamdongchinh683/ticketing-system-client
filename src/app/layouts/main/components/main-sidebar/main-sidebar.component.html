@@ -12,7 +12,7 @@
         [routerLink]="item.route"
         [title]="item.label"
       >
-        <span class="nav-item__icon" [innerHTML]="item.icon"></span>
+        <span class="nav-item__icon" [innerHTML]="asSafeIcon(item.icon)"></span>
         <span *ngIf="!collapsed" class="nav-item__label">{{ item.label }}</span>
       </a>
     }
@@ -23,6 +23,7 @@
       <div class="user-avatar">{{ userInitial }}</div>
       <div *ngIf="!collapsed" class="user-info">
         <span class="user-name">{{ userName }}</span>
+        <span class="user-email">{{ userEmail }}</span>
         <span class="user-role">{{ userRole }}</span>
       </div>
     </div>
@@ -30,7 +31,8 @@
       type="button"
       class="btn-collapse"
       (click)="toggleCollapse.emit()"
-      [title]="collapsed ? 'Expand' : 'Collapse'"
+      title="Toggle sidebar"
+      [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
     >
       <svg [class.rotate]="collapsed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15 18 9 12 15 6" />

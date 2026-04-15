@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface MainNavItem {
   label: string;
@@ -23,6 +24,13 @@ export class MainSidebarComponent {
   @Input() userInitial = 'U';
   @Input() userName = 'User';
   @Input() userRole = '';
+  @Input() userEmail = '';
 
   @Output() toggleCollapse = new EventEmitter<void>();
+
+  constructor(private readonly sanitizer: DomSanitizer) {}
+
+  asSafeIcon(icon: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(icon);
+  }
 }
