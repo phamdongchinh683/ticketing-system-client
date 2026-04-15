@@ -3,9 +3,6 @@
     "version": "0.0.1",
     "scripts": {
         "ng": "ng",
-        "sw:env": "node scripts/generate-sw-config.mjs",
-        "prestart": "yarn run sw:env",
-        "prebuild": "yarn run sw:env",
         "start": "ng serve",
         "build": "ng build"
     },

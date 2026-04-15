@@ -1,13 +1,16 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getMessaging, onBackgroundMessage } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-sw.js';
 
-importScripts('/firebase-config.js');
-const firebaseConfig = self.__FIREBASE_CONFIG__;
-if (!firebaseConfig) {
-  throw new Error('Missing firebase config. Run "npm run sw:env" before start/build.');
-}
 
-const app = initializeApp(firebaseConfig);
+
+const app = initializeApp({
+  apiKey: import.meta.env['NG_APP_FIREBASE_API_KEY'],
+  authDomain: import.meta.env['NG_APP_FIREBASE_AUTH_DOMAIN'],
+  projectId: import.meta.env['NG_APP_FIREBASE_PROJECT_ID'],
+  storageBucket: import.meta.env['NG_APP_FIREBASE_STORAGE_BUCKET'],
+  messagingSenderId: import.meta.env['NG_APP_FIREBASE_MESSAGING_SENDER_ID'],
+  appId: import.meta.env['NG_APP_FIREBASE_APP_ID'],
+});
 const messaging = getMessaging(app);
 
 self.addEventListener('install', () => {
