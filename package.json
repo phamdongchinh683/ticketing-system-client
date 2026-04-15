@@ -4,8 +4,8 @@
     "scripts": {
         "ng": "ng",
         "sw:env": "node scripts/generate-sw-config.mjs",
-        "prestart": "npm run sw:env",
-        "prebuild": "npm run sw:env",
+        "prestart": "yarn run sw:env",
+        "prebuild": "yarn run sw:env",
         "start": "ng serve",
         "build": "ng build"
     },
