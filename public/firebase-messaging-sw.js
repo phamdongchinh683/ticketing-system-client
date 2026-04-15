@@ -4,12 +4,12 @@ import { getMessaging, onBackgroundMessage } from 'https://www.gstatic.com/fireb
 
 
 const app = initializeApp({
-  apiKey: import.meta.env['NG_APP_FIREBASE_API_KEY'],
-  authDomain: import.meta.env['NG_APP_FIREBASE_AUTH_DOMAIN'],
-  projectId: import.meta.env['NG_APP_FIREBASE_PROJECT_ID'],
-  storageBucket: import.meta.env['NG_APP_FIREBASE_STORAGE_BUCKET'],
-  messagingSenderId: import.meta.env['NG_APP_FIREBASE_MESSAGING_SENDER_ID'],
-  appId: import.meta.env['NG_APP_FIREBASE_APP_ID'],
+  apiKey: 'BCWcScHeHyFHG27lpAdlQI3xna9oVsfyB3d09rb0rD5OLWV5dFG4Pkwlx5cBAXb2uprWGjAz88ePvkDlIC5Np3Y',
+  authDomain: 'bus-system-notification.firebaseapp.com',
+  projectId: 'bus-system-notification',
+  storageBucket: 'bus-system-notification.firebasestorage.app',
+  messagingSenderId: '335430946794',
+  appId: '1:335430946794:web:c99c758511332d1ca8ac93',
 });
 const messaging = getMessaging(app);
 
@@ -22,10 +22,8 @@ self.addEventListener('activate', (event) => {
 });
 
 onBackgroundMessage(messaging, (payload) => {
-  const title = payload.notification?.title || 'New notification';
-  const body = payload.notification?.body || '';
 
-  self.registration.showNotification(title, {
+  self.registration.showNotification(payload.notification.title, {
     body,
     icon: '/favicon.ico',
     data: payload.data || {},
