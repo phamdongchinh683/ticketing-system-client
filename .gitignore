@@ -36,3 +36,6 @@ coverage/
 
 #environments
 .env
+
+# generated firebase web push config (contains env values)
+public/firebase-config.js

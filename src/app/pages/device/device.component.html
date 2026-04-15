@@ -1,0 +1,58 @@
+<app-notification
+  *ngIf="notification.show"
+  [message]="notification.message"
+  [type]="notification.type"
+  (closed)="notification.show = false"
+/>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2>Device FCM Tokens</h2>
+      <p class="subtitle">Manage FCM tokens registered for this account.</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="fetchTokens()">Refresh</button>
+      <button type="button" class="btn btn-primary" [disabled]="registering" (click)="registerCurrentDevice()">
+        {{ registering ? 'Registering...' : 'Add Device' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div *ngIf="loading" class="state">Loading tokens...</div>
+
+    <div *ngIf="!loading && tokens.length === 0" class="state">No FCM token found.</div>
+
+    <div *ngIf="!loading && tokens.length > 0" class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>FCM Token</th>
+            <th class="actions-col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let token of tokens">
+            <td>{{ token.id }}</td>
+            <td>
+              <code class="token" [title]="token.fcmToken">{{ token.fcmToken }}</code>
+            </td>
+            <td class="actions-col">
+              <button
+                type="button"
+                class="btn-delete"
+                [disabled]="deletingId === token.id"
+                (click)="deleteToken(token.id)"
+              >
+                {{ deletingId === token.id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

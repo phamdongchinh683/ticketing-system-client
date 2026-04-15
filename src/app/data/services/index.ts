@@ -5,3 +5,5 @@ export * as user from './user';
 export * as publicApi from './public';
 export * as companyAdmin from './company-admin';
 export * as upload from './upload';
+export * as notification from './notification';
+export * as device from './device';

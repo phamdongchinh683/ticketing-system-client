@@ -91,7 +91,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err: unknown) => {
         const e = err as { error?: { message?: string } };
-        this.showNotification('Failed.', 'error');
+        this.showNotification(e.error?.message || 'Failed.', 'error');
         this.createSubmitting = false;
       },
     });
@@ -127,7 +127,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err: unknown) => {
         const e = err as { error?: { message?: string } };
-        this.showNotification('Failed.', 'error');
+        this.showNotification(e.error?.message || 'Failed.', 'error');
         this.editSubmitting = false;
       },
     });

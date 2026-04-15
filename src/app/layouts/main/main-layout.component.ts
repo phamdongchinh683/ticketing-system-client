@@ -27,6 +27,7 @@ export class MainLayoutComponent implements OnInit {
     '/companies': 'Bus Companies',
     '/admins': 'Company Admins',
     '/users': 'Users',
+    '/devices': 'Devices',
   };
 
   private readonly router = inject(Router);

@@ -34,6 +34,10 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./pages/user/user.component').then((m) => m.UserComponent),
       },
+      {
+        path: 'devices',
+        loadComponent: () => import('./pages/device/device.component').then((m) => m.DeviceComponent),
+      },
     ],
   },
   {
