@@ -31,6 +31,7 @@ export class AdminComponent implements OnInit {
 
   admins: CompanyAdmin[] = [];
   companies: Company[] = [];
+  selectedCompanyId: number | null = null;
   nextCursor: number | null = null;
   loading = false;
   loadingMore = false;
@@ -64,6 +65,11 @@ export class AdminComponent implements OnInit {
 
   onLimitChange(value: PageLimit) {
     this.limit = value;
+    this.fetch();
+  }
+
+  onCompanyFilterChange(companyId: number | null) {
+    this.selectedCompanyId = companyId;
     this.fetch();
   }
 
@@ -140,6 +146,7 @@ export class AdminComponent implements OnInit {
       .getCompanyAdmins({
         limit: this.limit,
         next: this.nextCursor,
+        companyId: this.selectedCompanyId ?? undefined,
       })
       .subscribe({
         next: (res) => {
@@ -163,6 +170,7 @@ export class AdminComponent implements OnInit {
     this.api
       .getCompanyAdmins({
         limit: this.limit,
+        companyId: this.selectedCompanyId ?? undefined,
       })
       .subscribe({
         next: (res) => {

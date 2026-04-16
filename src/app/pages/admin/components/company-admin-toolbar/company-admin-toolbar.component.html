@@ -1,11 +1,32 @@
 <div class="toolbar">
-  <select class="limit-select" [ngModel]="limit" (ngModelChange)="limitChange.emit($event)" name="adminLimit">
+  <select
+    class="company-select"
+    [ngModel]="selectedCompanyId"
+    (ngModelChange)="companyFilterChange.emit($event)"
+    name="adminCompanyFilter"
+    title="Lọc theo công ty"
+    aria-label="Lọc theo công ty"
+  >
+    <option [ngValue]="null">Tất cả công ty</option>
+    @for (company of companies; track company.id) {
+      <option [ngValue]="company.id">{{ company.name }}</option>
+    }
+  </select>
+
+  <select
+    class="limit-select"
+    [ngModel]="limit"
+    (ngModelChange)="limitChange.emit($event)"
+    name="adminLimit"
+    title="Số dòng mỗi trang"
+    aria-label="Số dòng mỗi trang"
+  >
     @for (l of pageLimits; track l) {
       <option [ngValue]="l">{{ l }}</option>
     }
   </select>
 
-  <button class="btn-add" type="button" (click)="createClick.emit()">
+  <button class="btn-add" type="button" (click)="createClick.emit()" title="Tạo tài khoản công ty" aria-label="Tạo tài khoản công ty">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />

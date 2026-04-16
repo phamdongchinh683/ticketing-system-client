@@ -11,7 +11,10 @@
     <app-company-admin-toolbar
       [limit]="limit"
       [pageLimits]="pageLimits"
+      [companies]="companies"
+      [selectedCompanyId]="selectedCompanyId"
       (limitChange)="onLimitChange($event)"
+      (companyFilterChange)="onCompanyFilterChange($event)"
       (createClick)="openCreate()"
     ></app-company-admin-toolbar>
   </div>

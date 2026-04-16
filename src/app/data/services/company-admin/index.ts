@@ -12,6 +12,7 @@ export interface CompanyAdminFilters {
   limit: number;
   next?: number;
   name?: string;
+  companyId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,6 +37,7 @@ export class ApiService {
     const params: Record<string, string> = { limit: String(filters.limit) };
     if (filters.next !== undefined && filters.next !== null) params['next'] = String(filters.next);
     if (filters.name) params['name'] = filters.name;
+    if (filters.companyId !== undefined && filters.companyId !== null) params['companyId'] = String(filters.companyId);
 
     return this.http.get<CompanyAdminListResponse>(`${constant.baseUrl}/super-admin/company-admin`, {
       params,
