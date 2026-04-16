@@ -15,7 +15,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-password-modal.component.html',
-  styleUrls: ['../../styles/user-shared.css'],
+  styleUrl: './user-password-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserPasswordModalComponent implements OnChanges {
