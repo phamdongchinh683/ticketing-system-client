@@ -43,12 +43,11 @@ export class MainTopbarComponent implements OnInit {
   selectedNotification: NotificationItem | null = null;
   isVerifyDialogOpen = false;
   isVerifyingAccount = false;
-  verifyActionError = '';
 
   readonly verifyStatuses: Array<{ value: VerifyAccountStatus; label: string }> = [
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
-    { value: 'banner', label: 'Banner' },
+    { value: 'banned', label: 'Banned' },
   ];
 
   private readonly notificationApi = inject(notification.ApiService);
@@ -112,23 +111,22 @@ export class MainTopbarComponent implements OnInit {
     if (this.isVerifyingAccount) return;
     this.isVerifyDialogOpen = false;
     this.selectedNotification = null;
-    this.verifyActionError = '';
+
     this.cdr.markForCheck();
   }
 
   submitVerifyAccount(status: VerifyAccountStatus) {
     if (!this.selectedNotification || this.isVerifyingAccount) return;
-    const userId = this.selectedNotification.userId;
-    if (userId === '' || userId === null || userId === undefined) {
-      this.verifyActionError = 'Cannot verify account because user id is missing.';
+
+    const accountId = this.resolveUserNewAccountId(this.selectedNotification);
+    if (accountId === '' || accountId === null || accountId === undefined) {
       this.cdr.markForCheck();
       return;
     }
 
     this.isVerifyingAccount = true;
-    this.verifyActionError = '';
     this.notificationApi
-      .verifyAccount({ id: Number(userId), status })
+      .verifyAccount({ id: Number(accountId), status })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
@@ -137,9 +135,11 @@ export class MainTopbarComponent implements OnInit {
         }),
       )
       .subscribe({
-        next: () => this.closeVerifyDialog(),
+        next: () => {
+          this.isVerifyDialogOpen = false;
+          this.selectedNotification = null;
+        },
         error: () => {
-          this.verifyActionError = 'Failed to update account status.';
         },
       });
   }
@@ -173,7 +173,7 @@ export class MainTopbarComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          const incoming = res.notifications ? res.notifications : [];
+          const incoming = res.notifications ? res.notifications.map((item) => this.normalizeNotification(item)) : [];
           this.notifications = incoming;
           this.nextCursor = this.parseNextCursor(res.next);
           this.cdr.markForCheck();
@@ -201,7 +201,7 @@ export class MainTopbarComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          const incoming = res.notifications ? res.notifications : [];
+          const incoming = res.notifications ? res.notifications.map((item) => this.normalizeNotification(item)) : [];
           this.notifications = this.mergeNotifications(this.notifications, incoming);
           this.nextCursor = res.next ? res.next : null;
           if (this.nextCursor !== next) this.lastRequestedCursor = null;
@@ -238,12 +238,14 @@ export class MainTopbarComponent implements OnInit {
 
     const incoming: NotificationItem = {
       id: payload.data?.['id'] ?? '',
+      userId: payload.data?.['userId'] ?? '',
       title: payload.notification?.title ?? '',
       body: payload.notification?.body ?? '',
-      userId: payload.data?.['userId'] ?? '',
+      data: payload.data,
       isRead: false,
     };
-    this.notifications = this.mergeNotifications([incoming], this.notifications);
+    this.notifications = this.mergeNotifications([this.normalizeNotification(incoming)], this.notifications);
+
     this.cdr.markForCheck();
   }
 
@@ -270,7 +272,46 @@ export class MainTopbarComponent implements OnInit {
   private openVerifyDialog(noti: NotificationItem) {
     this.selectedNotification = noti;
     this.isVerifyDialogOpen = true;
-    this.verifyActionError = '';
+
     this.cdr.markForCheck();
   }
+
+  private normalizeNotification(item: NotificationItem): NotificationItem {
+    const d = item.data;
+    if (d == null) return item;
+    if (typeof d !== 'string') return item;
+    const trimmed = d.trim();
+    if (trimmed === '') return item;
+    try {
+      return { ...item, data: JSON.parse(trimmed) as Record<string, unknown> };
+    } catch {
+      return item;
+    }
+  }
+
+  private resolveUserNewAccountId(noti: NotificationItem): string | number | undefined {
+    const data = this.getNotificationDataRecord(noti);
+    const id = data?.['userNewAccountId'];
+    if (id !== undefined && id !== null && String(id).trim() !== '') return id as string | number;
+    return undefined;
+  }
+
+  private getNotificationDataRecord(noti: NotificationItem): Record<string, unknown> | null {
+    const raw = noti.data;
+    if (raw == null) return null;
+    if (typeof raw === 'string') {
+      const t = raw.trim();
+      if (t === '') return null;
+      try {
+        const parsed = JSON.parse(t) as unknown;
+        return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : null;
+      } catch {
+        return null;
+      }
+    }
+    if (typeof raw === 'object' && !Array.isArray(raw)) return raw as Record<string, unknown>;
+    return null;
+  }
+
 }
+
