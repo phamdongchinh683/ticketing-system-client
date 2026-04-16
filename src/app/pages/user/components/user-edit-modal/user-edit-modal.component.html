@@ -1,25 +1,25 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
   <div class="modal" (click)="stopPropagation($event)">
-    <h3>Edit User</h3>
+    <h3>Chỉnh sửa người dùng</h3>
     <form class="modal-form" [formGroup]="form" (ngSubmit)="submitted.emit()">
       <label class="field">
-        <span class="label">Username</span>
+        <span class="label">Tên đăng nhập</span>
         <input class="input" formControlName="username" />
       </label>
       <label class="field">
-        <span class="label">Full Name</span>
+        <span class="label">Họ tên</span>
         <input class="input" formControlName="fullName" />
       </label>
       <label class="field">
-        <span class="label">Email</span>
+        <span class="label">Địa chỉ email</span>
         <input class="input" formControlName="email" />
       </label>
       <label class="field">
-        <span class="label">Phone</span>
+        <span class="label">Số điện thoại</span>
         <input class="input" formControlName="phone" />
       </label>
       <label class="field">
-        <span class="label">Status</span>
+        <span class="label">Trạng thái</span>
         <select class="select" formControlName="status">
           @for (s of statuses; track s) {
             <option [ngValue]="s">{{ s }}</option>
@@ -27,7 +27,7 @@
         </select>
       </label>
       <label class="field">
-        <span class="label">Role</span>
+        <span class="label">Vai trò</span>
         <select class="select" formControlName="role">
           @for (r of roles; track r) {
             <option [ngValue]="r">{{ r }}</option>
@@ -35,8 +35,8 @@
         </select>
       </label>
       <div class="modal-actions">
-        <button class="btn btn--ghost" type="button" (click)="close()">Cancel</button>
-        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Saving...' : 'Save' }}</button>
+        <button class="btn btn--ghost" type="button" (click)="close()">Hủy</button>
+        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Đang lưu...' : 'Lưu' }}</button>
       </div>
     </form>
   </div>

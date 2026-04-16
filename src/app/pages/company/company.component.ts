@@ -142,15 +142,15 @@ export class CompanyComponent implements OnInit {
     const logoUrl = (rawLogo ?? '').trim();
 
     if (!name) {
-      this.showNotification('Name is required.', 'warning');
+      this.showNotification('Tên là bắt buộc.', 'warning');
       return;
     }
     if (!this.NAME_REGEX.test(name)) {
-      this.showNotification('Name must be at least 5 characters, letters only.', 'warning');
+      this.showNotification('Tên phải có ít nhất 5 ký tự và chỉ chứa chữ cái.', 'warning');
       return;
     }
     if (hotline && (hotline.length < 10 || !/^\d+$/.test(hotline))) {
-      this.showNotification('Hotline must be at least 10 digits.', 'warning');
+      this.showNotification('Hotline phải có ít nhất 11 chữ số.', 'warning');
       return;
     }
 
@@ -165,12 +165,12 @@ export class CompanyComponent implements OnInit {
       this.api.updateCompany(this.editingCompany.id, data).subscribe({
         next: (res) => {
           this.companies = this.companies.map((c) => (c.id === res.company.id ? res.company : c));
-          this.showNotification('Company updated!', 'success');
+          this.showNotification('Cập nhật nhà xe thành công!', 'success');
           this.closeModal();
           this.submitting = false;
         },
         error: (err) => {
-          this.showNotification(err.error?.message || 'Failed to update.', 'error');
+          this.showNotification(err.error?.message || 'Cập nhật thất bại.', 'error');
           this.submitting = false;
         },
       });
@@ -178,12 +178,12 @@ export class CompanyComponent implements OnInit {
       this.api.createCompany(name, hotline, logoUrl).subscribe({
         next: (res) => {
           this.companies = [res.company, ...this.companies];
-          this.showNotification('Company created!', 'success');
+          this.showNotification('Tạo nhà xe thành công!', 'success');
           this.closeModal();
           this.submitting = false;
         },
         error: (err) => {
-          this.showNotification(err.error?.message || 'Failed to create.', 'error');
+          this.showNotification(err.error?.message || 'Tạo mới thất bại.', 'error');
           this.submitting = false;
         },
       });
@@ -210,12 +210,12 @@ export class CompanyComponent implements OnInit {
         if (deleteId !== undefined) {
           this.companies = this.companies.filter((c) => c.id !== deleteId);
         }
-        this.showNotification('Company deleted!', 'success');
+        this.showNotification('Xóa nhà xe thành công!', 'success');
         this.cancelDelete();
         this.submitting = false;
       },
       error: (err) => {
-        this.showNotification(err.error?.message || 'Failed to delete.', 'error');
+        this.showNotification(err.error?.message || 'Xóa thất bại.', 'error');
         this.submitting = false;
       },
     });

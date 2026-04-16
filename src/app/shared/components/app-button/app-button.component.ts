@@ -8,10 +8,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app-button.component.css',
 })
 export class AppButtonComponent {
-  @Input() label = 'Button';
+  @Input() label = 'Nút';
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() loading = false;
-  @Input() loadingText = 'Loading...';
+  @Input() loadingText = 'Đang tải...';
   @Input() disabled = false;
   @Output() btnClick = new EventEmitter<void>();
 

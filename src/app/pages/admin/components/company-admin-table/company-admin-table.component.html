@@ -1,11 +1,11 @@
 <div *ngIf="loading" class="loading">
   <div class="spinner"></div>
-  <p>Loading...</p>
+  <p>Đang tải...</p>
 </div>
 
 <div *ngIf="!loading && admins.length === 0" class="empty">
-  <h3>No company accounts</h3>
-  <p>Try adjusting search or create a new account.</p>
+  <h3>Không có tài khoản công ty</h3>
+  <p>Hãy thử điều chỉnh tìm kiếm hoặc tạo tài khoản mới.</p>
 </div>
 
 <div *ngIf="!loading && admins.length > 0" class="table-wrap">
@@ -13,12 +13,12 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Username</th>
-        <th>Full name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Company</th>
-        <th>Status</th>
+        <th>Tên đăng nhập</th>
+        <th>Họ tên</th>
+        <th>Địa chỉ email</th>
+        <th>Số điện thoại</th>
+        <th>Công ty</th>
+        <th>Trạng thái</th>
         <th></th>
       </tr>
     </thead>
@@ -31,9 +31,9 @@
           <td>{{ a.email }}</td>
           <td>{{ a.phone }}</td>
           <td>{{ a.companyName }}</td>
-          <td><span class="pill" [class]="'pill--' + a.status">{{ a.status }}</span></td>
+          <td><span class="pill" [class]="'pill--' + a.status">{{ displayStatus(a.status) }}</span></td>
           <td>
-            <button class="btn-update" type="button" (click)="updateClick.emit(a)">Update</button>
+            <button class="btn-update" type="button" (click)="updateClick.emit(a)">Cập nhật</button>
           </td>
         </tr>
       }

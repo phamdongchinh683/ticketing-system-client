@@ -84,14 +84,14 @@ export class AdminComponent implements OnInit {
     this.createSubmitting = true;
     this.api.createCompanyAdmin(body).subscribe({
       next: (res) => {
-        this.showNotification('Success.', 'success');
+        this.showNotification('Thành công.', 'success');
         this.showCreate = false;
         this.createSubmitting = false;
         this.fetch();
       },
       error: (err: unknown) => {
         const e = err as { error?: { message?: string } };
-        this.showNotification(e.error?.message || 'Failed.', 'error');
+        this.showNotification(e.error?.message || 'Thất bại.', 'error');
         this.createSubmitting = false;
       },
     });
@@ -117,7 +117,7 @@ export class AdminComponent implements OnInit {
     this.editSubmitting = true;
     this.api.updateCompanyAdmin(id, body).subscribe({
       next: (res) => {
-        this.showNotification('Success.', 'success');
+        this.showNotification('Thành công.', 'success');
         this.admins = this.admins.map((a) =>
           a.id === id ? { ...a, fullName: body.fullName, email: body.email, phone: body.phone, status: body.status } : a,
         );
@@ -127,7 +127,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err: unknown) => {
         const e = err as { error?: { message?: string } };
-        this.showNotification(e.error?.message || 'Failed.', 'error');
+        this.showNotification(e.error?.message || 'Thất bại.', 'error');
         this.editSubmitting = false;
       },
     });
@@ -150,7 +150,7 @@ export class AdminComponent implements OnInit {
         },
         error: (err: unknown) => {
           const e = err as { error?: { message?: string } };
-          this.showNotification(e.error?.message || 'Failed to load more.', 'error');
+          this.showNotification(e.error?.message || 'Tải thêm thất bại.', 'error');
           this.loadingMore = false;
         },
       });
@@ -172,7 +172,7 @@ export class AdminComponent implements OnInit {
         },
         error: (err: unknown) => {
           const e = err as { error?: { message?: string } };
-          this.showNotification(e.error?.message || 'Failed to load company accounts.', 'error');
+          this.showNotification(e.error?.message || 'Tải danh sách tài khoản công ty thất bại.', 'error');
           this.loading = false;
         },
       });

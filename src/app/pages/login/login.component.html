@@ -7,19 +7,19 @@
 
 <div class="page">
   <div class="login-box">
-    <h1>Sign In</h1>
+    <h1>Đăng nhập</h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <app-input
-        label="Username, Email or Phone"
+        label="Tên đăng nhập, địa chỉ email hoặc số điện thoại"
         type="text"
         formControlName="text"
         name="text"
-        placeholder="Enter your username, email or phone"
+        placeholder="Nhập tên đăng nhập, email hoặc số điện thoại"
         [disabled]="loading"
       ></app-input>
 
       <app-input
-        label="Password"
+        label="Mật khẩu"
         type="password"
         formControlName="password"
         name="password"
@@ -27,7 +27,7 @@
         [disabled]="loading"
       ></app-input>
 
-      <app-button label="Sign In" type="submit" [loading]="loading" loadingText="Signing in..."></app-button>
+      <app-button label="Đăng nhập" type="submit" [loading]="loading" loadingText="Đang đăng nhập..."></app-button>
     </form>
   </div>
 </div>

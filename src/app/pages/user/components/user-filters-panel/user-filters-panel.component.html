@@ -1,34 +1,34 @@
 <form class="filters" [formGroup]="form" (ngSubmit)="applyFilters.emit()">
   <div class="row">
     <label class="field">
-      <span class="label">Email</span>
-      <input class="input" formControlName="email" placeholder="user@example.com" />
-      <span class="error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">Invalid email</span>
+      <span class="label">Địa chỉ email</span>
+      <input class="input" formControlName="email" placeholder="vd: ten@congty.com" />
+      <span class="error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">Địa chỉ email không hợp lệ</span>
     </label>
 
     <label class="field">
-      <span class="label">Phone</span>
-      <input class="input" formControlName="phone" placeholder="eg. 0987654321" />
+      <span class="label">Số điện thoại</span>
+      <input class="input" formControlName="phone" placeholder="vd: 0987654321" />
       <span class="error" *ngIf="form.get('phone')?.touched && form.get('phone')?.errors?.['phone10Digits']">
-        Phone must be exactly 10 digits
+        Số điện thoại phải đúng 10 chữ số
       </span>
     </label>
 
     <label class="field">
-      <span class="label">Company</span>
+      <span class="label">Công ty</span>
       <input
         class="input"
         formControlName="companyName"
-        placeholder="Search company by name..."
+        placeholder="Tìm công ty theo tên..."
         (focus)="onCompanyFocus()"
       />
       <div class="dropdown" *ngIf="dropdownOpen" (scroll)="onScroll($event)">
         <button class="dropdown-item" type="button" (click)="selectCompany.emit(null)">
-          <span class="company-name">All companies</span>
-          <span class="company-hotline">No company filter</span>
+          <span class="company-name">Tất cả công ty</span>
+          <span class="company-hotline">Không lọc công ty</span>
         </button>
 
-        <div class="dropdown-loading" *ngIf="companiesLoading">Loading companies...</div>
+        <div class="dropdown-loading" *ngIf="companiesLoading">Đang tải công ty...</div>
 
         @for (c of companies; track c.id) {
           <button class="dropdown-item" type="button" (click)="selectCompany.emit(c)">
@@ -37,39 +37,39 @@
           </button>
         }
 
-        <div class="dropdown-empty" *ngIf="!companiesLoading && companies.length === 0">No companies</div>
-        <div class="dropdown-loading" *ngIf="companiesLoadingMore">Loading more...</div>
+        <div class="dropdown-empty" *ngIf="!companiesLoading && companies.length === 0">Không có công ty</div>
+        <div class="dropdown-loading" *ngIf="companiesLoadingMore">Đang tải thêm...</div>
       </div>
       <div class="hint" *ngIf="selectedCompany">
-        Selected: <strong>{{ selectedCompany.name }}</strong>
-        <button class="btn-link" type="button" (click)="selectCompany.emit(null)">clear</button>
+        Đã chọn: <strong>{{ selectedCompany.name }}</strong>
+        <button class="btn-link" type="button" (click)="selectCompany.emit(null)">xóa chọn</button>
       </div>
     </label>
   </div>
 
   <div class="row">
     <label class="field">
-      <span class="label">Status</span>
+      <span class="label">Trạng thái</span>
       <select class="select" formControlName="status">
-        <option [ngValue]="null">Select status</option>
+        <option [ngValue]="null">Chọn trạng thái</option>
         @for (s of statuses; track s) {
-          <option [ngValue]="s">{{ s }}</option>
+          <option [ngValue]="s">{{ displayStatus(s) }}</option>
         }
       </select>
     </label>
 
     <label class="field">
-      <span class="label">Role</span>
+      <span class="label">Vai trò</span>
       <select class="select" formControlName="role">
-        <option [ngValue]="null">Select role</option>
+        <option [ngValue]="null">Chọn vai trò</option>
         @for (r of roles; track r) {
-          <option [ngValue]="r">{{ r }}</option>
+          <option [ngValue]="r">{{ displayRole(r) }}</option>
         }
       </select>
     </label>
 
     <label class="field">
-      <span class="label">Limit</span>
+      <span class="label">Số dòng</span>
       <select class="select" formControlName="limit">
         @for (l of pageLimits; track l) {
           <option [ngValue]="l">{{ l }}</option>
@@ -79,7 +79,7 @@
   </div>
 
   <div class="actions">
-    <button class="btn" type="submit" [disabled]="listLoading">Apply</button>
-    <button class="btn btn--ghost" type="button" (click)="resetFilters.emit()">Reset</button>
+    <button class="btn" type="submit" [disabled]="listLoading">Áp dụng</button>
+    <button class="btn btn--ghost" type="button" (click)="resetFilters.emit()">Đặt lại</button>
   </div>
 </form>

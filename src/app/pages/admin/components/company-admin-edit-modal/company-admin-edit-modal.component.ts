@@ -60,7 +60,7 @@ export class CompanyAdminEditModalComponent implements OnChanges {
 
   onSubmit() {
     if (!this.admin) {
-      this.validateFailed.emit('No account selected.');
+      this.validateFailed.emit('Chưa chọn tài khoản.');
       return;
     }
     if (this.form.invalid) {
@@ -80,13 +80,13 @@ export class CompanyAdminEditModalComponent implements OnChanges {
 
   private firstFormErrorMessage(): string {
     const c = this.form.controls;
-    if (c.fullName.errors?.['required']) return 'Full name is required.';
-    if (c.fullName.errors?.['minlength']) return 'Full name must be at least 7 characters.';
-    if (c.email.errors?.['required']) return 'Email is required.';
-    if (c.email.errors?.['email']) return 'Email is invalid.';
-    if (c.phone.errors?.['required']) return 'Phone is required.';
-    if (c.phone.errors?.['phone']) return 'Phone must be 9–11 digits.';
-    if (c.status.errors?.['required']) return 'Status is required.';
-    return 'Please fix the form.';
+    if (c.fullName.errors?.['required']) return 'Họ tên là bắt buộc.';
+    if (c.fullName.errors?.['minlength']) return 'Họ tên phải có ít nhất 7 ký tự.';
+    if (c.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
+    if (c.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
+    if (c.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
+    if (c.phone.errors?.['phone']) return 'Số điện thoại phải từ 9-11 chữ số.';
+    if (c.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
+    return 'Vui lòng kiểm tra lại biểu mẫu.';
   }
 }

@@ -13,4 +13,17 @@ export class CompanyAdminTableComponent {
   @Input() admins: CompanyAdmin[] = [];
   @Input() loading = false;
   @Output() updateClick = new EventEmitter<CompanyAdmin>();
+
+  displayStatus(value: string): string {
+    switch (value) {
+      case 'active':
+        return 'Hoạt động';
+      case 'inactive':
+        return 'Tạm ngưng';
+      case 'banned':
+        return 'Bị cấm';
+      default:
+        return value;
+    }
+  }
 }

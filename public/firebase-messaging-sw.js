@@ -22,7 +22,7 @@ self.addEventListener('activate', (event) => {
 });
 
 onBackgroundMessage(messaging, (payload) => {
-  self.registration.showNotification(payload.notification?.title || 'New notification', {
+  self.registration.showNotification(payload.notification?.title || 'Thông báo mới', {
     body: payload.notification?.body || '',
     icon: '/favicon.ico',
     data: payload.data || {},

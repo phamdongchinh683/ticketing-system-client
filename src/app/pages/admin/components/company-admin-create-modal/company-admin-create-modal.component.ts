@@ -85,17 +85,17 @@ export class CompanyAdminCreateModalComponent implements OnChanges {
 
   private firstFormErrorMessage(): string {
     const c = this.form.controls;
-    if (c.username.errors?.['required']) return 'Username is required.';
-    if (c.fullName.errors?.['required']) return 'Full name is required.';
-    if (c.fullName.errors?.['minlength']) return 'Full name must be at least 7 characters.';
-    if (c.email.errors?.['required']) return 'Email is required.';
-    if (c.email.errors?.['email']) return 'Email format is invalid.';
-    if (c.phone.errors?.['required']) return 'Phone is required.';
-    if (c.phone.errors?.['phone']) return 'Phone must be 9–11 digits.';
-    if (c.password.errors?.['required']) return 'Password is required.';
+    if (c.username.errors?.['required']) return 'Tên đăng nhập là bắt buộc.';
+    if (c.fullName.errors?.['required']) return 'Họ tên là bắt buộc.';
+    if (c.fullName.errors?.['minlength']) return 'Họ tên phải có ít nhất 7 ký tự.';
+    if (c.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
+    if (c.email.errors?.['email']) return 'Định dạng địa chỉ email không hợp lệ.';
+    if (c.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
+    if (c.phone.errors?.['phone']) return 'Số điện thoại phải từ 9-11 chữ số.';
+    if (c.password.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (c.password.errors?.['password']) return PASSWORD_MESSAGE;
-    if (c.companyId.errors?.['required']) return 'Please select a company.';
-    return 'Please fix the form.';
+    if (c.companyId.errors?.['required']) return 'Vui lòng chọn công ty.';
+    return 'Vui lòng kiểm tra lại biểu mẫu.';
   }
 
   private showFieldError(control: AbstractControl): boolean {
@@ -105,38 +105,38 @@ export class CompanyAdminCreateModalComponent implements OnChanges {
   get usernameError(): string | null {
     const c = this.form.controls.username;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Username is required.';
+    if (c.errors?.['required']) return 'Tên đăng nhập là bắt buộc.';
     return null;
   }
 
   get fullNameError(): string | null {
     const c = this.form.controls.fullName;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Full name is required.';
-    if (c.errors?.['minlength']) return 'At least 7 characters.';
+    if (c.errors?.['required']) return 'Họ tên là bắt buộc.';
+    if (c.errors?.['minlength']) return 'Tối thiểu 7 ký tự.';
     return null;
   }
 
   get emailError(): string | null {
     const c = this.form.controls.email;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Email is required.';
-    if (c.errors?.['email']) return 'Invalid email format.';
+    if (c.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
+    if (c.errors?.['email']) return 'Địa chỉ email không đúng định dạng.';
     return null;
   }
 
   get phoneError(): string | null {
     const c = this.form.controls.phone;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Phone is required.';
-    if (c.errors?.['phone']) return 'Use 9–10 digits.';
+    if (c.errors?.['required']) return 'Số điện thoại là bắt buộc.';
+    if (c.errors?.['phone']) return 'Sử dụng 9-10 chữ số.';
     return null;
   }
 
   get passwordError(): string | null {
     const c = this.form.controls.password;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Password is required.';
+    if (c.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (c.errors?.['password']) return PASSWORD_MESSAGE;
     return null;
   }
@@ -144,7 +144,7 @@ export class CompanyAdminCreateModalComponent implements OnChanges {
   get companyError(): string | null {
     const c = this.form.controls.companyId;
     if (!this.showFieldError(c)) return null;
-    if (c.errors?.['required']) return 'Company is required.';
+    if (c.errors?.['required']) return 'Công ty là bắt buộc.';
     return null;
   }
 }

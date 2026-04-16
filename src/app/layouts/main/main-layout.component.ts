@@ -16,7 +16,7 @@ import { MainTopbarComponent } from './components/main-topbar/main-topbar.compon
 export class MainLayoutComponent implements OnInit {
   collapsed = false;
   currentUrl = '';
-  userName = 'User';
+  userName = 'Người dùng';
   userEmail = '';
   userRole = '';
   userInitial = 'U';
@@ -24,18 +24,18 @@ export class MainLayoutComponent implements OnInit {
   items: MainNavItem[] = navItems as MainNavItem[];
 
   private readonly pageTitles: Record<string, string> = {
-    '/dashboard': 'Dashboard',
-    '/companies': 'Bus Companies',
-    '/admins': 'Company Admins',
-    '/users': 'Users',
-    '/devices': 'Devices',
+    '/dashboard': 'Tổng quan',
+    '/companies': 'Nhà xe',
+    '/admins': 'Quản trị công ty',
+    '/users': 'Người dùng',
+    '/devices': 'Thiết bị',
   };
 
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   get pageTitle(): string {
-    return this.pageTitles[this.currentUrl] || 'Dashboard';
+    return this.pageTitles[this.currentUrl] || 'Tổng quan';
   }
 
   ngOnInit() {
@@ -69,7 +69,7 @@ export class MainLayoutComponent implements OnInit {
         staffProfileRole?: string;
         role?: string;
       };
-      this.userName = user.fullName || user.username || 'User';
+      this.userName = user.fullName || user.username || 'Người dùng';
       this.userEmail = user.email || '';
       this.userRole = (user.staffProfileRole || user.role || '').replace(/_/g, ' ');
       this.userInitial = this.userName.charAt(0).toUpperCase();

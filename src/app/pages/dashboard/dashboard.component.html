@@ -8,7 +8,7 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-large"></div>
-    <p>Loading dashboard...</p>
+    <p>Đang tải trang tổng quan...</p>
   </div>
 
   <div *ngIf="!loading && overview" class="dashboard__body">
@@ -25,7 +25,7 @@
 
       <div class="charts-stack">
         <app-dashboard-trend-chart-panel
-          chartTitle="Users by period"
+          chartTitle="Người dùng theo thời gian"
           [labels]="userChart.labels"
           [datasets]="userChart.datasets"
           [loading]="userChartLoading"
@@ -36,25 +36,25 @@
         >
           <div class="chart-block__filters">
             <label class="filter">
-              <span>User status</span>
+              <span>Trạng thái người dùng</span>
               <select class="select" [(ngModel)]="userStatusFilter" (ngModelChange)="onUserChartFiltersChange()">
-                <option [ngValue]="''">All</option>
+                <option [ngValue]="''">Tất cả</option>
                 @for (s of userStatuses; track s) {
-                  <option [ngValue]="s">{{ s }}</option>
+                  <option [ngValue]="s">{{ displayStatusLabel(s) }}</option>
                 }
               </select>
             </label>
             <label class="filter">
-              <span>User role</span>
+              <span>Vai trò người dùng</span>
               <select class="select" [(ngModel)]="userRoleFilter" (ngModelChange)="onUserChartFiltersChange()">
-                <option [ngValue]="''">All</option>
+                <option [ngValue]="''">Tất cả</option>
                 @for (r of userRoles; track r) {
-                  <option [ngValue]="r">{{ r }}</option>
+                  <option [ngValue]="r">{{ displayRoleLabel(r) }}</option>
                 }
               </select>
             </label>
             <label class="filter">
-              <span>Chart type</span>
+              <span>Loại biểu đồ</span>
               <select class="select" [(ngModel)]="userChartKind">
                 @for (opt of chartKindOptions; track opt.value) {
                   <option [ngValue]="opt.value">{{ opt.label }}</option>
@@ -65,7 +65,7 @@
         </app-dashboard-trend-chart-panel>
 
         <app-dashboard-trend-chart-panel
-          chartTitle="Bookings by period"
+          chartTitle="Lượt đặt vé theo thời gian"
           [labels]="bookingChart.labels"
           [datasets]="bookingChart.datasets"
           [loading]="bookingChartLoading"
@@ -76,16 +76,16 @@
         >
           <div class="chart-block__filters">
             <label class="filter">
-              <span>Booking status</span>
+              <span>Trạng thái đặt vé</span>
               <select class="select" [(ngModel)]="bookingStatusFilter" (ngModelChange)="onBookingChartFiltersChange()">
-                <option [ngValue]="''">All (stacked by status)</option>
+                <option [ngValue]="''">Tất cả (xếp chồng theo trạng thái)</option>
                 @for (s of bookingStatuses; track s) {
-                  <option [ngValue]="s">{{ s }}</option>
+                  <option [ngValue]="s">{{ displayStatusLabel(s) }}</option>
                 }
               </select>
             </label>
             <label class="filter">
-              <span>Chart type</span>
+              <span>Loại biểu đồ</span>
               <select class="select" [(ngModel)]="bookingChartKind">
                 @for (opt of chartKindOptions; track opt.value) {
                   <option [ngValue]="opt.value">{{ opt.label }}</option>
@@ -96,7 +96,7 @@
         </app-dashboard-trend-chart-panel>
 
         <app-dashboard-trend-chart-panel
-          chartTitle="Revenue by period"
+          chartTitle="Doanh thu theo thời gian"
           [labels]="revenueChart.labels"
           [datasets]="revenueChart.datasets"
           [loading]="revenueChartLoading"
@@ -107,25 +107,25 @@
         >
           <div class="chart-block__filters">
             <label class="filter">
-              <span>Payment method</span>
+              <span>Phương thức thanh toán</span>
               <select class="select" [(ngModel)]="revenueMethodFilter" (ngModelChange)="onRevenueChartFiltersChange()">
-                <option [ngValue]="''">All</option>
+                <option [ngValue]="''">Tất cả</option>
                 @for (m of revenueMethods; track m) {
-                  <option [ngValue]="m">{{ m }}</option>
+                  <option [ngValue]="m">{{ displayMethodLabel(m) }}</option>
                 }
               </select>
             </label>
             <label class="filter">
-              <span>Payment status</span>
+              <span>Trạng thái thanh toán</span>
               <select class="select" [(ngModel)]="revenueStatusFilter" (ngModelChange)="onRevenueChartFiltersChange()">
-                <option [ngValue]="''">All</option>
+                <option [ngValue]="''">Tất cả</option>
                 @for (s of revenueStatuses; track s) {
-                  <option [ngValue]="s">{{ s }}</option>
+                  <option [ngValue]="s">{{ displayStatusLabel(s) }}</option>
                 }
               </select>
             </label>
             <label class="filter">
-              <span>Chart type</span>
+              <span>Loại biểu đồ</span>
               <select class="select" [(ngModel)]="revenueChartKind">
                 @for (opt of chartKindOptions; track opt.value) {
                   <option [ngValue]="opt.value">{{ opt.label }}</option>

@@ -1,14 +1,14 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
   <div class="modal" (click)="stopPropagation($event)">
-    <h3>{{ editingCompany ? 'Edit Company' : 'Add Bus Company' }}</h3>
+    <h3>{{ editingCompany ? 'Chỉnh sửa nhà xe' : 'Thêm nhà xe' }}</h3>
     <form class="modal-body" [formGroup]="form" (ngSubmit)="submitted.emit()">
       <label class="field">
-        <span class="field-label">Name</span>
-        <input class="modal-input" formControlName="name" placeholder="Company name" />
+        <span class="field-label">Tên</span>
+        <input class="modal-input" formControlName="name" placeholder="Tên nhà xe" />
       </label>
       <label class="field">
         <span class="field-label">Hotline</span>
-        <input class="modal-input" formControlName="hotline" placeholder="e.g. 0987654321" />
+        <input class="modal-input" formControlName="hotline" placeholder="vd: 0987654321" />
       </label>
       <div class="field">
         <span class="field-label">Logo</span>
@@ -27,7 +27,7 @@
               [disabled]="!canUploadLogo || uploadingLogo"
               (click)="triggerLogoFileInput(logoFileInput)"
             >
-              {{ uploadingLogo ? 'Uploading…' : 'Upload logo' }}
+              {{ uploadingLogo ? 'Đang tải lên…' : 'Tải logo lên' }}
             </button>
             <input
               #logoFileInput
@@ -38,14 +38,14 @@
             />
           </div>
           <p *ngIf="!canUploadLogo" class="field-hint">
-            Save the company first, then edit it to upload a logo (upload needs a company id).
+            Vui lòng lưu nhà xe trước, sau đó chỉnh sửa để tải logo lên (cần id nhà xe).
           </p>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-cancel" type="button" (click)="close()">Cancel</button>
+        <button class="btn-cancel" type="button" (click)="close()">Hủy</button>
         <button class="btn-submit" type="submit" [disabled]="submitting">
-          {{ submitting ? 'Saving...' : (editingCompany ? 'Update' : 'Create') }}
+          {{ submitting ? 'Đang lưu...' : (editingCompany ? 'Cập nhật' : 'Tạo mới') }}
         </button>
       </div>
     </form>

@@ -1,29 +1,29 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
   <div class="modal" (click)="stopPropagation($event)">
-    <h3>Create User</h3>
+    <h3>Tạo người dùng</h3>
     <form class="modal-form" [formGroup]="form" (ngSubmit)="submitted.emit()">
       <label class="field">
-        <span class="label">Username</span>
-        <input class="input" formControlName="username" placeholder="username" />
+        <span class="label">Tên đăng nhập</span>
+        <input class="input" formControlName="username" placeholder="nhập tên đăng nhập" />
       </label>
 
       <label class="field">
-        <span class="label">Full Name</span>
-        <input class="input" formControlName="fullName" placeholder="min 7 characters" />
+        <span class="label">Họ tên</span>
+        <input class="input" formControlName="fullName" placeholder="tối thiểu 7 ký tự" />
       </label>
 
       <label class="field">
-        <span class="label">Email</span>
-        <input class="input" formControlName="email" placeholder="user@example.com" />
+        <span class="label">Địa chỉ email</span>
+        <input class="input" formControlName="email" placeholder="vd: ten@congty.com" />
       </label>
 
       <label class="field">
-        <span class="label">Phone</span>
-        <input class="input" formControlName="phone" placeholder="eg. 0987654321" />
+        <span class="label">Số điện thoại</span>
+        <input class="input" formControlName="phone" placeholder="vd: 0987654321" />
       </label>
 
       <label class="field">
-        <span class="label">Password</span>
+        <span class="label">Mật khẩu</span>
         <div class="password-wrap">
           <input
             class="input password-input"
@@ -35,7 +35,7 @@
             class="btn-password-toggle"
             type="button"
             (click)="togglePassword()"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-label]="showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
           >
             <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
@@ -51,7 +51,7 @@
       </label>
 
       <label class="field">
-        <span class="label">Status</span>
+        <span class="label">Trạng thái</span>
         <select class="select" formControlName="status">
           @for (s of statuses; track s) {
             <option [ngValue]="s">{{ s }}</option>
@@ -60,7 +60,7 @@
       </label>
 
       <label class="field">
-        <span class="label">Role</span>
+        <span class="label">Vai trò</span>
         <select class="select" formControlName="role">
           @for (r of roles; track r) {
             <option [ngValue]="r">{{ r }}</option>
@@ -69,8 +69,8 @@
       </label>
 
       <div class="modal-actions">
-        <button class="btn btn--ghost" type="button" (click)="close()">Cancel</button>
-        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Creating...' : 'Create' }}</button>
+        <button class="btn btn--ghost" type="button" (click)="close()">Hủy</button>
+        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Đang tạo...' : 'Tạo mới' }}</button>
       </div>
     </form>
   </div>

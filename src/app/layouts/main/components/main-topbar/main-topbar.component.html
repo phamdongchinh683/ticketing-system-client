@@ -7,7 +7,7 @@
         class="btn-notification"
         [class.btn-notification--open]="isNotificationOpen"
         [attr.aria-expanded]="isNotificationOpen"
-        aria-label="Open notifications"
+        aria-label="Mở thông báo"
         (click)="toggleNotifications()"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -19,11 +19,11 @@
 
       <div *ngIf="isNotificationOpen" class="notification-menu" (scroll)="onNotificationScroll($event)">
         <div class="notification-menu__header">
-          <span class="notification-menu__title">Notifications</span>
-          <span class="notification-menu__count" *ngIf="unreadCount > 0">{{ unreadCount }} new</span>
+          <span class="notification-menu__title">Thông báo</span>
+          <span class="notification-menu__count" *ngIf="unreadCount > 0">{{ unreadCount }} mới</span>
         </div>
 
-        <div *ngIf="isLoadingNotifications" class="notification-state">Loading notifications...</div>
+        <div *ngIf="isLoadingNotifications" class="notification-state">Đang tải thông báo...</div>
         <ng-container *ngIf="!isLoadingNotifications">
           <button
             type="button"
@@ -37,12 +37,12 @@
               <span class="notification-item__body" *ngIf="notificationBody(noti)">{{ notificationBody(noti) }}</span>
             </span>
             <span class="notification-item__status" [class.notification-item__status--read]="noti.isRead">
-              {{ noti.isRead ? 'Read' : 'New' }}
+              {{ noti.isRead ? 'Đã đọc' : 'Mới' }}
             </span>
           </button>
 
-          <div *ngIf="notifications.length === 0" class="notification-state">No notifications</div>
-          <div *ngIf="isLoadingMore" class="notification-state">Loading more...</div>
+          <div *ngIf="notifications.length === 0" class="notification-state">Không có thông báo</div>
+          <div *ngIf="isLoadingMore" class="notification-state">Đang tải thêm...</div>
         </ng-container>
       </div>
     </div>
@@ -60,7 +60,7 @@
         <polyline points="16 17 21 12 16 7" />
         <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
-      Sign Out
+      Đăng xuất
     </button>
   </div>
 </header>
@@ -70,7 +70,7 @@
     <button
       type="button"
       class="verify-dialog__close-top"
-      aria-label="Close dialog"
+      aria-label="Đóng hộp thoại"
       [disabled]="isVerifyingAccount"
       (click)="closeVerifyDialog()"
     >
@@ -79,15 +79,15 @@
         <path d="m6 6 12 12" />
       </svg>
     </button>
-    <h3 class="verify-dialog__title">Verify account</h3>
-    <p class="verify-dialog__body">{{ selectedNotification?.body || selectedNotification?.title || 'No content' }}</p>
+    <h3 class="verify-dialog__title">Xác minh tài khoản</h3>
+    <p class="verify-dialog__body">{{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}</p>
 
     <div class="verify-dialog__actions">
       <button
         type="button"
         class="verify-btn verify-btn--active"
-        title="Set Active"
-        aria-label="Set account active"
+        title="Đặt trạng thái hoạt động"
+        aria-label="Đặt tài khoản hoạt động"
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('active')"
       >
@@ -99,8 +99,8 @@
       <button
         type="button"
         class="verify-btn verify-btn--inactive"
-        title="Set Inactive"
-        aria-label="Set account inactive"
+        title="Đặt trạng thái tạm ngưng"
+        aria-label="Đặt tài khoản tạm ngưng"
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('inactive')"
       >
@@ -112,8 +112,8 @@
       <button
         type="button"
         class="verify-btn verify-btn--banner"
-        title="Set Banner"
-        aria-label="Set account banner"
+        title="Đặt trạng thái cấm"
+        aria-label="Đặt tài khoản cấm"
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('banned')"
       >

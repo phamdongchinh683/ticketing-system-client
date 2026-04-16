@@ -1,29 +1,29 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h3>Create company account</h3>
+    <h3>Tạo tài khoản công ty</h3>
     <form class="modal-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <label class="field">
-        <span class="label">Username</span>
-        <input class="input" formControlName="username" autocomplete="username" placeholder="username" />
+        <span class="label">Tên đăng nhập</span>
+        <input class="input" formControlName="username" autocomplete="username" placeholder="nhập tên đăng nhập" />
         <span class="error" *ngIf="usernameError">{{ usernameError }}</span>
       </label>
       <label class="field">
-        <span class="label">Full name</span>
-        <input class="input" formControlName="fullName" placeholder="min 7 characters" autocomplete="name" />
+        <span class="label">Họ tên</span>
+        <input class="input" formControlName="fullName" placeholder="tối thiểu 7 ký tự" autocomplete="name" />
         <span class="error" *ngIf="fullNameError">{{ fullNameError }}</span>
       </label>
       <label class="field">
-        <span class="label">Email</span>
-        <input class="input" formControlName="email" type="email" autocomplete="email" placeholder="email@example.com" />
+        <span class="label">Địa chỉ email</span>
+        <input class="input" formControlName="email" type="email" autocomplete="email" placeholder="vd: ten@congty.com" />
         <span class="error" *ngIf="emailError">{{ emailError }}</span>
       </label>
       <label class="field">
-        <span class="label">Phone</span>
-        <input class="input" formControlName="phone" placeholder="11 digits" autocomplete="tel" />
+        <span class="label">Số điện thoại</span>
+        <input class="input" formControlName="phone" placeholder="11 chữ số" autocomplete="tel" />
         <span class="error" *ngIf="phoneError">{{ phoneError }}</span>
       </label>
       <label class="field">
-        <span class="label">Password</span>
+        <span class="label">Mật khẩu</span>
         <div class="password-wrap">
           <input
             class="input password-input"
@@ -31,7 +31,7 @@
             formControlName="password"
             placeholder="Abcd12345#"
           />
-          <button class="btn-eye" type="button" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Hide' : 'Show'">
+          <button class="btn-eye" type="button" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Ẩn' : 'Hiện'">
             <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
               <circle cx="12" cy="12" r="3" />
@@ -46,9 +46,9 @@
         <span class="error" *ngIf="passwordError">{{ passwordError }}</span>
       </label>
       <label class="field field--full">
-        <span class="label">Company</span>
+        <span class="label">Công ty</span>
         <select class="select" formControlName="companyId">
-          <option [ngValue]="null">Select company</option>
+          <option [ngValue]="null">Chọn công ty</option>
           @for (c of companies; track c.id) {
             <option [ngValue]="c.id">{{ c.name }}</option>
           }
@@ -56,8 +56,8 @@
         <span class="error" *ngIf="companyError">{{ companyError }}</span>
       </label>
       <div class="modal-actions">
-        <button class="btn btn--ghost" type="button" (click)="close()">Cancel</button>
-        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Creating...' : 'Create' }}</button>
+        <button class="btn btn--ghost" type="button" (click)="close()">Hủy</button>
+        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Đang tạo...' : 'Tạo mới' }}</button>
       </div>
     </form>
   </div>

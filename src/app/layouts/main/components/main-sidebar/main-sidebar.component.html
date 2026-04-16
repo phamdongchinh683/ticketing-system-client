@@ -1,7 +1,7 @@
 <aside class="sidebar" [class.sidebar--collapsed]="collapsed">
   <div class="sidebar__brand">
     <div class="brand-icon">TS</div>
-    <span *ngIf="!collapsed" class="brand-text">Ticket System</span>
+    <span *ngIf="!collapsed" class="brand-text">Hệ thống vé</span>
   </div>
 
   <nav class="sidebar__nav">
@@ -31,8 +31,8 @@
       type="button"
       class="btn-collapse"
       (click)="toggleCollapse.emit()"
-      title="Toggle sidebar"
-      [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      title="Thu gọn/mở rộng thanh bên"
+      [attr.aria-label]="collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'"
     >
       <svg [class.rotate]="collapsed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15 18 9 12 15 6" />

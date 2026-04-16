@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   yearOptions: number[] = [];
 
-  /** Empty string = All (omit query param). */
+  /** Chuỗi rỗng = Tất cả (không gửi query param). */
   bookingStatusFilter = '';
   revenueMethodFilter = '';
   revenueStatusFilter = '';
@@ -76,10 +76,10 @@ export class DashboardComponent implements OnInit {
   revenueChartKind: DashboardTrendChartKind = 'doughnut';
 
   readonly chartKindOptions: { value: DashboardTrendChartKind; label: string }[] = [
-    { value: 'line', label: 'Line' },
-    { value: 'bar', label: 'Bar' },
-    { value: 'doughnut', label: 'Doughnut' },
-    { value: 'pie', label: 'Pie' },
+    { value: 'line', label: 'Đường' },
+    { value: 'bar', label: 'Cột' },
+    { value: 'doughnut', label: 'Vòng tròn' },
+    { value: 'pie', label: 'Tròn' },
   ];
 
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       },
       error: (err: { error?: { message?: string } }) => {
-        this.showNotification(err.error?.message || 'Failed to load dashboard.', 'error');
+        this.showNotification(err.error?.message || 'Tải tổng quan thất bại.', 'error');
         this.loading = false;
       },
     });
@@ -136,7 +136,7 @@ export class DashboardComponent implements OnInit {
     return q;
   }
 
-  /** Period / year affect every trend chart. */
+  /** Thay đổi chu kỳ / năm sẽ tác động đến toàn bộ biểu đồ xu hướng. */
   loadAllTrendCharts() {
     this.loadUserChart();
     this.loadBookingChart();
@@ -149,10 +149,10 @@ export class DashboardComponent implements OnInit {
       .pipe(finalize(() => (this.userChartLoading = false)))
       .subscribe({
         next: (data) => {
-          this.userChart = data;
+          this.userChart = this.localizeDatasetLabels(data);
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to load user chart.', 'error');
+          this.showNotification(err.error?.message || 'Tải biểu đồ người dùng thất bại.', 'error');
         },
       });
   }
@@ -163,10 +163,10 @@ export class DashboardComponent implements OnInit {
       .pipe(finalize(() => (this.bookingChartLoading = false)))
       .subscribe({
         next: (data) => {
-          this.bookingChart = data;
+          this.bookingChart = this.localizeDatasetLabels(data);
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to load booking chart.', 'error');
+          this.showNotification(err.error?.message || 'Tải biểu đồ đặt vé thất bại.', 'error');
         },
       });
   }
@@ -177,10 +177,10 @@ export class DashboardComponent implements OnInit {
       .pipe(finalize(() => (this.revenueChartLoading = false)))
       .subscribe({
         next: (data) => {
-          this.revenueChart = data;
+          this.revenueChart = this.localizeDatasetLabels(data);
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to load revenue chart.', 'error');
+          this.showNotification(err.error?.message || 'Tải biểu đồ doanh thu thất bại.', 'error');
         },
       });
   }
@@ -218,6 +218,85 @@ export class DashboardComponent implements OnInit {
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
     this.notification = { show: true, message, type };
+  }
+
+  displayStatusLabel(value: string): string {
+    switch (value) {
+      case 'active':
+        return 'Hoạt động';
+      case 'inactive':
+        return 'Tạm ngưng';
+      case 'banned':
+        return 'Bị cấm';
+      case 'pending':
+        return 'Chờ xử lý';
+      case 'paid':
+        return 'Đã thanh toán';
+      case 'cancelled':
+        return 'Đã hủy';
+      case 'expired':
+        return 'Hết hạn';
+      case 'success':
+        return 'Thành công';
+      case 'failed':
+        return 'Thất bại';
+      case 'refunded':
+        return 'Đã hoàn tiền';
+      default:
+        return value;
+    }
+  }
+
+  displayRoleLabel(value: string): string {
+    switch (value) {
+      case 'admin':
+        return 'Quản trị viên';
+      case 'customer':
+        return 'Khách hàng';
+      case 'driver':
+        return 'Tài xế';
+      default:
+        return value;
+    }
+  }
+
+  displayMethodLabel(value: string): string {
+    switch (value) {
+      case 'cash':
+        return 'Tiền mặt';
+      case 'vnpay':
+        return 'VNPay';
+      default:
+        return value;
+    }
+  }
+
+  private localizeDatasetLabels(chart: DashboardChartSeries): DashboardChartSeries {
+    return {
+      labels: chart.labels,
+      datasets: chart.datasets.map((dataset) => ({
+        ...dataset,
+        label: this.localizeDatasetLabel(dataset.label),
+      })),
+    };
+  }
+
+  private localizeDatasetLabel(label: string): string {
+    if (label.includes(' · ')) {
+      return label
+        .split(' · ')
+        .map((part) => this.localizeDatasetLabel(part))
+        .join(' · ');
+    }
+
+    switch (label) {
+      case 'Users':
+        return 'Người dùng';
+      case 'Revenue':
+        return 'Doanh thu';
+      default:
+        return this.displayStatusLabel(this.displayRoleLabel(this.displayMethodLabel(label)));
+    }
   }
 
 }

@@ -29,7 +29,7 @@ export class ApiService {
     }).then(async (res) => {
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
-        const message = body.error?.message ?? `Upload failed (${res.status})`;
+        const message = body.error?.message ?? `Tải tệp thất bại (${res.status})`;
         throw new Error(message);
       }
       const data = (await res.json()) as { secure_url: string };

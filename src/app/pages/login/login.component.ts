@@ -42,10 +42,10 @@ export class LoginComponent {
       return null;
     }
     if (/^\+?\d+$/.test(text)) {
-      if (text.length < 10) return 'Phone number must be at least 10 digits.';
+      if (text.length < 10) return 'Số điện thoại phải có ít nhất 10 chữ số.';
       return null;
     }
-    if (text.length < 5) return 'Username must be at least 5 characters.';
+    if (text.length < 5) return 'Tên đăng nhập phải có ít nhất 5 ký tự.';
     return null;
   }
 
@@ -56,7 +56,7 @@ export class LoginComponent {
     const text = rawText.trim();
 
     if (!text || !password) {
-      this.showNotification('Please fill in all fields.', 'warning');
+      this.showNotification('Vui lòng điền đầy đủ các trường.', 'warning');
       return;
     }
 
@@ -78,11 +78,11 @@ export class LoginComponent {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
 
-        this.showNotification('Success', 'success');
+        this.showNotification('Đăng nhập thành công', 'success');
         this.router.navigate(['/dashboard']);
       },
       error: (err: { error?: { message?: string } }) => {
-        this.showNotification(err.error?.message || 'Failed to sign in.', 'error');
+        this.showNotification(err.error?.message || 'Đăng nhập thất bại.', 'error');
         this.loading = false;
       },
       complete: () => {

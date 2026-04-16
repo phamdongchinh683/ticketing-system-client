@@ -45,7 +45,7 @@ export class DeviceComponent implements OnInit {
           this.tokens = res ? res : [];
           this.loading = false;
         },
-        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Failed to load FCM tokens.', 'error'),
+        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Tải danh sách FCM token thất bại.', 'error'),
       });
   }
 
@@ -59,9 +59,9 @@ export class DeviceComponent implements OnInit {
         next: () => {
           this.tokens = this.tokens.filter((item) => item.id !== id);
           this.deletingId = null;
-          this.showNotification('Deleted', 'success');
+          this.showNotification('Đã xóa', 'success');
         },
-        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Failed to delete FCM token.', 'error'),
+        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Xóa FCM token thất bại.', 'error'),
       });
   }
 
@@ -71,25 +71,25 @@ export class DeviceComponent implements OnInit {
 
   private async saveFcmToken(_force = false): Promise<void> {
     if (!this.supportsNotificationApi()) {
-      this.showNotification('This browser does not support notification permission', 'warning');
+      this.showNotification('Trình duyệt này không hỗ trợ quyền thông báo', 'warning');
       return;
     }
 
     const permission = await this.requestNotificationPermission();
     if (permission !== 'granted') {
-      this.showNotification('Notification permission was not granted.', 'warning');
+      this.showNotification('Bạn chưa cấp quyền thông báo.', 'warning');
       return;
     }
 
     const token = await this.getFirebaseToken();
     if (!token) {
-      this.showNotification('Cannot get FCM token from Firebase.', 'error');
+      this.showNotification('Không thể lấy FCM token từ Firebase.', 'error');
       return;
     }
 
     if (this.tokens.some((item) => item.fcmToken === token)) {
       this.currentFcmToken = token;
-      this.showNotification('This device token is already registered.', 'info');
+      this.showNotification('Token thiết bị này đã được đăng ký.', 'info');
       return;
     }
 
@@ -150,11 +150,11 @@ export class DeviceComponent implements OnInit {
         next: (res: DeviceFcmToken) => {
           this.registering = false;
           this.tokens = [res, ...this.tokens];
-          this.showNotification('Saved', 'success');
+          this.showNotification('Đã lưu', 'success');
         },
         error: (err: { error?: { message?: string } }) => {
           this.registering = false;
-          this.showNotification(err.error?.message || 'Failed to save FCM token.', 'error');
+          this.showNotification(err.error?.message || 'Lưu FCM token thất bại.', 'error');
         },
       });
   }

@@ -7,7 +7,7 @@
 
 <div class="page">
   <div class="page-header">
-    <h2>Companies</h2>
+    <h2>Nhà xe</h2>
 
     <app-company-toolbar
       [searchName]="searchName"
@@ -39,7 +39,7 @@
 
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
-    <p>Loading...</p>
+    <p>Đang tải...</p>
   </div>
 
   <div *ngIf="!loading" class="page-body">
@@ -56,13 +56,13 @@
         [disabled]="nextCursor === null || loadingMore"
         (click)="loadMore()"
       >
-        {{ nextCursor !== null ? 'Next' : 'No more data' }}
+        {{ nextCursor !== null ? 'Tiếp theo' : 'Không còn dữ liệu' }}
       </button>
     </div>
 
     <div *ngIf="loadingMore" class="loading">
       <div class="spinner"></div>
-      <p>Loading more...</p>
+      <p>Đang tải thêm...</p>
     </div>
   </div>
 </div>

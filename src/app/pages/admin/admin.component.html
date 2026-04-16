@@ -7,7 +7,7 @@
 
 <div class="page">
   <div class="page-header">
-    <h2>Company accounts</h2>
+    <h2>Tài khoản công ty</h2>
     <app-company-admin-toolbar
       [limit]="limit"
       [pageLimits]="pageLimits"
@@ -20,7 +20,7 @@
 
   <div class="pagination" *ngIf="!loading && admins.length > 0">
     <button class="btn-load-more" [disabled]="nextCursor === null || loadingMore" type="button" (click)="loadMore()">
-      {{ nextCursor !== null ? (loadingMore ? 'Loading...' : 'Next') : 'No more data' }}
+      {{ nextCursor !== null ? (loadingMore ? 'Đang tải...' : 'Tiếp theo') : 'Không còn dữ liệu' }}
     </button>
   </div>
 </div>

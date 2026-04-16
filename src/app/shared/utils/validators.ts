@@ -5,7 +5,7 @@ export const DIGITS_ONLY_REGEX = /^\d+$/;
 export const PHONE_10_DIGITS_REGEX = /^\d{10}$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$%&!*?^_])(?!.*\s).+$/;
 export const PASSWORD_MESSAGE =
-  'Password must contain uppercase, lowercase, a number, and one special character (# @ $ % & ! * ? ^ _), and no spaces';
+  'Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt (# @ $ % & ! * ? ^ _), không chứa khoảng trắng';
 
 export function isEmail(value: string): boolean {
   return EMAIL_REGEX.test(value.trim());

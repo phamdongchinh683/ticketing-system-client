@@ -1,11 +1,11 @@
 <div *ngIf="loading" class="loading">
   <div class="spinner"></div>
-  <p>Loading users...</p>
+  <p>Đang tải danh sách người dùng...</p>
 </div>
 
 <div *ngIf="!loading" class="page-body">
   <div class="summary">
-    <span>{{ users.length }} user(s)</span>
+    <span>{{ users.length }} người dùng</span>
   </div>
 
   <div class="table-wrap" *ngIf="users.length > 0; else emptyState">
@@ -13,13 +13,13 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Username</th>
-          <th>Full name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Status</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>Tên đăng nhập</th>
+          <th>Họ tên</th>
+          <th>Địa chỉ email</th>
+          <th>Số điện thoại</th>
+          <th>Trạng thái</th>
+          <th>Vai trò</th>
+          <th>Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -30,13 +30,13 @@
             <td>{{ u.fullName }}</td>
             <td>{{ u.email }}</td>
             <td>{{ u.phone }}</td>
-            <td><span class="pill" [class]="'pill--' + u.status">{{ u.status }}</span></td>
-            <td><span class="pill pill--neutral">{{ u.role }}</span></td>
+            <td><span class="pill" [class]="'pill--' + u.status">{{ displayStatus(u.status) }}</span></td>
+            <td><span class="pill pill--neutral">{{ displayRole(u.role) }}</span></td>
             <td>
               <div class="row-actions">
-                <button class="btn-row btn-row--edit" type="button" (click)="editUser.emit(u)">Edit</button>
-                <button class="btn-row btn-row--password" type="button" (click)="passwordUser.emit(u)">Password</button>
-                <button class="btn-row btn-row--delete" type="button" (click)="deleteUser.emit(u)">Delete</button>
+                <button class="btn-row btn-row--edit" type="button" (click)="editUser.emit(u)">Sửa</button>
+                <button class="btn-row btn-row--password" type="button" (click)="passwordUser.emit(u)">Mật khẩu</button>
+                <button class="btn-row btn-row--delete" type="button" (click)="deleteUser.emit(u)">Xóa</button>
               </div>
             </td>
           </tr>
@@ -47,14 +47,14 @@
 
   <ng-template #emptyState>
     <div class="empty">
-      <h3>No users</h3>
-      <p>Currently, there are no users in the system.</p>
+      <h3>Không có người dùng</h3>
+      <p>Hiện tại chưa có người dùng trong hệ thống.</p>
     </div>
   </ng-template>
 
   <div class="pagination">
     <button class="btn-load-more" [disabled]="nextCursor === null || loadingMore" (click)="loadMore.emit()">
-      {{ nextCursor !== null ? (loadingMore ? 'Loading...' : 'Next') : 'No more data' }}
+      {{ nextCursor !== null ? (loadingMore ? 'Đang tải...' : 'Tiếp theo') : 'Không còn dữ liệu' }}
     </button>
   </div>
 </div>

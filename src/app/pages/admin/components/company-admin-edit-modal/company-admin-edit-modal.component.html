@@ -1,21 +1,21 @@
 <div *ngIf="open && admin" class="modal-overlay" (click)="close()">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h3>Update {{ admin.username }}</h3>
+    <h3>Cập nhật {{ admin.username }}</h3>
     <form class="modal-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <label class="field">
-        <span class="label">Full name</span>
+        <span class="label">Họ tên</span>
         <input class="input" formControlName="fullName" />
       </label>
       <label class="field">
-        <span class="label">Email</span>
+        <span class="label">Địa chỉ email</span>
         <input class="input" formControlName="email" />
       </label>
       <label class="field">
-        <span class="label">Phone</span>
-        <input class="input" formControlName="phone" placeholder="10 digits" />
+        <span class="label">Số điện thoại</span>
+        <input class="input" formControlName="phone" placeholder="10 chữ số" />
       </label>
       <label class="field">
-        <span class="label">Status</span>
+        <span class="label">Trạng thái</span>
         <select class="select" formControlName="status">
           @for (s of statuses; track s) {
             <option [ngValue]="s">{{ s }}</option>
@@ -23,8 +23,8 @@
         </select>
       </label>
       <div class="modal-actions">
-        <button class="btn btn--ghost" type="button" (click)="close()">Cancel</button>
-        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Saving...' : 'Save' }}</button>
+        <button class="btn btn--ghost" type="button" (click)="close()">Hủy</button>
+        <button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Đang lưu...' : 'Lưu' }}</button>
       </div>
     </form>
   </div>

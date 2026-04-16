@@ -274,12 +274,12 @@ export class UserComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.showNotification('Created.', 'success');
+          this.showNotification('Tạo mới thành công.', 'success');
           this.closeCreateModal();
           this.applyFilters();
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to create user.', 'error');
+          this.showNotification(err.error?.message || 'Tạo người dùng thất bại.', 'error');
           this.creatingUser = false;
         },
       });
@@ -288,26 +288,26 @@ export class UserComponent implements OnInit {
   private getCreateFormErrorMessage(): string {
     const controls = this.createForm.controls;
 
-    if (controls.username.errors?.['required']) return 'Username is required.';
-    if (controls.fullName.errors?.['required']) return 'Full name is required.';
-    if (controls.fullName.errors?.['minlength']) return 'Full name must be at least 7 characters.';
-    if (controls.email.errors?.['required']) return 'Email is required.';
-    if (controls.email.errors?.['email']) return 'Email is invalid.';
-    if (controls.phone.errors?.['required']) return 'Phone is required.';
-    if (controls.phone.errors?.['phone10Digits']) return 'Phone must be exactly 10 digits.';
-    if (controls.password.errors?.['required']) return 'Password is required.';
+    if (controls.username.errors?.['required']) return 'Tên đăng nhập là bắt buộc.';
+    if (controls.fullName.errors?.['required']) return 'Họ tên là bắt buộc.';
+    if (controls.fullName.errors?.['minlength']) return 'Họ tên phải có ít nhất 7 ký tự.';
+    if (controls.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
+    if (controls.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
+    if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
+    if (controls.phone.errors?.['phone10Digits']) return 'Số điện thoại phải đúng 10 chữ số.';
+    if (controls.password.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (controls.password.errors?.['password']) return PASSWORD_MESSAGE;
-    if (controls.status.errors?.['required']) return 'Status is required.';
-    if (controls.role.errors?.['required']) return 'Role is required.';
+    if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
+    if (controls.role.errors?.['required']) return 'Vai trò là bắt buộc.';
 
-    return 'Please fill all required fields correctly.';
+    return 'Vui lòng điền đúng tất cả trường bắt buộc.';
   }
 
   submitEditUser() {
     if (!this.selectedActionUser) return;
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
-      this.showNotification('Please enter valid data for edit form.', 'warning');
+      this.showNotification('Vui lòng nhập dữ liệu hợp lệ cho biểu mẫu chỉnh sửa.', 'warning');
       return;
     }
     const v = this.editForm.getRawValue();
@@ -324,11 +324,11 @@ export class UserComponent implements OnInit {
       .subscribe({
         next: (res: UpdateUserResponse) => {
           this.users = this.users.map((item) => (item.id === res.user.id ? { ...item, ...res.user } : item));
-          this.showNotification('Updated.', 'success');
+          this.showNotification('Cập nhật thành công.', 'success');
           this.closeEditModal();
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to update user.', 'error');
+          this.showNotification(err.error?.message || 'Cập nhật người dùng thất bại.', 'error');
           this.editingUserLoading = false;
         },
       });
@@ -339,7 +339,7 @@ export class UserComponent implements OnInit {
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       this.showNotification(
-        this.passwordForm.controls.password.errors?.['password'] ? PASSWORD_MESSAGE : 'Password is required.',
+        this.passwordForm.controls.password.errors?.['password'] ? PASSWORD_MESSAGE : 'Mật khẩu là bắt buộc.',
         'warning',
       );
       return;
@@ -348,11 +348,11 @@ export class UserComponent implements OnInit {
     this.updatingPasswordLoading = true;
     this.userApi.updatePassword(this.selectedActionUser.id, password).subscribe({
       next: (res: UpdateUserPasswordResponse) => {
-        this.showNotification(`Password updated: ${res.password}`, 'success');
+        this.showNotification(`Đã cập nhật mật khẩu: ${res.password}`, 'success');
         this.closePasswordModal();
       },
       error: (err: { error?: { message?: string } }) => {
-        this.showNotification(err.error?.message || 'Failed to update password.', 'error');
+        this.showNotification(err.error?.message || 'Cập nhật mật khẩu thất bại.', 'error');
         this.updatingPasswordLoading = false;
       },
     });
@@ -364,11 +364,11 @@ export class UserComponent implements OnInit {
     this.userApi.deleteUser(this.selectedActionUser.id).subscribe({
       next: (res: DeleteUserResponse) => {
         this.users = this.users.filter((item) => item.id !== res.user.id);
-        this.showNotification('Deleted.', 'success');
+        this.showNotification('Đã xóa.', 'success');
         this.closeDeleteModal();
       },
       error: (err: { error?: { message?: string } }) => {
-        this.showNotification(err.error?.message || 'Failed to delete user.', 'error');
+        this.showNotification(err.error?.message || 'Xóa người dùng thất bại.', 'error');
         this.deletingUserLoading = false;
       },
     });
@@ -377,7 +377,7 @@ export class UserComponent implements OnInit {
   applyFilters() {
     if (this.filters.invalid) {
       this.filters.markAllAsTouched();
-      this.showNotification('Please fix validation errors.', 'warning');
+      this.showNotification('Vui lòng sửa các lỗi xác thực.', 'warning');
       return;
     }
     this.loading = true;
@@ -402,7 +402,7 @@ export class UserComponent implements OnInit {
           this.loading = false;
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to fetch users.', 'error');
+          this.showNotification(err.error?.message || 'Tải danh sách người dùng thất bại.', 'error');
           this.loading = false;
         },
       });
@@ -431,7 +431,7 @@ export class UserComponent implements OnInit {
           this.loadingMore = false;
         },
         error: (err: { error?: { message?: string } }) => {
-          this.showNotification(err.error?.message || 'Failed to load more users.', 'error');
+          this.showNotification(err.error?.message || 'Tải thêm người dùng thất bại.', 'error');
           this.loadingMore = false;
         },
       });

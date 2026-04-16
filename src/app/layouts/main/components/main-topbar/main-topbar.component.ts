@@ -45,9 +45,9 @@ export class MainTopbarComponent implements OnInit {
   isVerifyingAccount = false;
 
   readonly verifyStatuses: Array<{ value: VerifyAccountStatus; label: string }> = [
-    { value: 'active', label: 'Active' },
-    { value: 'inactive', label: 'Inactive' },
-    { value: 'banned', label: 'Banned' },
+    { value: 'active', label: 'Hoạt động' },
+    { value: 'inactive', label: 'Tạm ngưng' },
+    { value: 'banned', label: 'Bị cấm' },
   ];
 
   private readonly notificationApi = inject(notification.ApiService);
@@ -145,7 +145,7 @@ export class MainTopbarComponent implements OnInit {
   }
 
   notificationTitle(noti: NotificationItem): string {
-    return noti.title?.trim() || 'Notification';
+    return noti.title?.trim() || 'Thông báo';
   }
 
   notificationBody(noti: NotificationItem): string {

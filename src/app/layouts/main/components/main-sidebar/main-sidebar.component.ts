@@ -22,7 +22,7 @@ export class MainSidebarComponent {
   @Input({ required: true }) items: MainNavItem[] = [];
   @Input() currentUrl = '';
   @Input() userInitial = 'U';
-  @Input() userName = 'User';
+  @Input() userName = 'Người dùng';
   @Input() userRole = '';
   @Input() userEmail = '';
 

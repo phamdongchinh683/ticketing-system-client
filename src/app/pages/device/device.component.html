@@ -8,22 +8,22 @@
 <div class="page">
   <div class="page-header">
     <div>
-      <h2>Device FCM Tokens</h2>
-      <p class="subtitle">Manage FCM tokens registered for this account.</p>
+      <h2>FCM Token thiết bị</h2>
+      <p class="subtitle">Quản lý FCM token đã đăng ký cho tài khoản này.</p>
     </div>
 
     <div class="header-actions">
-      <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="fetchTokens()">Refresh</button>
+      <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="fetchTokens()">Làm mới</button>
       <button type="button" class="btn btn-primary" [disabled]="registering" (click)="registerCurrentDevice()">
-        {{ registering ? 'Registering...' : 'Add Device' }}
+        {{ registering ? 'Đang đăng ký...' : 'Thêm thiết bị' }}
       </button>
     </div>
   </div>
 
   <div class="card">
-    <div *ngIf="loading" class="state">Loading tokens...</div>
+    <div *ngIf="loading" class="state">Đang tải token...</div>
 
-    <div *ngIf="!loading && tokens.length === 0" class="state">No FCM token found.</div>
+    <div *ngIf="!loading && tokens.length === 0" class="state">Không tìm thấy FCM token.</div>
 
     <div *ngIf="!loading && tokens.length > 0" class="table-wrap">
       <table>
@@ -31,7 +31,7 @@
           <tr>
             <th>ID</th>
             <th>FCM Token</th>
-            <th class="actions-col">Action</th>
+            <th class="actions-col">Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +47,7 @@
                 [disabled]="deletingId === token.id"
                 (click)="deleteToken(token.id)"
               >
-                {{ deletingId === token.id ? 'Deleting...' : 'Delete' }}
+                {{ deletingId === token.id ? 'Đang xóa...' : 'Xóa' }}
               </button>
             </td>
           </tr>

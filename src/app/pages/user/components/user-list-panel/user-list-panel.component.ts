@@ -20,4 +20,30 @@ export class UserListPanelComponent {
   @Output() editUser = new EventEmitter<User>();
   @Output() passwordUser = new EventEmitter<User>();
   @Output() deleteUser = new EventEmitter<User>();
+
+  displayStatus(value: string): string {
+    switch (value) {
+      case 'active':
+        return 'Hoạt động';
+      case 'inactive':
+        return 'Tạm ngưng';
+      case 'banned':
+        return 'Bị cấm';
+      default:
+        return value;
+    }
+  }
+
+  displayRole(value: string): string {
+    switch (value) {
+      case 'driver':
+        return 'Tài xế';
+      case 'manager':
+        return 'Quản lý';
+      case 'admin':
+        return 'Quản trị viên';
+      default:
+        return value;
+    }
+  }
 }
