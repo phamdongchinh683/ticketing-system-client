@@ -20,16 +20,23 @@ export class ApiService {
   }
 
   createCompany(name: string, hotline: string, logoUrl: string): Observable<CreateCompanyResponse> {
-    return this.http.post<CreateCompanyResponse>(`${constant.baseUrl}/super-admin/bus-company`, {
-      name,
-      hotline,
-      logoUrl,
-    }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
+    return this.http.post<CreateCompanyResponse>(
+      `${constant.baseUrl}/super-admin/bus-company`,
+      {
+        name,
+        hotline,
+        logoUrl,
+      },
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      },
+    );
   }
 
-  updateCompany(id: number, data: Partial<{ name: string; hotline: string; logoUrl: string }>): Observable<CreateCompanyResponse> {
+  updateCompany(
+    id: number,
+    data: Partial<{ name: string; hotline: string; logoUrl: string }>,
+  ): Observable<CreateCompanyResponse> {
     return this.http.put<CreateCompanyResponse>(`${constant.baseUrl}/super-admin/bus-company/${id}`, data, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });

@@ -11,7 +11,10 @@ import { auth } from '../../data/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnauthorizedComponent {
-  constructor(private readonly router: Router, private readonly api: auth.ApiService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly api: auth.ApiService,
+  ) {}
 
   logout() {
     this.api.logout().subscribe(() => {

@@ -19,7 +19,12 @@
     ></app-company-admin-toolbar>
   </div>
 
-  <app-company-admin-table [admins]="admins" [loading]="loading" (updateClick)="onUpdateClick($event)"></app-company-admin-table>
+  <app-company-admin-table
+    [admins]="admins"
+    [loading]="loading"
+    (updateClick)="onUpdateClick($event)"
+    (notifyClick)="openNotificationModal($event)"
+  ></app-company-admin-table>
 
   <div class="pagination" *ngIf="!loading && admins.length > 0">
     <button class="btn-load-more" [disabled]="nextCursor === null || loadingMore" type="button" (click)="loadMore()">
@@ -45,3 +50,10 @@
   (submitted)="onEditSubmit($event)"
   (validateFailed)="showNotification($event, 'warning')"
 ></app-company-admin-edit-modal>
+
+<app-user-notification-modal
+  [open]="showNotificationModal"
+  [submitting]="notificationSubmitting"
+  (closed)="closeNotificationModal()"
+  (submitted)="submitNotification($event)"
+></app-user-notification-modal>

@@ -14,12 +14,7 @@
         <span class="field-label">Logo</span>
         <input type="hidden" formControlName="logoUrl" />
         <div class="logo-upload">
-          <img
-            *ngIf="logoPreviewUrl"
-            class="logo-preview"
-            [src]="logoPreviewUrl"
-            alt=""
-          />
+          <img *ngIf="logoPreviewUrl" class="logo-preview" [src]="logoPreviewUrl" alt="" />
           <div class="logo-upload-actions">
             <button
               class="btn-upload"
@@ -29,13 +24,7 @@
             >
               {{ uploadingLogo ? 'Đang tải lên…' : 'Tải logo lên' }}
             </button>
-            <input
-              #logoFileInput
-              type="file"
-              class="sr-only"
-              accept="image/*"
-              (change)="onLogoFileChange($event)"
-            />
+            <input #logoFileInput type="file" class="sr-only" accept="image/*" (change)="onLogoFileChange($event)" />
           </div>
           <p *ngIf="!canUploadLogo" class="field-hint">
             Vui lòng lưu nhà xe trước, sau đó chỉnh sửa để tải logo lên (cần id nhà xe).
@@ -45,7 +34,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" type="button" (click)="close()">Hủy</button>
         <button class="btn-submit" type="submit" [disabled]="submitting">
-          {{ submitting ? 'Đang lưu...' : (editingCompany ? 'Cập nhật' : 'Tạo mới') }}
+          {{ submitting ? 'Đang lưu...' : editingCompany ? 'Cập nhật' : 'Tạo mới' }}
         </button>
       </div>
     </form>

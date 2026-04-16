@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app/shared/shared.module';
-import { companyAdmin, publicApi } from '../../data/services';
+import { auth, companyAdmin, publicApi } from '../../data/services';
 import { Company } from '../../data/interfaces/company';
 import { CompanyAdmin, CreateCompanyAdminBody, UpdateCompanyAdminBody } from '../../data/interfaces/company-admin';
 import { normalizeCompanyAdminList } from './utils/company-admin.mapper';
@@ -10,6 +10,7 @@ import { CompanyAdminToolbarComponent } from './components/company-admin-toolbar
 import { CompanyAdminTableComponent } from './components/company-admin-table/company-admin-table.component';
 import { CompanyAdminCreateModalComponent } from './components/company-admin-create-modal/company-admin-create-modal.component';
 import { CompanyAdminEditModalComponent } from './components/company-admin-edit-modal/company-admin-edit-modal.component';
+import { UserNotificationModalComponent } from '../user/components/user-notification-modal/user-notification-modal.component';
 
 @Component({
   selector: 'app-admin',
@@ -21,6 +22,7 @@ import { CompanyAdminEditModalComponent } from './components/company-admin-edit-
     CompanyAdminTableComponent,
     CompanyAdminCreateModalComponent,
     CompanyAdminEditModalComponent,
+    UserNotificationModalComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
@@ -43,6 +45,10 @@ export class AdminComponent implements OnInit {
   editingAdmin: CompanyAdmin | null = null;
   editSubmitting = false;
 
+  showNotificationModal = false;
+  notificationSubmitting = false;
+  notificationAdmin: CompanyAdmin | null = null;
+
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
     message: '',
@@ -52,6 +58,7 @@ export class AdminComponent implements OnInit {
   constructor(
     private readonly api: companyAdmin.ApiService,
     private readonly publicCompanies: publicApi.ApiService,
+    private readonly authApi: auth.ApiService,
   ) {}
 
   ngOnInit(): void {
@@ -108,6 +115,17 @@ export class AdminComponent implements OnInit {
     this.showEdit = true;
   }
 
+  openNotificationModal(admin: CompanyAdmin) {
+    this.notificationAdmin = admin;
+    this.showNotificationModal = true;
+  }
+
+  closeNotificationModal() {
+    this.showNotificationModal = false;
+    this.notificationSubmitting = false;
+    this.notificationAdmin = null;
+  }
+
   onEditOpenChange(open: boolean) {
     this.showEdit = open;
     if (!open) {
@@ -125,7 +143,9 @@ export class AdminComponent implements OnInit {
       next: (res) => {
         this.showNotification('Thành công.', 'success');
         this.admins = this.admins.map((a) =>
-          a.id === id ? { ...a, fullName: body.fullName, email: body.email, phone: body.phone, status: body.status } : a,
+          a.id === id
+            ? { ...a, fullName: body.fullName, email: body.email, phone: body.phone, status: body.status }
+            : a,
         );
         this.showEdit = false;
         this.editingAdmin = null;
@@ -186,6 +206,30 @@ export class AdminComponent implements OnInit {
       });
   }
 
+  submitNotification(payload: { title: string; body: string }) {
+    if (!this.notificationAdmin) return;
+
+    this.notificationSubmitting = true;
+    this.authApi
+      .sendNotification({
+        userId: this.notificationAdmin.id,
+        title: payload.title,
+        body: payload.body,
+        data: '',
+      })
+      .subscribe({
+        next: () => {
+          this.showNotification('Gửi thông báo thành công.', 'success');
+          this.closeNotificationModal();
+        },
+        error: (err: unknown) => {
+          const e = err as { error?: { message?: string } };
+          this.showNotification(e.error?.message || 'Gửi thông báo thất bại.', 'error');
+          this.notificationSubmitting = false;
+        },
+      });
+  }
+
   private loadCompaniesForSelect() {
     this.publicCompanies.getCompanies(100).subscribe({
       next: (r) => {
@@ -196,5 +240,4 @@ export class AdminComponent implements OnInit {
       },
     });
   }
-
 }

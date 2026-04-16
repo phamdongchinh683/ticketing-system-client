@@ -1,6 +1,5 @@
-    <div *ngIf="visible" class="notification" [class]="'notification--' + type" (click)="close()">
-      <span class="notification__icon">{{ icon }}</span>
-      <span class="notification__message">{{ message }}</span>
-      <button class="notification__close">&times;</button>
-    </div>
-  
+<div *ngIf="visible" class="notification" [class]="'notification--' + type" (click)="close()">
+  <span class="notification__icon">{{ icon }}</span>
+  <span class="notification__message">{{ message }}</span>
+  <button class="notification__close">&times;</button>
+</div>

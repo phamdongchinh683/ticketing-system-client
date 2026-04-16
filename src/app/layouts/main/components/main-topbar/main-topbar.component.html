@@ -10,7 +10,14 @@
         aria-label="Mở thông báo"
         (click)="toggleNotifications()"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
@@ -74,13 +81,23 @@
       [disabled]="isVerifyingAccount"
       (click)="closeVerifyDialog()"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <path d="M18 6 6 18" />
         <path d="m6 6 12 12" />
       </svg>
     </button>
     <h3 class="verify-dialog__title">Xác minh tài khoản</h3>
-    <p class="verify-dialog__body">{{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}</p>
+    <p class="verify-dialog__body">
+      {{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}
+    </p>
 
     <div class="verify-dialog__actions">
       <button
@@ -91,9 +108,16 @@
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('active')"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="m8.5 12 2.5 2.5 4.5-4.5" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 6 9 17l-5-5" />
         </svg>
       </button>
       <button
@@ -104,9 +128,17 @@
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('inactive')"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M8 12h8" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M10 7v10" />
+          <path d="M14 7v10" />
         </svg>
       </button>
       <button
@@ -117,10 +149,18 @@
         [disabled]="isVerifyingAccount"
         (click)="submitVerifyAccount('banned')"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M8.8 8.8 15.2 15.2" />
-          <path d="M15.2 8.8 8.8 15.2" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M10.3 3.3 1.7 17.9c-.5.8.1 1.8 1 1.8h17.1c.9 0 1.5-1 1-1.8L13.7 3.3c-.5-.8-1.7-.8-2.2 0Z" />
+          <path d="M12 9v4" />
+          <path d="M12 17h.01" />
         </svg>
       </button>
     </div>

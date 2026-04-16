@@ -1,11 +1,10 @@
-    <button
-      [type]="type"
-      [disabled]="disabled || loading"
-      class="app-btn"
-      [class.app-btn--loading]="loading"
-      (click)="onClick()"
-    >
-      <span *ngIf="loading" class="spinner"></span>
-      <span>{{ loading ? loadingText : label }}</span>
-    </button>
-  
+<button
+  [type]="type"
+  [disabled]="disabled || loading"
+  class="app-btn"
+  [class.app-btn--loading]="loading"
+  (click)="onClick()"
+>
+  <span *ngIf="loading" class="spinner"></span>
+  <span>{{ loading ? loadingText : label }}</span>
+</button>

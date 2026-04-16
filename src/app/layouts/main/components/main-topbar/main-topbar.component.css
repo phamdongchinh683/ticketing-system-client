@@ -288,9 +288,9 @@
 }
 
 .verify-dialog__actions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .verify-btn {
@@ -298,19 +298,26 @@
   align-items: center;
   justify-content: center;
   border: 1px solid #d9e2ef;
-  border-radius: 10px;
-  width: 100%;
-  min-height: 36px;
-  padding: 6px;
+  border-radius: 14px;
+  width: auto;
+  min-height: 34px;
+  padding: 6px 12px;
   cursor: pointer;
   background: #ffffff;
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
-  transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease,
+    border-color 0.14s ease,
+    background-color 0.14s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .verify-btn svg {
   width: 16px;
   height: 16px;
+  z-index: 1;
 }
 
 .verify-btn:disabled,
@@ -344,6 +351,13 @@
   color: #c2410c;
   background: #fffaf5;
   border-color: #fed7aa;
+}
+
+.verify-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, currentColor 22%, transparent),
+    0 8px 22px rgba(15, 23, 42, 0.12);
 }
 
 .verify-btn--active:hover:not(:disabled) {

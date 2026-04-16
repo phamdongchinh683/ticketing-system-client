@@ -50,12 +50,7 @@
     ></app-company-list>
 
     <div class="pagination">
-      <button
-        class="btn-load-more"
-        type="button"
-        [disabled]="nextCursor === null || loadingMore"
-        (click)="loadMore()"
-      >
+      <button class="btn-load-more" type="button" [disabled]="nextCursor === null || loadingMore" (click)="loadMore()">
         {{ nextCursor !== null ? 'Tiếp theo' : 'Không còn dữ liệu' }}
       </button>
     </div>

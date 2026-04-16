@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 export class AppNotificationComponent implements OnInit, OnDestroy {
   @Input() message = '';
   @Input() type: 'success' | 'error' | 'warning' | 'info' = 'info';
-  @Input() duration = 3000; 
+  @Input() duration = 3000;
   @Output() closed = new EventEmitter<void>();
 
   visible = true;

@@ -1,27 +1,29 @@
 import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
-import type { DashboardChartSeries, DashboardStatsQuery, DashboardTimeType } from '../../../data/interfaces/dashboard/stats';
+import type {
+  DashboardChartSeries,
+  DashboardStatsQuery,
+  DashboardTimeType,
+} from '../../../data/interfaces/dashboard/stats';
 
 const ROW_ARRAY_KEYS = ['data', 'items', 'rows', 'results', 'statistics', 'monthly', 'series'];
 
-const META = new Set([
-  'year',
-  'month',
-  'day',
-  'id',
-  'label',
-  'period',
-  'name',
-  'date',
-  'createdat',
-  'updatedat',
-]);
+const META = new Set(['year', 'month', 'day', 'id', 'label', 'period', 'name', 'date', 'createdat', 'updatedat']);
 
 export const BOOKING_STATUS_KEYS = ['pending', 'paid', 'cancelled', 'expired'] as const;
 export const USER_STATUS_KEYS = ['active', 'inactive', 'banned'] as const;
 export const USER_ROLE_KEYS = ['admin', 'customer', 'driver'] as const;
 export const REVENUE_METHOD_KEYS = ['cash', 'vnpay'] as const;
 export const REVENUE_STATUS_KEYS = ['pending', 'success', 'failed', 'refunded'] as const;
-export const REVENUE_EXTRA_KEYS = ['vnpay', 'cash', 'pending', 'success', 'failed', 'refunded', 'total', 'amount'] as const;
+export const REVENUE_EXTRA_KEYS = [
+  'vnpay',
+  'cash',
+  'pending',
+  'success',
+  'failed',
+  'refunded',
+  'total',
+  'amount',
+] as const;
 
 /** API returns either a bare array or `{ data: [...] }` of `[period, value]` pairs. */
 function getRootArray(raw: unknown): unknown[] | null {
@@ -110,10 +112,7 @@ export function formatPeriodLabel(row: Record<string, unknown>): string {
   return k ? formatPeriodKeyToLabel(k) : String(row['label'] ?? row['name'] ?? '');
 }
 
-export function rowsToLabelsAndDatasets(
-  rows: Record<string, unknown>[],
-  metricKeys: string[],
-): DashboardChartSeries {
+export function rowsToLabelsAndDatasets(rows: Record<string, unknown>[], metricKeys: string[]): DashboardChartSeries {
   const sorted = [...rows].sort((a, b) => periodSortKey(a) - periodSortKey(b));
   const labels = sorted.map((r) => formatPeriodLabel(r));
   const datasets = metricKeys.map((key) => ({
@@ -135,9 +134,7 @@ export function tryKnownMetricColumns(
 
 export function tryAutoNumericColumns(rows: Record<string, unknown>[]): DashboardChartSeries | null {
   if (!rows.length) return null;
-  const keys = Object.keys(rows[0]).filter(
-    (k) => !META.has(k.toLowerCase()) && typeof rows[0][k] === 'number',
-  );
+  const keys = Object.keys(rows[0]).filter((k) => !META.has(k.toLowerCase()) && typeof rows[0][k] === 'number');
   if (!keys.length) return null;
   return rowsToLabelsAndDatasets(rows, keys);
 }
@@ -303,9 +300,7 @@ export function resolveBookingChartSeries(api: StatsApi, q: DashboardStatsQuery)
 
   if (q.status) {
     const status = q.status;
-    return api.getDashboardBooking(q).pipe(
-      map((raw) => chartFromResponse(raw, q, year, status, BOOKING_STATUS_KEYS)),
-    );
+    return api.getDashboardBooking(q).pipe(map((raw) => chartFromResponse(raw, q, year, status, BOOKING_STATUS_KEYS)));
   }
 
   return forkJoin(
@@ -319,9 +314,7 @@ export function resolveBookingChartSeries(api: StatsApi, q: DashboardStatsQuery)
       }
       return forkJoin(
         BOOKING_STATUS_KEYS.map((status) =>
-          api.getDashboardBooking({ ...q, status }).pipe(
-            map((raw) => ({ label: status, rows: extractRows(raw) })),
-          ),
+          api.getDashboardBooking({ ...q, status }).pipe(map((raw) => ({ label: status, rows: extractRows(raw) }))),
         ),
       ).pipe(map(mergeStatusParts));
     }),
@@ -334,9 +327,9 @@ export function resolveUserChartSeries(api: StatsApi, q: DashboardStatsQuery): O
   const hasRole = !!q.role;
 
   if (hasStatus && hasRole) {
-    return api.getDashboardUser(q).pipe(
-      map((raw) => chartFromResponse(raw, q, year, `${q.status} · ${q.role}`, USER_STATUS_KEYS)),
-    );
+    return api
+      .getDashboardUser(q)
+      .pipe(map((raw) => chartFromResponse(raw, q, year, `${q.status} · ${q.role}`, USER_STATUS_KEYS)));
   }
 
   if (hasStatus && !hasRole) {
@@ -370,18 +363,16 @@ export function resolveUserChartSeries(api: StatsApi, q: DashboardStatsQuery): O
         }
         return forkJoin(
           USER_STATUS_KEYS.map((status) =>
-            api.getDashboardUser({ ...q, role: q.role, status }).pipe(
-              map((raw) => ({ label: status, rows: extractRows(raw) })),
-            ),
+            api
+              .getDashboardUser({ ...q, role: q.role, status })
+              .pipe(map((raw) => ({ label: status, rows: extractRows(raw) }))),
           ),
         ).pipe(map(mergeStatusParts));
       }),
     );
   }
 
-  return api.getDashboardUser(q).pipe(
-    map((raw) => chartFromResponse(raw, q, year, 'Users', USER_STATUS_KEYS)),
-  );
+  return api.getDashboardUser(q).pipe(map((raw) => chartFromResponse(raw, q, year, 'Users', USER_STATUS_KEYS)));
 }
 
 export function resolveRevenueChartSeries(api: StatsApi, q: DashboardStatsQuery): Observable<DashboardChartSeries> {
@@ -390,11 +381,9 @@ export function resolveRevenueChartSeries(api: StatsApi, q: DashboardStatsQuery)
   const hasS = !!q.status;
 
   if (hasM && hasS) {
-    return api.getDashboardRevenue(q).pipe(
-      map((raw) =>
-        chartFromResponse(raw, q, year, `${q.method} · ${q.status}`, REVENUE_EXTRA_KEYS),
-      ),
-    );
+    return api
+      .getDashboardRevenue(q)
+      .pipe(map((raw) => chartFromResponse(raw, q, year, `${q.method} · ${q.status}`, REVENUE_EXTRA_KEYS)));
   }
 
   if (hasM && !hasS) {
@@ -409,9 +398,7 @@ export function resolveRevenueChartSeries(api: StatsApi, q: DashboardStatsQuery)
         }
         return forkJoin(
           REVENUE_STATUS_KEYS.map((status) =>
-            api.getDashboardRevenue({ ...q, status }).pipe(
-              map((raw) => ({ label: status, rows: extractRows(raw) })),
-            ),
+            api.getDashboardRevenue({ ...q, status }).pipe(map((raw) => ({ label: status, rows: extractRows(raw) }))),
           ),
         ).pipe(map(mergeStatusParts));
       }),
@@ -430,18 +417,14 @@ export function resolveRevenueChartSeries(api: StatsApi, q: DashboardStatsQuery)
         }
         return forkJoin(
           REVENUE_METHOD_KEYS.map((method) =>
-            api.getDashboardRevenue({ ...q, method }).pipe(
-              map((raw) => ({ label: method, rows: extractRows(raw) })),
-            ),
+            api.getDashboardRevenue({ ...q, method }).pipe(map((raw) => ({ label: method, rows: extractRows(raw) }))),
           ),
         ).pipe(map(mergeStatusParts));
       }),
     );
   }
 
-  return api.getDashboardRevenue(q).pipe(
-    map((raw) => chartFromResponse(raw, q, year, 'Revenue', REVENUE_EXTRA_KEYS)),
-  );
+  return api.getDashboardRevenue(q).pipe(map((raw) => chartFromResponse(raw, q, year, 'Revenue', REVENUE_EXTRA_KEYS)));
 }
 
 /**

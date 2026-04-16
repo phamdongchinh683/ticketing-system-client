@@ -23,5 +23,4 @@ export interface VerifyAccountRequest {
   status: VerifyAccountStatus;
 }
 
-export interface VerifyAccountResponse extends VerifyAccountRequest {
-}
+export interface VerifyAccountResponse extends VerifyAccountRequest {}

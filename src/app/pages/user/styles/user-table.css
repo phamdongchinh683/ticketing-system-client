@@ -115,7 +115,11 @@ tbody tr:hover td {
   padding: 36px 28px;
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, var(--color-surface) 0%, color-mix(in srgb, var(--color-surface) 96%, var(--color-border)) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-surface) 0%,
+    color-mix(in srgb, var(--color-surface) 96%, var(--color-border)) 100%
+  );
   color: var(--color-text);
   text-align: center;
 }
@@ -146,7 +150,9 @@ tbody tr:hover td {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
 .btn-load-more:hover:not(:disabled) {
@@ -176,7 +182,9 @@ tbody tr:hover td {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
 }
 
 .btn-row svg {
@@ -194,6 +202,10 @@ tbody tr:hover td {
 
 .btn-row--delete {
   color: var(--color-red);
+}
+
+.btn-row--notify {
+  color: #7c3aed;
 }
 
 .btn-row:hover {

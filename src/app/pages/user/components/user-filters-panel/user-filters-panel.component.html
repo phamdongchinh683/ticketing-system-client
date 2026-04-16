@@ -3,7 +3,9 @@
     <label class="field">
       <span class="label">Địa chỉ email</span>
       <input class="input" formControlName="email" placeholder="vd: ten@congty.com" />
-      <span class="error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']">Địa chỉ email không hợp lệ</span>
+      <span class="error" *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email']"
+        >Địa chỉ email không hợp lệ</span
+      >
     </label>
 
     <label class="field">

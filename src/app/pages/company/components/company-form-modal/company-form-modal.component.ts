@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -69,21 +62,24 @@ export class CompanyFormModalComponent {
     this.cdr.markForCheck();
 
     try {
-      const presigned = await firstValueFrom(
-        this.uploadApi.getPresigned('company', this.editingCompany.id),
-      );
-      if (presigned.acceptedMimeTypes?.length && !presigned.acceptedMimeTypes.includes(file.type)) {
+      const presigned = await firstValueFrom(this.uploadApi.getPresigned('company', this.editingCompany.id));
+      let uploadFile = file;
+      if (file.size >= 800 * 1024 && file.type.startsWith('image/')) {
+        const prefersWebp = presigned.acceptedMimeTypes?.includes('image/webp');
+        const outputType = prefersWebp ? 'image/webp' : 'image/jpeg';
+        const quality = prefersWebp ? 0.8 : 0.82;
+        uploadFile = await this.uploadApi.resizeImageFile(file, { maxDimension: 480, outputType, quality });
+      }
+
+      if (presigned.acceptedMimeTypes?.length && !presigned.acceptedMimeTypes.includes(uploadFile.type)) {
         throw new Error('This file type is not allowed.');
       }
-      const secureUrl = await this.uploadApi.uploadImageToCloudinary(file, presigned);
+      const secureUrl = await this.uploadApi.uploadImageToCloudinary(uploadFile, presigned);
       this.form.patchValue({ logoUrl: secureUrl });
     } catch (e: unknown) {
       let message = 'Logo upload failed.';
       if (e instanceof HttpErrorResponse) {
-        message =
-          (e.error as { message?: string })?.message ??
-          e.message ??
-          message;
+        message = (e.error as { message?: string })?.message ?? e.message ?? message;
       } else if (e instanceof Error) {
         message = e.message;
       }

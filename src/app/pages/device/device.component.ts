@@ -45,7 +45,8 @@ export class DeviceComponent implements OnInit {
           this.tokens = res ? res : [];
           this.loading = false;
         },
-        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Tải danh sách FCM token thất bại.', 'error'),
+        error: (err: { error?: { message?: string } }) =>
+          this.showNotification(err.error?.message || 'Tải danh sách FCM token thất bại.', 'error'),
       });
   }
 
@@ -61,7 +62,8 @@ export class DeviceComponent implements OnInit {
           this.deletingId = null;
           this.showNotification('Đã xóa', 'success');
         },
-        error: (err: { error?: { message?: string } }) => this.showNotification(err.error?.message || 'Xóa FCM token thất bại.', 'error'),
+        error: (err: { error?: { message?: string } }) =>
+          this.showNotification(err.error?.message || 'Xóa FCM token thất bại.', 'error'),
       });
   }
 
@@ -139,7 +141,6 @@ export class DeviceComponent implements OnInit {
       }
     }
   }
-
 
   private persistToken(token: string): void {
     this.registering = true;

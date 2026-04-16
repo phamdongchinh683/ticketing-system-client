@@ -1,0 +1,24 @@
+<div *ngIf="open" class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="stopPropagation($event)">
+    <h3>Gửi thông báo</h3>
+
+    <form class="modal-form modal-form--single" [formGroup]="form" (ngSubmit)="submit($event)">
+      <label class="field">
+        <span class="label">Tiêu đề</span>
+        <input class="input" formControlName="title" [disabled]="submitting" />
+      </label>
+
+      <label class="field">
+        <span class="label">Nội dung</span>
+        <textarea class="input" formControlName="body" rows="4" [disabled]="submitting"></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn btn--ghost" type="button" (click)="close()">Hủy</button>
+        <button class="btn" type="submit" [disabled]="submitting">
+          {{ submitting ? 'Đang gửi...' : 'Gửi' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

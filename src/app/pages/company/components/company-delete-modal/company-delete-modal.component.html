@@ -1,7 +1,10 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
   <div class="modal modal--sm" (click)="stopPropagation($event)">
     <h3>Xóa nhà xe</h3>
-    <p class="delete-msg">Bạn có chắc chắn muốn xóa <strong>{{ company?.name }}</strong>?</p>
+    <p class="delete-msg">
+      Bạn có chắc chắn muốn xóa <strong>{{ company?.name }}</strong
+      >?
+    </p>
     <div class="modal-footer">
       <button class="btn-cancel" type="button" (click)="close()">Hủy</button>
       <button class="btn-danger" type="button" [disabled]="submitting" (click)="confirm.emit()">

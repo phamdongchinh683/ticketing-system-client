@@ -14,7 +14,13 @@
       </label>
       <label class="field">
         <span class="label">Địa chỉ email</span>
-        <input class="input" formControlName="email" type="email" autocomplete="email" placeholder="vd: ten@congty.com" />
+        <input
+          class="input"
+          formControlName="email"
+          type="email"
+          autocomplete="email"
+          placeholder="vd: ten@congty.com"
+        />
         <span class="error" *ngIf="emailError">{{ emailError }}</span>
       </label>
       <label class="field">
@@ -31,7 +37,12 @@
             formControlName="password"
             placeholder="Abcd12345#"
           />
-          <button class="btn-eye" type="button" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Ẩn' : 'Hiện'">
+          <button
+            class="btn-eye"
+            type="button"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Ẩn' : 'Hiện'"
+          >
             <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
               <circle cx="12" cy="12" r="3" />

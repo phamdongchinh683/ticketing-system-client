@@ -6,8 +6,6 @@ import { AppNotificationComponent } from './components/app-notification/app-noti
 import { AppStatCardComponent } from './components/app-stat-card/app-stat-card.component';
 import { AppCompanyListComponent } from './components/app-company-list/app-company-list.component';
 
-
-
 @NgModule({
   imports: [
     CommonModule,
@@ -15,14 +13,14 @@ import { AppCompanyListComponent } from './components/app-company-list/app-compa
     AppInputComponent,
     AppNotificationComponent,
     AppStatCardComponent,
-    AppCompanyListComponent
+    AppCompanyListComponent,
   ],
   exports: [
     AppButtonComponent,
     AppInputComponent,
     AppNotificationComponent,
     AppStatCardComponent,
-    AppCompanyListComponent
-  ]
+    AppCompanyListComponent,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

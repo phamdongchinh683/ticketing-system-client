@@ -14,9 +14,20 @@ export interface UpdatePasswordResponse {
   message: string;
 }
 
+export interface SendNotificationRequest {
+  userId: number;
+  title: string;
+  body: string;
+  data?: string;
+}
+
+export interface SendNotificationResponse {
+  message?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   signIn(input: string, password: string): Observable<AuthResponse> {
     const body: Record<string, string> = { password };
@@ -33,13 +44,23 @@ export class ApiService {
   }
 
   logout(): Observable<unknown> {
-    return this.http.post<unknown>(`${constant.baseUrl}/auth/logout`, {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
+    return this.http.post<unknown>(
+      `${constant.baseUrl}/auth/logout`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      },
+    );
   }
 
   updatePassword(payload: UpdatePasswordBody): Observable<UpdatePasswordResponse> {
     return this.http.put<UpdatePasswordResponse>(`${constant.baseUrl}/auth/password`, payload, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+  }
+
+  sendNotification(payload: SendNotificationRequest): Observable<SendNotificationResponse> {
+    return this.http.post<SendNotificationResponse>(`${constant.baseUrl}/auth/notification`, payload, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
   }

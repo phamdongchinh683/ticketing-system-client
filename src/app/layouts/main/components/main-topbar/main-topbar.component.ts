@@ -19,7 +19,6 @@ import { NotificationItem, VerifyAccountStatus } from '../../../../data/interfac
 import { Messaging } from '@angular/fire/messaging';
 import { onMessage } from 'firebase/messaging';
 
-
 @Component({
   selector: 'app-main-topbar',
   standalone: true,
@@ -139,8 +138,7 @@ export class MainTopbarComponent implements OnInit {
           this.isVerifyDialogOpen = false;
           this.selectedNotification = null;
         },
-        error: () => {
-        },
+        error: () => {},
       });
   }
 
@@ -235,7 +233,6 @@ export class MainTopbarComponent implements OnInit {
     };
     data?: Record<string, string>;
   }) {
-
     const incoming: NotificationItem = {
       id: payload.data?.['id'] ?? '',
       userId: payload.data?.['userId'] ?? '',
@@ -304,7 +301,9 @@ export class MainTopbarComponent implements OnInit {
       if (t === '') return null;
       try {
         const parsed = JSON.parse(t) as unknown;
-        return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : null;
+        return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+          ? (parsed as Record<string, unknown>)
+          : null;
       } catch {
         return null;
       }
@@ -312,6 +311,4 @@ export class MainTopbarComponent implements OnInit {
     if (typeof raw === 'object' && !Array.isArray(raw)) return raw as Record<string, unknown>;
     return null;
   }
-
 }
-

@@ -52,10 +52,8 @@ export class ApiService {
   }
 
   updateCompanyAdmin(id: number, body: UpdateCompanyAdminBody): Observable<{ message?: string }> {
-    return this.http.put<{ message?: string }>(
-      `${constant.baseUrl}/super-admin/company-admin/${id}`,
-      body,
-      { headers: this.jsonAuthHeaders() },
-    );
+    return this.http.put<{ message?: string }>(`${constant.baseUrl}/super-admin/company-admin/${id}`, body, {
+      headers: this.jsonAuthHeaders(),
+    });
   }
 }

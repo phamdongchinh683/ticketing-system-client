@@ -13,6 +13,7 @@ export class CompanyAdminTableComponent {
   @Input() admins: CompanyAdmin[] = [];
   @Input() loading = false;
   @Output() updateClick = new EventEmitter<CompanyAdmin>();
+  @Output() notifyClick = new EventEmitter<CompanyAdmin>();
 
   displayStatus(value: string): string {
     switch (value) {

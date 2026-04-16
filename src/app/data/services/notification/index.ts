@@ -6,12 +6,12 @@ import {
   NotificationListResponse,
   NotificationReadResponse,
   VerifyAccountRequest,
-  VerifyAccountResponse
+  VerifyAccountResponse,
 } from '../../interfaces/notification';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   getNotifications(next?: number): Observable<NotificationListResponse> {
     const params: Record<string, string> = {};
@@ -32,10 +32,8 @@ export class ApiService {
   }
 
   verifyAccount(payload: VerifyAccountRequest): Observable<VerifyAccountResponse> {
-    return this.http.post<VerifyAccountResponse>(
-      `${constant.baseUrl}/auth/verify-account`,
-      payload,
-      { headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` } },
-    );
+    return this.http.post<VerifyAccountResponse>(`${constant.baseUrl}/auth/verify-account`, payload, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` },
+    });
   }
 }

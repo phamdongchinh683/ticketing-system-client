@@ -31,13 +31,19 @@
   padding: 10px 18px;
   border: none;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 78%, #1e1b4b) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    color-mix(in srgb, var(--color-primary) 78%, #1e1b4b) 100%
+  );
   color: white;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 35%, transparent);
-  transition: transform 0.12s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
 }
 
 .btn-create:hover {

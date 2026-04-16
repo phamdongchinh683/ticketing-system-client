@@ -49,7 +49,11 @@ h2 {
 
 .btn-primary {
   color: #fff;
-  background: linear-gradient(135deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 78%, #1e1b4b) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    color-mix(in srgb, var(--color-primary) 78%, #1e1b4b) 100%
+  );
 }
 
 .btn-secondary {

@@ -298,5 +298,4 @@ export class DashboardComponent implements OnInit {
         return this.displayStatusLabel(this.displayRoleLabel(this.displayMethodLabel(label)));
     }
   }
-
 }

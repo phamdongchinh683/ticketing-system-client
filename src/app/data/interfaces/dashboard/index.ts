@@ -9,9 +9,4 @@ export interface DashboardResponse {
   overview: DashboardOverview;
 }
 
-export type {
-  DashboardTimeType,
-  DashboardStatsQuery,
-  DashboardChartSeries,
-  DashboardTrendChartKind,
-} from './stats';
+export type { DashboardTimeType, DashboardStatsQuery, DashboardChartSeries, DashboardTrendChartKind } from './stats';

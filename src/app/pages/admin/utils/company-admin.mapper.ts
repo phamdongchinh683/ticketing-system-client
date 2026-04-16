@@ -1,14 +1,8 @@
-import {
-  CompanyAdmin,
-  CompanyAdminListResponse,
-  COMPANY_ADMIN_STATUSES,
-} from '../../../data/interfaces/company-admin';
+import { CompanyAdmin, CompanyAdminListResponse, COMPANY_ADMIN_STATUSES } from '../../../data/interfaces/company-admin';
 
 function normalizeStatus(value: unknown): CompanyAdmin['status'] {
   const s = String(value ?? '').toLowerCase();
-  return (COMPANY_ADMIN_STATUSES as readonly string[]).includes(s)
-    ? (s as CompanyAdmin['status'])
-    : 'active';
+  return (COMPANY_ADMIN_STATUSES as readonly string[]).includes(s) ? (s as CompanyAdmin['status']) : 'active';
 }
 
 export function digitsOnlyPhone(value: string): string {

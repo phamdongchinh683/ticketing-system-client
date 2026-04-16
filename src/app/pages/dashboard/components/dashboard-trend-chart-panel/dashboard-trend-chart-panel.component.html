@@ -9,7 +9,7 @@
     >
       <ng-container *ngIf="loading">…</ng-container>
       <ng-container *ngIf="!loading && summaryFormat === 'currency'">{{
-        total | currency : 'VND' : 'symbol' : '1.0-0'
+        total | currency: 'VND' : 'symbol' : '1.0-0'
       }}</ng-container>
       <ng-container *ngIf="!loading && summaryFormat === 'number'">{{ total | number }}</ng-container>
     </strong>

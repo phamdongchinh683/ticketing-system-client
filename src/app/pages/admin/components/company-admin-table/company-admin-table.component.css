@@ -110,3 +110,43 @@ tr:hover td {
 .btn-update:hover {
   opacity: 0.9;
 }
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.btn-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-icon--edit {
+  color: var(--color-primary);
+}
+
+.btn-icon--notify {
+  color: #7c3aed;
+}
+
+.btn-icon:hover {
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-border));
+}

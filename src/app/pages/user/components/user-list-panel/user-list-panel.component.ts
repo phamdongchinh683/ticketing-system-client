@@ -20,6 +20,7 @@ export class UserListPanelComponent {
   @Output() editUser = new EventEmitter<User>();
   @Output() passwordUser = new EventEmitter<User>();
   @Output() deleteUser = new EventEmitter<User>();
+  @Output() notifyUser = new EventEmitter<User>();
 
   displayStatus(value: string): string {
     switch (value) {

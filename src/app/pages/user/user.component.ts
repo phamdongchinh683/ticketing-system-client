@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { publicApi, user } from '../../data/services';
+import { auth, publicApi, user } from '../../data/services';
 import { Company } from '../../data/interfaces/company';
 import {
   CreateUserResponse,
@@ -17,7 +17,12 @@ import {
 } from '../../data/interfaces/user';
 import { CompanyListResponse } from '../../data/interfaces/company';
 import { DEFAULT_PAGE_LIMIT, PAGE_LIMITS } from '../../data/constants';
-import { emailValidator, PASSWORD_MESSAGE, passwordValidator, phone10DigitsValidator } from '@app/shared/utils/validators';
+import {
+  emailValidator,
+  PASSWORD_MESSAGE,
+  passwordValidator,
+  phone10DigitsValidator,
+} from '@app/shared/utils/validators';
 import { SharedModule } from '@app/shared/shared.module';
 import { UserFiltersPanelComponent } from './components/user-filters-panel/user-filters-panel.component';
 import { UserListPanelComponent } from './components/user-list-panel/user-list-panel.component';
@@ -25,6 +30,7 @@ import { UserCreateModalComponent } from './components/user-create-modal/user-cr
 import { UserEditModalComponent } from './components/user-edit-modal/user-edit-modal.component';
 import { UserPasswordModalComponent } from './components/user-password-modal/user-password-modal.component';
 import { UserDeleteModalComponent } from './components/user-delete-modal/user-delete-modal.component';
+import { UserNotificationModalComponent } from './components/user-notification-modal/user-notification-modal.component';
 
 @Component({
   selector: 'app-user',
@@ -39,6 +45,7 @@ import { UserDeleteModalComponent } from './components/user-delete-modal/user-de
     UserEditModalComponent,
     UserPasswordModalComponent,
     UserDeleteModalComponent,
+    UserNotificationModalComponent,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
@@ -73,6 +80,10 @@ export class UserComponent implements OnInit {
   updatingPasswordLoading = false;
   deletingUserLoading = false;
   selectedActionUser: User | null = null;
+
+  showNotificationModal = false;
+  notificationSubmitting = false;
+  selectedNotificationUser: User | null = null;
 
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
@@ -114,6 +125,7 @@ export class UserComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly userApi: user.ApiService,
     private readonly companyApi: publicApi.ApiService,
+    private readonly authApi: auth.ApiService,
   ) {
     this.filters = this.fb.group({
       email: ['', [emailValidator()]],
@@ -228,10 +240,21 @@ export class UserComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
+  openNotificationModal(u: User) {
+    this.selectedNotificationUser = u;
+    this.showNotificationModal = true;
+  }
+
   closeDeleteModal() {
     this.showDeleteModal = false;
     this.deletingUserLoading = false;
     this.selectedActionUser = null;
+  }
+
+  closeNotificationModal() {
+    this.showNotificationModal = false;
+    this.notificationSubmitting = false;
+    this.selectedNotificationUser = null;
   }
 
   selectCompany(c: Company | null) {
@@ -393,6 +416,30 @@ export class UserComponent implements OnInit {
     });
   }
 
+  submitNotification(payload: { title: string; body: string }) {
+    if (!this.selectedNotificationUser) return;
+
+    this.notificationSubmitting = true;
+    this.authApi
+      .sendNotification({
+        userId: this.selectedNotificationUser.id,
+        title: payload.title,
+        body: payload.body,
+        data: '',
+      })
+      .subscribe({
+        next: () => {
+          this.showNotification('Gửi thông báo thành công.', 'success');
+          this.closeNotificationModal();
+        },
+        error: (err: unknown) => {
+          const e = err as { error?: { message?: string } };
+          this.showNotification(e.error?.message || 'Gửi thông báo thất bại.', 'error');
+          this.notificationSubmitting = false;
+        },
+      });
+  }
+
   applyFilters() {
     if (this.filters.invalid) {
       this.filters.markAllAsTouched();
@@ -468,19 +515,21 @@ export class UserComponent implements OnInit {
     if (this.companiesLoading || this.companiesLoadingMore) return;
 
     this.companiesLoadingMore = true;
-    this.companyApi.getCompanies(this.COMPANY_PAGE_LIMIT, this.companyNextCursor, this.companySearchTerm || undefined).subscribe({
-      next: (res: CompanyListResponse) => {
-        const incoming = res.companies ?? [];
-        const existingIds = new Set(this.companies.map((c) => c.id));
-        const merged = incoming.filter((c) => !existingIds.has(c.id));
-        this.companies = [...this.companies, ...merged];
-        this.companyNextCursor = res.next ?? null;
-        this.companiesLoadingMore = false;
-      },
-      error: () => {
-        this.companiesLoadingMore = false;
-      },
-    });
+    this.companyApi
+      .getCompanies(this.COMPANY_PAGE_LIMIT, this.companyNextCursor, this.companySearchTerm || undefined)
+      .subscribe({
+        next: (res: CompanyListResponse) => {
+          const incoming = res.companies ?? [];
+          const existingIds = new Set(this.companies.map((c) => c.id));
+          const merged = incoming.filter((c) => !existingIds.has(c.id));
+          this.companies = [...this.companies, ...merged];
+          this.companyNextCursor = res.next ?? null;
+          this.companiesLoadingMore = false;
+        },
+        error: () => {
+          this.companiesLoadingMore = false;
+        },
+      });
   }
 
   private fetchCompanies(name: string) {

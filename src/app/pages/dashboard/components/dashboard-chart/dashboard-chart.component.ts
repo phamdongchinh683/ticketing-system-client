@@ -44,13 +44,7 @@ export class DashboardChartComponent implements AfterViewInit, OnChanges, OnDest
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.viewReady) return;
-    if (
-      changes['labels'] ||
-      changes['datasets'] ||
-      changes['chartKind'] ||
-      changes['stacked'] ||
-      changes['yFormat']
-    ) {
+    if (changes['labels'] || changes['datasets'] || changes['chartKind'] || changes['stacked'] || changes['yFormat']) {
       this.render();
     }
   }
