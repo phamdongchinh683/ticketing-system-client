@@ -38,8 +38,8 @@ export class UserListPanelComponent {
     switch (value) {
       case 'driver':
         return 'Tài xế';
-      case 'manager':
-        return 'Quản lý';
+      case 'customer':
+        return 'Khách hàng';
       case 'admin':
         return 'Quản trị viên';
       default:

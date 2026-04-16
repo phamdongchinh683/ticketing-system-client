@@ -89,7 +89,7 @@ export class DeviceComponent implements OnInit {
 
     if (this.tokens.some((item) => item.fcmToken === token)) {
       this.currentFcmToken = token;
-      this.showNotification('Token thiết bị này đã được đăng ký.', 'info');
+      this.showNotification('Thiết bị này đã được đăng ký.', 'info');
       return;
     }
 

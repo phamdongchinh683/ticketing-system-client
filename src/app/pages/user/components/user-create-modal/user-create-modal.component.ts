@@ -15,7 +15,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-create-modal.component.html',
-  styleUrls: ['../../styles/user-shared.css'],
+  styleUrl: './user-create-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCreateModalComponent implements OnChanges {
@@ -45,6 +45,32 @@ export class UserCreateModalComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['open']?.currentValue === true) {
       this.showPassword = false;
+    }
+  }
+
+  displayStatus(value: string): string {
+    switch (value) {
+      case 'active':
+        return 'Hoạt động';
+      case 'inactive':
+        return 'Tạm ngưng';
+      case 'banned':
+        return 'Bị cấm';
+      default:
+        return value;
+    }
+  }
+
+  displayRole(value: string): string {
+    switch (value) {
+      case 'driver':
+        return 'Tài xế';
+      case 'customer':
+        return 'Khách hàng';
+      case 'admin':
+        return 'Quản trị viên';
+      default:
+        return value;
     }
   }
 }

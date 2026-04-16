@@ -166,14 +166,22 @@ tbody tr:hover td {
 }
 
 .btn-row {
-  padding: 6px 10px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
-  font-size: 12px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.btn-row svg {
+  width: 14px;
+  height: 14px;
 }
 
 .btn-row--edit {

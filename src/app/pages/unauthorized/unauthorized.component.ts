@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { auth } from '../../data/services';
 
 @Component({
   selector: 'app-unauthorized',
@@ -10,11 +11,13 @@ import { Router, RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnauthorizedComponent {
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router, private readonly api: auth.ApiService) {}
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    this.api.logout().subscribe(() => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.router.navigate(['/login']);
+    });
   }
 }

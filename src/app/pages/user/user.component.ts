@@ -46,6 +46,8 @@ import { UserDeleteModalComponent } from './components/user-delete-modal/user-de
 export class UserComponent implements OnInit {
   statuses = USER_STATUSES;
   roles = USER_ROLES;
+  createRoles = USER_ROLES.filter((role) => role === 'driver' || role === 'customer');
+  editRoles = USER_ROLES.filter((role) => role === 'driver' || role === 'customer');
   pageLimits = PAGE_LIMITS;
 
   companies: Company[] = [];
@@ -191,15 +193,16 @@ export class UserComponent implements OnInit {
 
   openEditModal(u: User) {
     this.selectedActionUser = u;
-    this.showEditModal = true;
+    const normalizedRole = u.role === 'driver' || u.role === 'customer' ? u.role : 'customer';
     this.editForm.reset({
       username: u.username,
       fullName: u.fullName,
       email: u.email,
       phone: u.phone,
       status: u.status,
-      role: u.role,
+      role: normalizedRole,
     });
+    this.showEditModal = true;
   }
 
   closeEditModal() {
@@ -294,7 +297,7 @@ export class UserComponent implements OnInit {
     if (controls.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
     if (controls.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
     if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (controls.phone.errors?.['phone10Digits']) return 'Số điện thoại phải đúng 10 chữ số.';
+    if (controls.phone.errors?.['phone11Digits']) return 'Số điện thoại phải đúng 11 chữ số.';
     if (controls.password.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (controls.password.errors?.['password']) return PASSWORD_MESSAGE;
     if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
@@ -307,7 +310,7 @@ export class UserComponent implements OnInit {
     if (!this.selectedActionUser) return;
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
-      this.showNotification('Vui lòng nhập dữ liệu hợp lệ cho biểu mẫu chỉnh sửa.', 'warning');
+      this.showNotification(this.getEditFormErrorMessage(), 'warning');
       return;
     }
     const v = this.editForm.getRawValue();
@@ -332,6 +335,22 @@ export class UserComponent implements OnInit {
           this.editingUserLoading = false;
         },
       });
+  }
+
+  private getEditFormErrorMessage(): string {
+    const controls = this.editForm.controls;
+
+    if (controls.username.errors?.['required']) return 'Tên đăng nhập là bắt buộc.';
+    if (controls.fullName.errors?.['required']) return 'Họ tên là bắt buộc.';
+    if (controls.fullName.errors?.['minlength']) return 'Họ tên phải có ít nhất 7 ký tự.';
+    if (controls.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
+    if (controls.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
+    if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
+    if (controls.phone.errors?.['phone11Digits']) return 'Số điện thoại phải đúng 11 chữ số.';
+    if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
+    if (controls.role.errors?.['required']) return 'Vai trò là bắt buộc.';
+
+    return 'Vui lòng nhập dữ liệu hợp lệ cho biểu mẫu chỉnh sửa.';
   }
 
   submitUpdatePassword() {

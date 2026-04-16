@@ -24,4 +24,9 @@ export const navItems = [
       route: '/devices',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2" ry="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>',
     },
+    {
+      label: 'Đổi mật khẩu',
+      route: '/password',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"/><circle cx="12" cy="16" r="1"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg>',
+    },
 ]

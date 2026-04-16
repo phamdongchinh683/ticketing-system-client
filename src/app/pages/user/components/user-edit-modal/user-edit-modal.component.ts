@@ -27,4 +27,30 @@ export class UserEditModalComponent {
   stopPropagation(ev: Event): void {
     ev.stopPropagation();
   }
+
+  displayStatus(value: string): string {
+    switch (value) {
+      case 'active':
+        return 'Hoạt động';
+      case 'inactive':
+        return 'Tạm ngưng';
+      case 'banned':
+        return 'Bị cấm';
+      default:
+        return value;
+    }
+  }
+
+  displayRole(value: string): string {
+    switch (value) {
+      case 'driver':
+        return 'Tài xế';
+      case 'customer':
+        return 'Khách hàng';
+      case 'admin':
+        return 'Quản trị viên';
+      default:
+        return value;
+    }
+  }
 }

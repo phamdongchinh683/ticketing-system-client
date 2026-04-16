@@ -3,6 +3,7 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { navItems } from '../../data/mocks';
+import { auth } from '../../data/services';
 import { MainSidebarComponent, type MainNavItem } from './components/main-sidebar/main-sidebar.component';
 import { MainTopbarComponent } from './components/main-topbar/main-topbar.component';
 
@@ -29,10 +30,12 @@ export class MainLayoutComponent implements OnInit {
     '/admins': 'Quản trị công ty',
     '/users': 'Người dùng',
     '/devices': 'Thiết bị',
+    '/password': 'Đổi mật khẩu',
   };
 
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly api = inject(auth.ApiService);
 
   get pageTitle(): string {
     return this.pageTitles[this.currentUrl] || 'Tổng quan';
@@ -53,9 +56,7 @@ export class MainLayoutComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    this.api.logout().subscribe(() => this.handleLogoutSuccess());
   }
 
   private loadUser() {
@@ -76,5 +77,11 @@ export class MainLayoutComponent implements OnInit {
     } catch {
       /* ignore */
     }
+  }
+
+  private handleLogoutSuccess() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.router.navigate(['/login']);
   }
 }

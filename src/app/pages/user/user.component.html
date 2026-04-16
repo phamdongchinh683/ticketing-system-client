@@ -47,7 +47,7 @@
     [form]="createForm"
     [submitting]="creatingUser"
     [statuses]="statuses"
-    [roles]="roles"
+    [roles]="createRoles"
     (closed)="closeCreateModal()"
     (submitted)="submitCreateUser()"
   />
@@ -57,7 +57,7 @@
     [form]="editForm"
     [submitting]="editingUserLoading"
     [statuses]="statuses"
-    [roles]="roles"
+    [roles]="editRoles"
     (closed)="closeEditModal()"
     (submitted)="submitEditUser()"
   />

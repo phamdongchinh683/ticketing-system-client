@@ -38,6 +38,10 @@ export const routes: Routes = [
         path: 'devices',
         loadComponent: () => import('./pages/device/device.component').then((m) => m.DeviceComponent),
       },
+      {
+        path: 'password',
+        loadComponent: () => import('./pages/password/password.component').then((m) => m.PasswordComponent),
+      },
     ],
   },
   {

@@ -34,9 +34,43 @@
             <td><span class="pill pill--neutral">{{ displayRole(u.role) }}</span></td>
             <td>
               <div class="row-actions">
-                <button class="btn-row btn-row--edit" type="button" (click)="editUser.emit(u)">Sửa</button>
-                <button class="btn-row btn-row--password" type="button" (click)="passwordUser.emit(u)">Mật khẩu</button>
-                <button class="btn-row btn-row--delete" type="button" (click)="deleteUser.emit(u)">Xóa</button>
+                <button
+                  class="btn-row btn-row--edit"
+                  type="button"
+                  title="Sửa người dùng"
+                  aria-label="Sửa người dùng"
+                  (click)="editUser.emit(u)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                </button>
+                <button
+                  class="btn-row btn-row--password"
+                  type="button"
+                  title="Đổi mật khẩu"
+                  aria-label="Đổi mật khẩu"
+                  (click)="passwordUser.emit(u)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="10" rx="2" />
+                    <path d="M7 11V8a5 5 0 0 1 10 0v3" />
+                  </svg>
+                </button>
+                <button
+                  class="btn-row btn-row--delete"
+                  type="button"
+                  title="Xóa người dùng"
+                  aria-label="Xóa người dùng"
+                  (click)="deleteUser.emit(u)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                </button>
               </div>
             </td>
           </tr>
