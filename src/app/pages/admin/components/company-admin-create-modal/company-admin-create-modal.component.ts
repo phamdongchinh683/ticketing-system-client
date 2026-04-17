@@ -91,7 +91,7 @@ export class CompanyAdminCreateModalComponent implements OnChanges {
     if (c.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
     if (c.email.errors?.['email']) return 'Định dạng địa chỉ email không hợp lệ.';
     if (c.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (c.phone.errors?.['phone']) return 'Số điện thoại phải từ 9-11 chữ số.';
+    if (c.phone.errors?.['phone']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     if (c.password.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (c.password.errors?.['password']) return PASSWORD_MESSAGE;
     if (c.companyId.errors?.['required']) return 'Vui lòng chọn công ty.';
@@ -129,7 +129,7 @@ export class CompanyAdminCreateModalComponent implements OnChanges {
     const c = this.form.controls.phone;
     if (!this.showFieldError(c)) return null;
     if (c.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (c.errors?.['phone']) return 'Sử dụng 9-10 chữ số.';
+    if (c.errors?.['phone']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     return null;
   }
 

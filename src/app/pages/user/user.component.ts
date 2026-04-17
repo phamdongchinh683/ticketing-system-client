@@ -320,7 +320,7 @@ export class UserComponent implements OnInit {
     if (controls.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
     if (controls.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
     if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (controls.phone.errors?.['phone11Digits']) return 'Số điện thoại phải đúng 11 chữ số.';
+    if (controls.phone.errors?.['phone10Digits']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     if (controls.password.errors?.['required']) return 'Mật khẩu là bắt buộc.';
     if (controls.password.errors?.['password']) return PASSWORD_MESSAGE;
     if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
@@ -369,7 +369,7 @@ export class UserComponent implements OnInit {
     if (controls.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
     if (controls.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
     if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (controls.phone.errors?.['phone11Digits']) return 'Số điện thoại phải đúng 11 chữ số.';
+    if (controls.phone.errors?.['phone10Digits']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
     if (controls.role.errors?.['required']) return 'Vai trò là bắt buộc.';
 

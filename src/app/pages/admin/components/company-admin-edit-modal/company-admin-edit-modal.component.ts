@@ -89,7 +89,7 @@ export class CompanyAdminEditModalComponent implements OnChanges {
     if (c.email.errors?.['required']) return 'Địa chỉ email là bắt buộc.';
     if (c.email.errors?.['email']) return 'Địa chỉ email không hợp lệ.';
     if (c.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
-    if (c.phone.errors?.['phone']) return 'Số điện thoại phải từ 9-11 chữ số.';
+    if (c.phone.errors?.['phone']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     if (c.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
     return 'Vui lòng kiểm tra lại biểu mẫu.';
   }

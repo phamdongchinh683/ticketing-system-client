@@ -5,7 +5,7 @@ export function companyAdminEditPhoneValidator(): ValidatorFn {
     const raw = (control.value ?? '').toString().trim();
     if (!raw) return null;
     const d = raw.replace(/\D/g, '');
-    if (d.length >= 9 && d.length <= 11) return null;
+    if (d.length >= 10) return null;
     return { phone: true };
   };
 }

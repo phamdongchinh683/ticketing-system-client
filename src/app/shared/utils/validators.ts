@@ -2,7 +2,7 @@ import type { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/fo
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const DIGITS_ONLY_REGEX = /^\d+$/;
-export const PHONE_10_DIGITS_REGEX = /^\d{10}$/;
+export const PHONE_AT_LEAST_10_DIGITS_REGEX = /^\d{10,}$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$%&!*?^_])(?!.*\s).+$/;
 export const PASSWORD_MESSAGE =
   'Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt (# @ $ % & ! * ? ^ _), không chứa khoảng trắng';
@@ -20,7 +20,7 @@ export function isPhoneInput(value: string): boolean {
 }
 
 export function isPhone10Digits(value: string): boolean {
-  return PHONE_10_DIGITS_REGEX.test(value.trim());
+  return PHONE_AT_LEAST_10_DIGITS_REGEX.test(value.trim());
 }
 
 export function phone10DigitsValidator(): ValidatorFn {
