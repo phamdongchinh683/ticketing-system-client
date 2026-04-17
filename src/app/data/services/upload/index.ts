@@ -6,10 +6,10 @@ import { UploadPresignedResponse } from '../../interfaces/upload';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getPresigned(folder: string, id: number): Observable<UploadPresignedResponse> {
-    return this.http.get<UploadPresignedResponse>(`${constant.baseUrl}/upload/super-admin/presigned`, {
+    return this.http.get<UploadPresignedResponse>(`${constant.baseUrl}/file/upload/super-admin/presigned`, {
       params: { folder, id: String(id) },
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
