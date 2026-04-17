@@ -54,7 +54,6 @@ export class UserComponent implements OnInit {
   statuses = USER_STATUSES;
   roles = USER_ROLES;
   createRoles = USER_ROLES.filter((role) => role === 'driver' || role === 'customer');
-  editRoles = USER_ROLES.filter((role) => role === 'driver' || role === 'customer');
   pageLimits = PAGE_LIMITS;
 
   companies: Company[] = [];
@@ -205,14 +204,13 @@ export class UserComponent implements OnInit {
 
   openEditModal(u: User) {
     this.selectedActionUser = u;
-    const normalizedRole = u.role === 'driver' || u.role === 'customer' ? u.role : 'customer';
     this.editForm.reset({
       username: u.username,
       fullName: u.fullName,
       email: u.email,
       phone: u.phone,
       status: u.status,
-      role: normalizedRole,
+      role: u.role,
     });
     this.showEditModal = true;
   }
@@ -345,7 +343,6 @@ export class UserComponent implements OnInit {
         email: (v.email ?? '').trim(),
         phone: (v.phone ?? '').trim(),
         status: (v.status ?? 'active') as (typeof USER_STATUSES)[number],
-        role: (v.role ?? 'driver') as (typeof USER_ROLES)[number],
       })
       .subscribe({
         next: (res: UpdateUserResponse) => {
@@ -371,8 +368,6 @@ export class UserComponent implements OnInit {
     if (controls.phone.errors?.['required']) return 'Số điện thoại là bắt buộc.';
     if (controls.phone.errors?.['phone10Digits']) return 'Số điện thoại phải lớn hơn hoặc bằng 10 số.';
     if (controls.status.errors?.['required']) return 'Trạng thái là bắt buộc.';
-    if (controls.role.errors?.['required']) return 'Vai trò là bắt buộc.';
-
     return 'Vui lòng nhập dữ liệu hợp lệ cho biểu mẫu chỉnh sửa.';
   }
 

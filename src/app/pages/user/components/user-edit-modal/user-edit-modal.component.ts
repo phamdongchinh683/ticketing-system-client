@@ -15,7 +15,6 @@ export class UserEditModalComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input() submitting = false;
   @Input() statuses: readonly string[] = [];
-  @Input() roles: readonly string[] = [];
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<void>();
@@ -41,16 +40,4 @@ export class UserEditModalComponent {
     }
   }
 
-  displayRole(value: string): string {
-    switch (value) {
-      case 'driver':
-        return 'Tài xế';
-      case 'customer':
-        return 'Khách hàng';
-      case 'admin':
-        return 'Quản trị viên';
-      default:
-        return value;
-    }
-  }
 }

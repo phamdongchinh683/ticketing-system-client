@@ -38,7 +38,7 @@ export interface UpdateUserBody {
   email: string;
   phone: string;
   status: UserStatus;
-  role: UserRole;
+  role?: UserRole;
 }
 
 export interface UpdateUserResponse {
