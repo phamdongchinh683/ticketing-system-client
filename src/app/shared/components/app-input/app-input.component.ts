@@ -22,7 +22,9 @@ export class AppInputComponent implements ControlValueAccessor {
   @Input() name = '';
   @Input() disabled = false;
   @Input() errorMessage = '';
+  @Input() showPasswordToggle = false;
 
+  passwordVisible = false;
   value = '';
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
@@ -47,5 +49,17 @@ export class AppInputComponent implements ControlValueAccessor {
     const input = event.target as HTMLInputElement;
     this.value = input.value;
     this.onChange(this.value);
+  }
+
+  get effectiveType(): 'text' | 'password' | 'email' | 'number' {
+    if (this.type === 'password' && this.showPasswordToggle) {
+      return this.passwordVisible ? 'text' : 'password';
+    }
+    return this.type;
+  }
+
+  togglePasswordVisibility(): void {
+    if (this.type !== 'password' || !this.showPasswordToggle || this.disabled) return;
+    this.passwordVisible = !this.passwordVisible;
   }
 }

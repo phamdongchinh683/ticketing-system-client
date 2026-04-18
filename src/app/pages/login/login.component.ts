@@ -56,7 +56,7 @@ export class LoginComponent {
     const text = rawText.trim();
 
     if (!text || !password) {
-      this.showNotification('Vui lòng điền đầy đủ các trường.', 'warning');
+      this.showNotification('Vui lòng điền đầy đủ thông tin.', 'warning');
       return;
     }
 
