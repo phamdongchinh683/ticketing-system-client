@@ -34,6 +34,7 @@ export class MainLayoutComponent implements OnInit {
     '/admins': 'Quản trị công ty',
     '/users': 'Người dùng',
     '/devices': 'Thiết bị',
+    '/balance': 'Số dư',
     '/password': 'Đổi mật khẩu',
   };
 

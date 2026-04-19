@@ -39,6 +39,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/device/device.component').then((m) => m.DeviceComponent),
       },
       {
+        path: 'balance',
+        loadComponent: () => import('./pages/balance/balance.component').then((m) => m.BalanceComponent),
+      },
+      {
         path: 'password',
         loadComponent: () => import('./pages/password/password.component').then((m) => m.PasswordComponent),
       },

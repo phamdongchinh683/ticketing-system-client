@@ -1,0 +1,115 @@
+<app-notification
+  *ngIf="notification.show"
+  [message]="notification.message"
+  [type]="notification.type"
+  (closed)="notification.show = false"
+/>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2>Số dư</h2>
+      <p class="subtitle">
+        Số dư khả dụng và đang chờ.
+        @if (fxRateLoading) {
+          <span> Đang lấy tỷ giá USD/VND…</span>
+        } @else if (usdToVndRate != null) {
+          <span> USD quy đổi(1 USD ≈ {{ usdToVndRate | number }} đ).</span>
+        } @else {
+          <span> Không tải được tỷ giá; chỉ hiển thị số tiền USD.</span>
+        }
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="load()">
+        {{ loading ? 'Đang tải...' : 'Làm mới' }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-inline">
+    <div class="spinner-large"></div>
+    <p>Đang tải số dư...</p>
+  </div>
+
+  <div *ngIf="!loading && !data" class="state-fallback">
+    <p>Không tải được số dư.</p>
+    <button type="button" class="btn btn-secondary" (click)="load()">Thử lại</button>
+  </div>
+
+  <div *ngIf="!loading && data" class="balance-grid">
+    <article class="balance-card balance-card--available">
+      <div class="balance-card__head">
+        <span class="balance-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </span>
+        <div>
+          <h3 class="balance-card__title">Khả dụng</h3>
+          <p class="balance-card__hint">Có thể sử dụng ngay</p>
+        </div>
+      </div>
+      <ul class="balance-list">
+        @for (item of data.available; track $index) {
+          <li class="balance-list__row">
+            @if (isUsd(item)) {
+              <div class="balance-list__dual">
+                <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                  {{ formatUsdPrimary(item) }}
+                </span>
+                @if (usdToVndRate != null) {
+                  <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+                }
+              </div>
+            } @else {
+              <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                {{ formatMoney(item) }}
+              </span>
+            }
+          </li>
+        } @empty {
+          <li class="balance-list__empty">Không có khoản nào</li>
+        }
+      </ul>
+    </article>
+
+    <article class="balance-card balance-card--pending">
+      <div class="balance-card__head">
+        <span class="balance-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        </span>
+        <div>
+          <h3 class="balance-card__title">Đang chờ</h3>
+          <p class="balance-card__hint">Chưa khả dụng</p>
+        </div>
+      </div>
+      <ul class="balance-list">
+        @for (item of data.pending; track $index) {
+          <li class="balance-list__row">
+            @if (isUsd(item)) {
+              <div class="balance-list__dual">
+                <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                  {{ formatUsdPrimary(item) }}
+                </span>
+                @if (usdToVndRate != null) {
+                  <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+                }
+              </div>
+            } @else {
+              <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                {{ formatMoney(item) }}
+              </span>
+            }
+          </li>
+        } @empty {
+          <li class="balance-list__empty">Không có khoản nào</li>
+        }
+      </ul>
+    </article>
+  </div>
+</div>
