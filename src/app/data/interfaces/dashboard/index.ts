@@ -10,3 +10,4 @@ export interface DashboardResponse {
 }
 
 export type { DashboardTimeType, DashboardStatsQuery, DashboardChartSeries, DashboardTrendChartKind } from './stats';
+export type { RevenueExportTimeType, RevenueExportMethod, RevenueExportQuery } from './revenue-export';

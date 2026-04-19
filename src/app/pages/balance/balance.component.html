@@ -6,27 +6,100 @@
 />
 
 <div class="page">
-  <div class="page-header">
-    <div>
-      <h2>Số dư</h2>
+  <header class="page-header">
+    <div class="page-header__text">
+      <h2 class="page-title">Số dư</h2>
+      <p class="subtitle">Theo dõi số dư và xuất báo cáo doanh thu.</p>
       <p class="subtitle">
-        Số dư khả dụng và đang chờ.
+        Theo dõi số dư khả dụng và đang chờ.
         @if (fxRateLoading) {
-          <span> Đang lấy tỷ giá USD/VND…</span>
+          <span class="subtitle__fx">Đang lấy tỷ giá USD/VND…</span>
         } @else if (usdToVndRate != null) {
-          <span> USD quy đổi(1 USD ≈ {{ usdToVndRate | number }} đ).</span>
+          <span class="subtitle__fx">1 USD ≈ {{ usdToVndRate | number }} đ</span>
         } @else {
-          <span> Không tải được tỷ giá; chỉ hiển thị số tiền USD.</span>
+          <span class="subtitle__fx subtitle__fx--warn">Không tải được tỷ giá — chỉ hiển thị USD.</span>
         }
       </p>
     </div>
 
     <div class="header-actions">
-      <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="load()">
-        {{ loading ? 'Đang tải...' : 'Làm mới' }}
-      </button>
+      <div class="header-actions__panel">
+        <button type="button" class="btn btn-secondary btn--block" [disabled]="loading" (click)="load()">
+          <span class="btn__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6" />
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+            </svg>
+          </span>
+          {{ loading ? 'Đang tải...' : 'Làm mới' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn--block"
+          [disabled]="exportLoading"
+          (click)="exportRevenueExcel()"
+        >
+          <span class="btn__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+            </svg>
+          </span>
+          {{ exportLoading ? 'Đang xuất...' : 'Xuất Excel' }}
+        </button>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <section class="export-panel" aria-labelledby="export-revenue-heading">
+    <div class="export-panel__accent" aria-hidden="true"></div>
+    <div class="export-panel__inner">
+      <div class="export-panel__intro">
+        <div class="export-panel__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <path d="M14 2v6h6" />
+            <path d="M8 13h8M8 17h5M8 9h3" />
+          </svg>
+        </div>
+        <div class="export-panel__titles">
+          <h3 id="export-revenue-heading">Xuất báo cáo doanh thu</h3>
+          <p class="export-panel__hint">Chọn tiêu chí, sau đó bấm <strong>Xuất Excel</strong> phía trên.</p>
+        </div>
+      </div>
+      <div class="export-panel__filters">
+        <label class="field">
+          <span class="field__label">Chu kỳ</span>
+          <div class="field__control">
+            <select class="select" [(ngModel)]="exportType">
+              <option [ngValue]="'monthly'">Theo tháng</option>
+              <option [ngValue]="'year'">Theo năm</option>
+            </select>
+          </div>
+        </label>
+        <label class="field">
+          <span class="field__label">Năm</span>
+          <div class="field__control">
+            <select class="select" name="exportYear" [(ngModel)]="exportYear">
+              @for (y of yearOptions; track y) {
+                <option [ngValue]="y">{{ y }}</option>
+              }
+            </select>
+          </div>
+        </label>
+        <label class="field">
+          <span class="field__label">Phương thức thanh toán</span>
+          <div class="field__control">
+            <select class="select" [(ngModel)]="exportMethod">
+              @for (m of exportMethods; track m.value) {
+                <option [ngValue]="m.value">{{ m.label }}</option>
+              }
+            </select>
+          </div>
+        </label>
+      </div>
+    </div>
+  </section>
 
   <div *ngIf="loading" class="loading-inline">
     <div class="spinner-large"></div>
@@ -54,20 +127,31 @@
       <ul class="balance-list">
         @for (item of data.available; track $index) {
           <li class="balance-list__row">
-            @if (isUsd(item)) {
-              <div class="balance-list__dual">
-                <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                  {{ formatUsdPrimary(item) }}
-                </span>
-                @if (usdToVndRate != null) {
-                  <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+            <div class="balance-list__line">
+              <div class="balance-list__figures">
+                @if (isUsd(item)) {
+                  <div class="balance-list__dual">
+                    <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                      {{ formatUsdPrimary(item) }}
+                    </span>
+                    @if (usdToVndRate != null) {
+                      <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+                    }
+                  </div>
+                } @else {
+                  <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                    {{ formatMoney(item) }}
+                  </span>
                 }
               </div>
-            } @else {
-              <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                {{ formatMoney(item) }}
-              </span>
-            }
+              <p
+                class="balance-list__context"
+                [class.balance-list__context--negative]="item.amount < 0"
+                [class.balance-list__context--positive]="item.amount > 0"
+              >
+                {{ balanceContextMessage(item, 'available') }}
+              </p>
+            </div>
           </li>
         } @empty {
           <li class="balance-list__empty">Không có khoản nào</li>
@@ -85,26 +169,37 @@
         </span>
         <div>
           <h3 class="balance-card__title">Đang chờ</h3>
-          <p class="balance-card__hint">Chưa khả dụng</p>
+          <p class="balance-card__hint">Chưa khả dụng — thường <strong>2–3 ngày</strong> để về số dư khả dụng</p>
         </div>
       </div>
       <ul class="balance-list">
         @for (item of data.pending; track $index) {
           <li class="balance-list__row">
-            @if (isUsd(item)) {
-              <div class="balance-list__dual">
-                <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                  {{ formatUsdPrimary(item) }}
-                </span>
-                @if (usdToVndRate != null) {
-                  <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+            <div class="balance-list__line">
+              <div class="balance-list__figures">
+                @if (isUsd(item)) {
+                  <div class="balance-list__dual">
+                    <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                      {{ formatUsdPrimary(item) }}
+                    </span>
+                    @if (usdToVndRate != null) {
+                      <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
+                    }
+                  </div>
+                } @else {
+                  <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+                    {{ formatMoney(item) }}
+                  </span>
                 }
               </div>
-            } @else {
-              <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                {{ formatMoney(item) }}
-              </span>
-            }
+              <p
+                class="balance-list__context"
+                [class.balance-list__context--negative]="item.amount < 0"
+                [class.balance-list__context--positive]="item.amount > 0"
+              >
+                {{ balanceContextMessage(item, 'pending') }}
+              </p>
+            </div>
           </li>
         } @empty {
           <li class="balance-list__empty">Không có khoản nào</li>

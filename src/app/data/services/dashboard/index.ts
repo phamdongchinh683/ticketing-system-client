@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { constant } from '../../constants';
 import { DashboardResponse } from '../../interfaces/dashboard';
+import type { RevenueExportQuery } from '../../interfaces/dashboard/revenue-export';
 import type { DashboardStatsQuery } from '../../interfaces/dashboard/stats';
 
 @Injectable({ providedIn: 'root' })
@@ -14,6 +15,21 @@ export class ApiService {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
       Accept: 'application/json',
     };
+  }
+
+  private authHeadersExport() {
+    return {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Accept:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream, application/json, */*',
+    };
+  }
+
+  private revenueExportParams(q: RevenueExportQuery): HttpParams {
+    return new HttpParams()
+      .set('type', q.type)
+      .set('method', q.method)
+      .set('year', String(q.year));
   }
 
   private statsParams(q: DashboardStatsQuery): HttpParams {
@@ -51,6 +67,15 @@ export class ApiService {
     return this.http.get(`${constant.baseUrl}/super-admin/dashboard/user`, {
       headers: this.authHeaders(),
       params: this.statsParams(q),
+    });
+  }
+
+  exportRevenueReport(q: RevenueExportQuery): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${constant.baseUrl}/super-admin/dashboard/revenue/export`, {
+      headers: this.authHeadersExport(),
+      params: this.revenueExportParams(q),
+      responseType: 'blob',
+      observe: 'response',
     });
   }
 }
