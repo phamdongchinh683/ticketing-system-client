@@ -17,6 +17,7 @@ import { FcmDeviceService } from '../../core/services/fcm-device.service';
   styleUrl: './main-layout.component.css',
 })
 export class MainLayoutComponent implements OnInit {
+  readonly currentYear = new Date().getFullYear();
   currentUrl = '';
   userName = 'Người dùng';
   userEmail = '';

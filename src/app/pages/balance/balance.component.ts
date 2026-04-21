@@ -101,7 +101,7 @@ export class BalanceComponent implements OnInit {
         return 'Số dư đang âm và đang chờ xử lý — vui lòng thanh toán cho nền tảng. Thời gian cập nhật thường khoảng 2–3 ngày.';
       }
       if (item.amount > 0) {
-        return 'Khoản này thường là tiền hoa hồng chờ về từ những công ty nhà xe ở nền tảng Stripe.';
+        return 'Tiền hoa hồng chờ về từ các công ty nhà xe.';
       }
       return 'Đang chờ xác nhận — thường khoảng 2–3 ngày để cập nhật.';
     }
@@ -110,7 +110,7 @@ export class BalanceComponent implements OnInit {
       return 'Hiện tại số dư đang âm — vui lòng thanh toán cho nền tảng để tiếp tục sử dụng dịch vụ và tránh gián đoạn.';
     }
     if (item.amount > 0) {
-      return 'Số dư này là tiền hoa hồng bạn nhận được từ những công ty nhà xe ở nền tảng Stripe';
+      return 'Tiền hoa hồng nhận được từ các công ty nhà xe.';
     }
     return 'Số dư đang bằng 0 — chưa có số dư khả dụng cho khoản này.';
   }
