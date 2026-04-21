@@ -2,11 +2,15 @@
 
 Angular 19 frontend for the ticketing system admin portal.
 
-This project includes:
-- Authentication (login, logout, change password)
-- Dashboard analytics/charts
+## Core Features
+
+- Authentication: login, logout, change password
+- Dashboard overview and trend charts
 - Company, company-admin, user, and device management
-- Firebase Cloud Messaging (FCM) integration for notifications
+- Balance, withdraw, payout history, and revenue export
+- Firebase Cloud Messaging (FCM) device registration/removal
+- Centralized theming and shared UI primitives
+- In-memory API caching with TTL by domain
 
 ## Tech Stack
 
@@ -16,18 +20,19 @@ This project includes:
 - Angular Forms (Reactive Forms)
 - Chart.js
 - Firebase Messaging (`@angular/fire`)
-- `@ngx-env/builder` for environment variable injection
+- `@ngx-env/builder` for runtime env injection
 
-## Prerequisites
+## Requirements
 
-- Node.js 18+ (recommended LTS)
+- Node.js 18+ (LTS recommended)
 - npm 9+
 
 ## Environment Variables
 
-This project reads runtime build variables via `import.meta.env`.
+This project reads variables via `import.meta.env`.
 
 Required:
+
 - `NG_APP_API_URL`
 - `NG_APP_FIREBASE_VAPID_KEY`
 - `NG_APP_FIREBASE_API_KEY`
@@ -37,147 +42,138 @@ Required:
 - `NG_APP_FIREBASE_MESSAGING_SENDER_ID`
 - `NG_APP_FIREBASE_APP_ID`
 
-These values are consumed in:
+Main usage points:
+
 - `src/app/data/constants/api/index.ts`
 - `src/environments/environment.development.ts`
 - `src/environments/environment.production.ts`
 
-## Install
+## Quick Start
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-## Run (Development)
+Run development server:
 
 ```bash
 npm start
 ```
 
-Default Angular dev server behavior:
-- Serves app from `http://localhost:4200`
-- Uses `development` build configuration
+Default dev URL: `http://localhost:4200`
 
-## Build
+Build production bundle:
 
 ```bash
 npm run build
 ```
 
-Build output:
-- `dist/ticketing-system-client`
+Build output: `dist/ticketing-system-client`
 
 ## Project Structure
 
 ```text
 ticketing-system-client/
-├── public/                      # Static public assets (copied as-is)
-│   └── firebase-messaging-sw.js # Service worker for FCM background notifications
+├── public/
+│   └── firebase-messaging-sw.js
 ├── src/
 │   ├── app/
-│   │   ├── app.config.ts        # Global providers (router, http, firebase, interceptors)
-│   │   ├── app.routes.ts        # Route definitions and lazy-loaded pages
+│   │   ├── app.config.ts
+│   │   ├── app.routes.ts
 │   │   ├── core/
-│   │   │   └── interceptors/    # Global HTTP interceptors (e.g., token-expired redirect)
+│   │   │   ├── interceptors/
+│   │   │   └── services/
 │   │   ├── data/
-│   │   │   ├── constants/       # API URL, Firebase config, pagination constants
-│   │   │   ├── interfaces/      # Shared TypeScript interfaces/types
-│   │   │   ├── mocks/           # Sidebar/menu and local static data
-│   │   │   └── services/        # API service layer (auth, user, admin, company, ...)
-│   │   ├── guards/              # Route guards (auth/login access rules)
+│   │   │   ├── constants/
+│   │   │   ├── interfaces/
+│   │   │   ├── mocks/
+│   │   │   └── services/
+│   │   ├── guards/
 │   │   ├── layouts/
-│   │   │   └── main/            # Main app shell (sidebar, topbar, router outlet)
-│   │   ├── pages/               # Feature pages
-│   │   │   ├── login/           # Login page
-│   │   │   ├── dashboard/       # Analytics dashboard/charts
-│   │   │   ├── company/         # Company management
-│   │   │   ├── admin/           # Company admin management
-│   │   │   ├── user/            # User management
-│   │   │   ├── device/          # Device/FCM token management
-│   │   │   ├── password/        # Change-password page
-│   │   │   ├── unauthorized/    # 403-style page
-│   │   │   └── not-found/       # 404 page
-│   │   └── shared/              # Reusable UI components and utilities
-│   ├── environments/            # Angular environment entry points
-│   ├── main.ts                  # App bootstrap
-│   └── styles.scss              # Global styles
-├── angular.json                 # Angular workspace/build config
-├── package.json                 # Scripts and dependencies
-└── tsconfig.json                # TypeScript config
+│   │   ├── pages/
+│   │   └── shared/
+│   ├── environments/
+│   ├── styles/
+│   │   └── theme.css
+│   ├── main.ts
+│   └── styles.scss
+├── angular.json
+├── package.json
+└── tsconfig.json
 ```
 
-## Folder-by-Folder Notes
+## Architecture Notes
 
-### `public/`
-- Contains static files copied directly to build output.
-- `firebase-messaging-sw.js` must stay in `public` root so the browser can register it as a service worker.
+### Theme System
 
-### `src/app/core/interceptors/`
-- Place cross-cutting HTTP behavior here.
-- Current interceptor redirects to `/login` when API returns unauthorized/token-expired responses.
+- Global theme tokens live in `src/styles/theme.css`
+- Imported once in `src/styles.scss`
+- Update colors/typography/shadows centrally through CSS variables
 
-### `src/app/data/services/`
-- Thin API client layer wrapping backend endpoints.
-- Keeps page/components focused on UI state and interaction.
-- Common pattern: each domain has its own folder (`auth`, `user`, `company-admin`, etc.).
+### API Service Layer and Caching
 
-### `src/app/data/interfaces/`
-- Centralized DTO and model typing used across services/components.
-- Update interfaces first when backend contracts change.
+- Each domain has a dedicated service under `src/app/data/services`
+- Shared cache utilities live in `src/app/data/services/cache-utils.ts`
+- Common cache strategy: in-memory `Map` + TTL + prefix invalidation
 
-### `src/app/pages/`
-- Main feature modules (standalone component style).
-- Each page can have:
-  - `components/` for local subcomponents
-  - `styles/` for shared styles inside that page domain
-  - `utils/` for page-level helpers/mappers
+Current TTL defaults by domain:
 
-### `src/app/shared/`
-- Reusable components (input/button/notification/stat-card...)
-- Shared validators and helper utilities.
+- Company list: 5 minutes
+- Company admin list: 1 minute
+- Dashboard overview/charts: 1 minute
+- Device token list: 3 minutes
+- Notifications: 15 seconds
+- Balance overview: 30 seconds
 
-### `src/environments/`
-- `environment.ts` re-exports development by default.
-- Use Angular configurations in `angular.json` for dev/prod replacement behavior.
+Cache is invalidated after relevant mutations (create/update/delete/withdraw/mark-as-read).
+
+### FCM Token Flow
+
+- After successful login, app requests notification permission and tries to register the current device token
+- Login still succeeds even if token registration fails (warning is shown)
+- On logout, app removes current device token from backend before final session cleanup
+- Main logic is centralized in `src/app/core/services/fcm-device.service.ts`
 
 ## Routing Overview
 
-Main routes are defined in `src/app/app.routes.ts`:
+Main routes in `src/app/app.routes.ts`:
+
 - `/login`
 - `/dashboard`
 - `/companies`
 - `/admins`
 - `/users`
 - `/devices`
+- `/balance`
 - `/password`
 - `/unauthorized`
 - `**` (not found)
 
 Authenticated pages are rendered inside `MainLayoutComponent`.
 
-## Common Development Workflow
+## Development Workflow
 
-1. Start backend API and confirm `NG_APP_API_URL` is set.
-2. Run frontend:
-   ```bash
-   npm start
-   ```
-3. Open app and login.
-4. Work on feature page under `src/app/pages/<feature>/`.
-5. Add/update API contract in:
+1. Start backend API and verify `NG_APP_API_URL`
+2. Run frontend with `npm start`
+3. Login with a valid account
+4. Implement features in `src/app/pages/<feature>/`
+5. Keep contracts aligned in:
    - `src/app/data/interfaces/...`
    - `src/app/data/services/...`
 
 ## Troubleshooting
 
-- **App cannot call API**
-  - Check `NG_APP_API_URL`.
-  - Confirm backend is reachable and CORS is configured.
+- **Cannot call API**
+  - Check `NG_APP_API_URL`
+  - Confirm backend availability and CORS configuration
 
-- **FCM notifications not received**
-  - Verify Firebase env values.
-  - Check service worker registration and browser notification permission.
+- **FCM notifications not working**
+  - Verify Firebase env values
+  - Verify `public/firebase-messaging-sw.js` registration
+  - Verify browser notification permission
 
-- **Auto-redirect to `/login`**
-  - Usually means 401/unauthorized/token expired returned by backend.
-  - Re-login and verify token is persisted in `localStorage`.
+- **Redirected to `/login` unexpectedly**
+  - Backend likely returned unauthorized/token-expired
+  - Re-login and confirm token exists in `localStorage`
