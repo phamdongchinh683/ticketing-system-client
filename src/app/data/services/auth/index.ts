@@ -25,6 +25,26 @@ export interface SendNotificationResponse {
   message?: string;
 }
 
+export interface SendOtpRequest {
+  field: 'email' | 'phone';
+  value: string;
+}
+
+export interface SendOtpResponse {
+  message?: string;
+}
+
+export interface ResetPasswordWithOtpRequest {
+  otp: string;
+  email?: string;
+  phone?: string;
+  password: string;
+}
+
+export interface ResetPasswordWithOtpResponse {
+  message?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   constructor(private http: HttpClient) {}
@@ -63,5 +83,13 @@ export class ApiService {
     return this.http.post<SendNotificationResponse>(`${constant.baseUrl}/auth/notification`, payload, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
+  }
+
+  sendOtp(payload: SendOtpRequest): Observable<SendOtpResponse> {
+    return this.http.post<SendOtpResponse>(`${constant.baseUrl}/auth/send-otp`, payload);
+  }
+
+  resetPasswordWithOtp(payload: ResetPasswordWithOtpRequest): Observable<ResetPasswordWithOtpResponse> {
+    return this.http.put<ResetPasswordWithOtpResponse>(`${constant.baseUrl}/auth/reset-password`, payload);
   }
 }

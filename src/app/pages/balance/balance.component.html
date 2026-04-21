@@ -8,37 +8,102 @@
 <div class="page">
   <header class="page-header">
     <div class="page-header__text">
-      <h2 class="page-title">Số dư</h2>
-      <p class="subtitle">Theo dõi số dư và xuất báo cáo doanh thu.</p>
-      <p class="subtitle">
-        Theo dõi số dư khả dụng và đang chờ.
-        @if (fxRateLoading) {
-          <span class="subtitle__fx">Đang lấy tỷ giá USD/VND…</span>
-        } @else if (usdToVndRate != null) {
-          <span class="subtitle__fx">1 USD ≈ {{ usdToVndRate | number }} đ</span>
-        } @else {
-          <span class="subtitle__fx subtitle__fx--warn">Không tải được tỷ giá — chỉ hiển thị USD.</span>
-        }
-      </p>
+      <h2 class="page-title">Lợi nhuận của bạn </h2>
+
+      <div class="header-actions">
+        <div class="header-actions__panel">
+          <button
+            type="button"
+            class="btn btn-secondary btn--block btn-refresh"
+            [class.btn--loading]="loading"
+            [disabled]="loading"
+            (click)="load()"
+          >
+            <span class="btn__icon" aria-hidden="true">
+              <span *ngIf="loading" class="btn__spinner"></span>
+              <svg *ngIf="!loading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6M1 20v-6h6" />
+                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+              </svg>
+            </span>
+            <span class="btn__label">{{ loading ? 'Đang tải...' : 'Làm mới số dư' }}</span>
+          </button>
+          <button type="button" class="btn btn-danger btn--block btn-withdraw" [disabled]="withdrawing" (click)="openWithdrawModal()">
+            Rút tiền về tài khoản
+          </button>
+          <button type="button" class="btn btn-ghost btn--block" [disabled]="payoutLoading" (click)="openPayoutModal()">
+            {{ payoutLoading && !payoutOpen ? 'Đang tải...' : 'Xem giao dịch rút tiền' }}
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="header-actions">
-      <div class="header-actions__panel">
-        <button type="button" class="btn btn-secondary btn--block" [disabled]="loading" (click)="load()">
-          <span class="btn__icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 4v6h-6M1 20v-6h6" />
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+    <div class="header-right">
+      <div class="header-balance">
+        <div *ngIf="loading" class="balance-grid balance-grid--header balance-grid--skeleton" aria-hidden="true">
+          <div class="balance-skeleton-card">
+            <span class="balance-skeleton-line balance-skeleton-line--sm"></span>
+            <span class="balance-skeleton-line balance-skeleton-line--md"></span>
+            <span class="balance-skeleton-line balance-skeleton-line--lg"></span>
+            <span class="balance-skeleton-line"></span>
+          </div>
+          <div class="balance-skeleton-card">
+            <span class="balance-skeleton-line balance-skeleton-line--sm"></span>
+            <span class="balance-skeleton-line balance-skeleton-line--md"></span>
+            <span class="balance-skeleton-line balance-skeleton-line--lg"></span>
+            <span class="balance-skeleton-line"></span>
+          </div>
+        </div>
+
+        <div *ngIf="!loading && !data" class="header-balance__state header-balance__state--error">
+          <span>Không tải được số dư.</span>
+          <button type="button" class="btn btn-secondary" (click)="load()">Thử lại</button>
+        </div>
+
+        <div *ngIf="!loading && data" class="balance-grid balance-grid--header">
+          <app-balance-status-card
+            [title]="'Khả dụng'"
+            [hint]="'Có thể rút tiền ngay'"
+            [section]="'available'"
+            [items]="data.available"
+            [amountFormatter]="amountFormatter"
+            [secondaryAmountFormatter]="secondaryAmountFormatter"
+            [contextFormatter]="contextFormatter"
+          />
+
+          <app-balance-status-card
+            [title]="'Đang chờ'"
+            [hint]="'Chờ về — thường 2–3 ngày'"
+            [section]="'pending'"
+            [items]="data.pending"
+            [amountFormatter]="amountFormatter"
+            [secondaryAmountFormatter]="secondaryAmountFormatter"
+            [contextFormatter]="contextFormatter"
+          />
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <section class="export-panel" aria-labelledby="export-revenue-heading">
+    <div class="export-panel__accent" aria-hidden="true"></div>
+    <div class="export-panel__inner">
+      <div class="export-panel__intro">
+        <div class="export-panel__intro-left">
+          <div class="export-panel__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M8 13h8M8 17h5M8 9h3" />
             </svg>
-          </span>
-          {{ loading ? 'Đang tải...' : 'Làm mới' }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary btn--block"
-          [disabled]="exportLoading"
-          (click)="exportRevenueExcel()"
-        >
+          </div>
+          <div class="export-panel__titles">
+            <h3 id="export-revenue-heading">Xuất báo cáo doanh thu</h3>
+            <p class="export-panel__hint">Chọn tiêu chí, sau đó bấm <strong>Xuất Excel</strong> để tải báo cáo.</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" [disabled]="exportLoading" (click)="exportRevenueExcel()">
           <span class="btn__icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -48,25 +113,7 @@
           {{ exportLoading ? 'Đang xuất...' : 'Xuất Excel' }}
         </button>
       </div>
-    </div>
-  </header>
 
-  <section class="export-panel" aria-labelledby="export-revenue-heading">
-    <div class="export-panel__accent" aria-hidden="true"></div>
-    <div class="export-panel__inner">
-      <div class="export-panel__intro">
-        <div class="export-panel__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-            <path d="M14 2v6h6" />
-            <path d="M8 13h8M8 17h5M8 9h3" />
-          </svg>
-        </div>
-        <div class="export-panel__titles">
-          <h3 id="export-revenue-heading">Xuất báo cáo doanh thu</h3>
-          <p class="export-panel__hint">Chọn tiêu chí, sau đó bấm <strong>Xuất Excel</strong> phía trên.</p>
-        </div>
-      </div>
       <div class="export-panel__filters">
         <label class="field">
           <span class="field__label">Chu kỳ</span>
@@ -101,110 +148,125 @@
     </div>
   </section>
 
-  <div *ngIf="loading" class="loading-inline">
-    <div class="spinner-large"></div>
-    <p>Đang tải số dư...</p>
-  </div>
+</div>
 
-  <div *ngIf="!loading && !data" class="state-fallback">
-    <p>Không tải được số dư.</p>
-    <button type="button" class="btn btn-secondary" (click)="load()">Thử lại</button>
-  </div>
+<div *ngIf="payoutOpen" class="modal-overlay" (click)="closePayoutModal()">
+  <div class="modal modal--xl payout-modal" (click)="stopPayoutModalPropagation($event)">
+    <h3>Lịch sử giao dịch rút tiền</h3>
+    <div class="payout-filters">
+      <label class="field">
+        <span class="field__label">Trạng thái</span>
+        <select class="select" [(ngModel)]="payoutStatus" [disabled]="payoutLoading || payoutLoadingMore" (change)="applyPayoutFilter()">
+          <option [ngValue]="''">Tất cả</option>
+          <option [ngValue]="'paid'">paid</option>
+          <option [ngValue]="'pending'">pending</option>
+          <option [ngValue]="'in_transit'">in_transit</option>
+          <option [ngValue]="'canceled'">canceled</option>
+          <option [ngValue]="'failed'">failed</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="field__label">Giới hạn</span>
+        <select class="select" [(ngModel)]="payoutLimit" [disabled]="payoutLoading || payoutLoadingMore" (change)="applyPayoutFilter()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+      </label>
+    </div>
 
-  <div *ngIf="!loading && data" class="balance-grid">
-    <article class="balance-card balance-card--available">
-      <div class="balance-card__head">
-        <span class="balance-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-          </svg>
-        </span>
-        <div>
-          <h3 class="balance-card__title">Khả dụng</h3>
-          <p class="balance-card__hint">Có thể sử dụng ngay</p>
-        </div>
+    <div class="payout-table-wrap">
+      <div class="payout-loading-overlay" *ngIf="payoutLoading">
+        <span>Đang tải lịch sử giao dịch...</span>
       </div>
-      <ul class="balance-list">
-        @for (item of data.available; track $index) {
-          <li class="balance-list__row">
-            <div class="balance-list__line">
-              <div class="balance-list__figures">
-                @if (isUsd(item)) {
-                  <div class="balance-list__dual">
-                    <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                      {{ formatUsdPrimary(item) }}
-                    </span>
-                    @if (usdToVndRate != null) {
-                      <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
-                    }
-                  </div>
-                } @else {
-                  <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                    {{ formatMoney(item) }}
-                  </span>
-                }
-              </div>
-              <p
-                class="balance-list__context"
-                [class.balance-list__context--negative]="item.amount < 0"
-                [class.balance-list__context--positive]="item.amount > 0"
-              >
-                {{ balanceContextMessage(item, 'available') }}
-              </p>
-            </div>
-          </li>
-        } @empty {
-          <li class="balance-list__empty">Không có khoản nào</li>
-        }
-      </ul>
-    </article>
+      <table class="payout-table" *ngIf="payouts.length; else payoutEmptyState">
+        <thead>
+          <tr>
+            <th>Mã giao dịch</th>
+            <th>Số tiền</th>
+            <th>Quy đổi VND</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Ngày về</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of payouts">
+            <td class="payout-id">{{ p.id }}</td>
+            <td>{{ formatPayoutAmount(p) }}</td>
+            <td>{{ formatPayoutVnd(p) }}</td>
+            <td>
+              <span class="payout-status" [class]="'payout-status payout-status--' + (p.status || 'unknown')">
+                {{ payoutStatusLabel(p.status) }}
+              </span>
+            </td>
+            <td>{{ formatUnixDate(p.created) }}</td>
+            <td>{{ formatUnixDate(p.arrival_date) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #payoutEmptyState>
+        <div class="payout-empty">Chưa có giao dịch nào.</div>
+      </ng-template>
+    </div>
 
-    <article class="balance-card balance-card--pending">
-      <div class="balance-card__head">
-        <span class="balance-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 6v6l4 2" />
-          </svg>
-        </span>
-        <div>
-          <h3 class="balance-card__title">Đang chờ</h3>
-          <p class="balance-card__hint">Chưa khả dụng — thường <strong>2–3 ngày</strong> để về số dư khả dụng</p>
-        </div>
+    <div class="payout-more">
+      <button
+        *ngIf="!payoutLoading && hasMorePayouts && payouts.length"
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="payoutLoadingMore"
+        (click)="loadMorePayouts()"
+      >
+        {{ payoutLoadingMore ? 'Đang tải thêm...' : 'Tải thêm' }}
+      </button>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" (click)="closePayoutModal()" [disabled]="payoutLoading">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="withdrawOpen" class="modal-overlay" (click)="closeWithdrawModal()">
+  <div class="modal modal--sm" (click)="stopWithdrawModalPropagation($event)">
+    <h3>Rút tiền</h3>
+    <p>Nhập số tiền cần rút (VND).</p>
+
+    <label class="field">
+      <span class="field__label">Số tiền rút (VND)</span>
+      <div class="withdraw-suggestions">
+        <button
+          type="button"
+          class="btn-chip"
+          *ngFor="let s of withdrawSuggestions"
+          [class.btn-chip--active]="withdrawAmountVnd === s"
+          [disabled]="withdrawing"
+          (click)="selectWithdrawSuggestion(s)"
+        >
+          {{ s | number }} đ
+        </button>
       </div>
-      <ul class="balance-list">
-        @for (item of data.pending; track $index) {
-          <li class="balance-list__row">
-            <div class="balance-list__line">
-              <div class="balance-list__figures">
-                @if (isUsd(item)) {
-                  <div class="balance-list__dual">
-                    <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                      {{ formatUsdPrimary(item) }}
-                    </span>
-                    @if (usdToVndRate != null) {
-                      <span class="balance-list__vnd-equiv">≈ {{ formatUsdAsVnd(item) }}</span>
-                    }
-                  </div>
-                } @else {
-                  <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
-                    {{ formatMoney(item) }}
-                  </span>
-                }
-              </div>
-              <p
-                class="balance-list__context"
-                [class.balance-list__context--negative]="item.amount < 0"
-                [class.balance-list__context--positive]="item.amount > 0"
-              >
-                {{ balanceContextMessage(item, 'pending') }}
-              </p>
-            </div>
-          </li>
-        } @empty {
-          <li class="balance-list__empty">Không có khoản nào</li>
-        }
-      </ul>
-    </article>
+      <input
+        class="input"
+        type="text"
+        inputmode="numeric"
+        [ngModel]="withdrawAmountInput"
+        (ngModelChange)="onWithdrawInputChange($event)"
+        [disabled]="withdrawing"
+        placeholder="Tối thiểu 500.000"
+      />
+      <small class="field__hint">Số tiền rút tối thiểu: 500.000 VND</small>
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" (click)="closeWithdrawModal()" [disabled]="withdrawing">Đóng</button>
+      <button type="button" class="btn btn-primary" (click)="submitWithdraw()" [disabled]="withdrawing">
+        {{ withdrawing ? 'Đang rút...' : 'Rút tiền ngay' }}
+      </button>
+    </div>
   </div>
 </div>

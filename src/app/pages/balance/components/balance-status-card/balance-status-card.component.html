@@ -1,0 +1,47 @@
+<article class="balance-card" [class.balance-card--available]="section === 'available'" [class.balance-card--pending]="section === 'pending'">
+  <div class="balance-card__head">
+    <span class="balance-card__icon" aria-hidden="true">
+      @if (section === 'available') {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </svg>
+      }
+    </span>
+    <div>
+      <h3 class="balance-card__title">{{ title }}</h3>
+      <p class="balance-card__hint">{{ hint }}</p>
+    </div>
+  </div>
+
+  <ul class="balance-list">
+    <li class="balance-list__row" *ngFor="let item of items; trackBy: trackByIndex">
+      <div class="balance-list__line">
+        <div class="balance-list__figures">
+          <span class="balance-list__amount" [class.balance-list__amount--negative]="item.amount < 0">
+            {{ amountFormatter(item) }}
+          </span>
+          @if (secondaryAmountFormatter && secondaryAmountFormatter(item)) {
+            <span class="balance-list__amount-secondary">
+              ≈ {{ secondaryAmountFormatter(item) }}
+            </span>
+          }
+        </div>
+        <p
+          class="balance-list__context"
+          [class.balance-list__context--negative]="item.amount < 0"
+          [class.balance-list__context--positive]="item.amount > 0"
+        >
+          {{ contextFormatter(item, section) }}
+        </p>
+      </div>
+    </li>
+    <li class="balance-list__empty" *ngIf="!items.length">
+      Không có khoản nào
+    </li>
+  </ul>
+</article>

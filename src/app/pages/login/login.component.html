@@ -28,7 +28,102 @@
         [disabled]="loading"
       ></app-input>
 
+      <button class="forgot-toggle" type="button" (click)="openForgotPassword()" [disabled]="loading || sendingOtp || resettingPassword">
+        Quên mật khẩu?
+      </button>
+
       <app-button label="Đăng nhập" type="submit" [loading]="loading" loadingText="Đang đăng nhập..."></app-button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="forgotPasswordOpen" class="modal-overlay" (click)="closeForgotPassword()">
+  <div class="modal modal--sm forgot-modal" (click)="stopForgotModalPropagation($event)">
+    <div class="forgot-modal__header">
+      <h2>{{ otpSent ? 'Đặt lại mật khẩu' : 'Gửi OTP' }}</h2>
+      <button type="button" class="forgot-modal__close" (click)="closeForgotPassword()" [disabled]="sendingOtp || resettingPassword" aria-label="Đóng">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="forgotForm" (ngSubmit)="onForgotFormSubmit()">
+      <ng-container *ngIf="!otpSent">
+        <p class="forgot-hint">Nhập email hoặc số điện thoại để nhận mã OTP.</p>
+        <app-input
+          label="Email hoặc số điện thoại"
+          type="text"
+          formControlName="account"
+          name="account"
+          placeholder="Nhập email hoặc số điện thoại"
+          [disabled]="sendingOtp"
+        ></app-input>
+
+        <button class="btn-send-otp" type="button" (click)="sendOtp()" [disabled]="sendingOtp">
+          {{ sendingOtp ? 'Đang gửi...' : 'Gửi OTP' }}
+        </button>
+
+        <div class="forgot-modal__actions forgot-modal__actions--single">
+          <button type="button" class="btn-forgot-cancel" (click)="closeForgotPassword()" [disabled]="sendingOtp">
+            Hủy
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="otpSent">
+        <p class="forgot-hint">Mã OTP đã được gửi. Nhập mã và mật khẩu mới bên dưới.</p>
+
+        <fieldset class="otp-field">
+          <div class="otp-boxes" formArrayName="otpDigits" (paste)="onOtpPaste($event)">
+            <span *ngFor="let _ of otpDigits.controls; let i = index" class="otp-box-wrap">
+              <input
+                #otpBox
+                [id]="'otp-digit-' + i"
+                [formControlName]="i"
+                type="text"
+                inputmode="numeric"
+                maxlength="1"
+                autocomplete="one-time-code"
+                class="otp-box"
+                placeholder="·"
+                [attr.title]="'Mã OTP số ' + (i + 1)"
+                (input)="onOtpDigitInput(i, $event)"
+                (keydown)="onOtpDigitKeydown(i, $event)"
+                [disabled]="resettingPassword"
+              />
+            </span>
+          </div>
+        </fieldset>
+
+        <app-input
+          label="Mật khẩu mới"
+          type="password"
+          formControlName="newPassword"
+          name="newPassword"
+          placeholder="Nhập mật khẩu mới"
+          [showPasswordToggle]="true"
+          [disabled]="resettingPassword"
+        ></app-input>
+
+        <button type="button" class="btn-forgot-back" (click)="backToSendOtpStep()" [disabled]="resettingPassword">
+          ← Quay lại gửi OTP
+        </button>
+
+        <div class="forgot-modal__actions">
+          <button type="button" class="btn-forgot-cancel" (click)="closeForgotPassword()" [disabled]="resettingPassword">
+            Hủy
+          </button>
+          <div class="forgot-modal__submit">
+            <app-button
+              label="Xác nhận"
+              type="submit"
+              [loading]="resettingPassword"
+              loadingText="Đang cập nhật..."
+            ></app-button>
+          </div>
+        </div>
+      </ng-container>
     </form>
   </div>
 </div>

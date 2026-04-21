@@ -1,10 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { auth } from '../../data/services/index';
 import { SharedModule } from '@app/shared/shared.module';
-import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '@app/shared/utils/validators';
+import {
+  isDigitsOnly,
+  isEmail,
+  isPhone10Digits,
+  isValidPassword,
+  PASSWORD_MESSAGE,
+} from '@app/shared/utils/validators';
 
 @Component({
   selector: 'app-login',
@@ -16,12 +22,27 @@ import { isEmail, isValidPassword, PASSWORD_MESSAGE } from '@app/shared/utils/va
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
 
+  @ViewChildren('otpBox') otpBoxRefs!: QueryList<ElementRef<HTMLInputElement>>;
+
   loginForm = this.fb.nonNullable.group({
     text: [''],
     password: [''],
   });
 
+  forgotForm = this.fb.nonNullable.group({
+    account: [''],
+    otpDigits: this.fb.array(
+      Array.from({ length: 6 }, () => this.fb.nonNullable.control('')),
+    ),
+    newPassword: [''],
+  });
+
   loading = false;
+  sendingOtp = false;
+  resettingPassword = false;
+  forgotPasswordOpen = false;
+  otpSent = false;
+  otpTarget: { field: 'email' | 'phone'; value: string } | null = null;
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
     message: '',
@@ -31,7 +52,7 @@ export class LoginComponent {
   constructor(
     private readonly api: auth.ApiService,
     private readonly router: Router,
-  ) {}
+  ) { }
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
     this.notification = { show: true, message, type };
@@ -47,6 +68,175 @@ export class LoginComponent {
     }
     if (text.length < 5) return 'Tên đăng nhập phải có ít nhất 5 ký tự.';
     return null;
+  }
+
+  private parseForgotAccount(raw: string): { field: 'email' | 'phone'; value: string } | null {
+    const value = raw.trim();
+    if (!value) return null;
+
+    if (value.includes('@')) {
+      if (!isEmail(value)) return null;
+      return { field: 'email', value };
+    }
+
+    if (isDigitsOnly(value)) {
+      if (!isPhone10Digits(value)) return null;
+      return { field: 'phone', value };
+    }
+
+    return null;
+  }
+
+  openForgotPassword(): void {
+    this.notification.show = false;
+    this.forgotPasswordOpen = true;
+  }
+
+  closeForgotPassword(): void {
+    this.forgotPasswordOpen = false;
+    this.otpSent = false;
+    this.otpTarget = null;
+    this.forgotForm.reset();
+  }
+
+  get otpDigits(): FormArray {
+    return this.forgotForm.controls.otpDigits as FormArray;
+  }
+
+  private resetOtpDigits(): void {
+    this.otpDigits.controls.forEach((c) => c.setValue(''));
+  }
+
+  private focusOtpBox(index: number): void {
+    const el = this.otpBoxRefs?.get(index)?.nativeElement;
+    if (el) {
+      el.focus();
+      el.select();
+    }
+  }
+
+  onOtpDigitInput(index: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digit = input.value.replace(/\D/g, '').slice(-1) ?? '';
+    this.otpDigits.at(index).setValue(digit);
+    input.value = digit;
+    if (digit && index < 5) {
+      queueMicrotask(() => this.focusOtpBox(index + 1));
+    }
+  }
+
+  onOtpDigitKeydown(index: number, event: KeyboardEvent): void {
+    const current = (this.otpDigits.at(index).value ?? '').toString();
+    if (event.key === 'Backspace' && !current && index > 0) {
+      this.focusOtpBox(index - 1);
+    }
+  }
+
+  onOtpPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+    const text = event.clipboardData?.getData('text') ?? '';
+    const digits = text.replace(/\D/g, '').slice(0, 6);
+    for (let i = 0; i < 6; i++) {
+      this.otpDigits.at(i).setValue(digits[i] ?? '');
+    }
+    const next = Math.min(Math.max(digits.length - 1, 0), 5);
+    queueMicrotask(() => this.focusOtpBox(next));
+  }
+
+  stopForgotModalPropagation(ev: Event): void {
+    ev.stopPropagation();
+  }
+
+  onForgotFormSubmit(): void {
+    if (!this.otpSent) {
+      this.sendOtp();
+      return;
+    }
+    this.submitForgotPassword();
+  }
+
+  backToSendOtpStep(): void {
+    this.otpSent = false;
+    this.otpTarget = null;
+    this.forgotForm.patchValue({ newPassword: '' });
+    this.resetOtpDigits();
+  }
+
+  sendOtp(): void {
+    this.notification.show = false;
+    const account = this.forgotForm.controls.account.value;
+    const target = this.parseForgotAccount(account);
+
+    if (!target) {
+      this.showNotification('Vui lòng nhập email hợp lệ hoặc số điện thoại từ 10 chữ số.', 'warning');
+      return;
+    }
+
+    this.sendingOtp = true;
+    this.api.sendOtp(target).subscribe({
+      next: (res) => {
+        this.resetOtpDigits();
+        this.otpSent = true;
+        this.otpTarget = target;
+        this.showNotification('Đã gửi OTP thành công vui lòng kiểm tra email hoặc số điện thoại nếu không nhận được vui lòng kiểm tra thư rác.', 'info');
+        setTimeout(() => this.focusOtpBox(0), 50);
+      },
+      error: (err: { error?: { message?: string } }) => {
+        this.showNotification(err.error?.message || 'Gửi OTP thất bại.', 'error');
+        this.sendingOtp = false;
+      },
+      complete: () => {
+        this.sendingOtp = false;
+      },
+    });
+  }
+
+  submitForgotPassword(): void {
+    if (!this.otpSent) {
+      return;
+    }
+
+    this.notification.show = false;
+
+    const target = this.otpTarget ?? this.parseForgotAccount(this.forgotForm.controls.account.value);
+    if (!target) {
+      this.showNotification('Vui lòng nhập email hợp lệ hoặc số điện thoại hợp lệ trước khi xác nhận OTP.', 'warning');
+      return;
+    }
+
+    const otp = this.otpDigits.controls.map((c) => (c.value ?? '').toString()).join('').trim();
+    const newPassword = this.forgotForm.controls.newPassword.value.trim();
+
+    if (otp.length !== 6 || !newPassword) {
+      this.showNotification('Vui lòng nhập đủ 6 số OTP và mật khẩu mới.', 'warning');
+      return;
+    }
+
+    if (!isValidPassword(newPassword)) {
+      this.showNotification(PASSWORD_MESSAGE, 'warning');
+      return;
+    }
+
+    const payload: auth.ResetPasswordWithOtpRequest = {
+      otp,
+      password: newPassword,
+      [target.field]: target.value,
+    };
+
+    this.resettingPassword = true;
+    this.api.resetPasswordWithOtp(payload).subscribe({
+      next: (res) => {
+        this.showNotification(res.message || 'Đặt lại mật khẩu thành công.', 'success');
+        this.closeForgotPassword();
+      },
+      error: (err) => {
+        this.showNotification('OTP không hợp lệ.', 'error');
+        this.resettingPassword = false;
+      },
+      complete: () => {
+        this.resettingPassword = false;
+      },
+    });
   }
 
   onSubmit() {
