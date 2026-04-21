@@ -40,6 +40,7 @@ export class MainLayoutComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(auth.ApiService);
   private readonly fcmDeviceService = inject(FcmDeviceService);
+  private hasRequestedNotificationAccess = false;
 
   get pageTitle(): string {
     return this.pageTitles[this.currentUrl] || 'Tổng quan';
@@ -49,6 +50,7 @@ export class MainLayoutComponent implements OnInit {
     this.loadUser();
 
     this.currentUrl = this.router.url;
+    this.requestNotificationOnDashboard(this.currentUrl);
     this.router.events
       .pipe(
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -56,6 +58,7 @@ export class MainLayoutComponent implements OnInit {
       )
       .subscribe((e) => {
         this.currentUrl = e.urlAfterRedirects || e.url;
+        this.requestNotificationOnDashboard(this.currentUrl);
       });
   }
 
@@ -91,5 +94,13 @@ export class MainLayoutComponent implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
+  }
+
+  private requestNotificationOnDashboard(url: string) {
+    if (this.hasRequestedNotificationAccess || !url.startsWith('/dashboard')) return;
+    this.hasRequestedNotificationAccess = true;
+    setTimeout(() => {
+      this.fcmDeviceService.ensureRegistered(true).subscribe();
+    }, 0);
   }
 }

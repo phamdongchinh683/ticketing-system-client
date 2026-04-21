@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { auth } from '../../data/services/index';
-import { FcmDeviceService } from '../../core/services/fcm-device.service';
 import { SharedModule } from '@app/shared/shared.module';
 import {
   isDigitsOnly,
@@ -53,7 +52,6 @@ export class LoginComponent {
   constructor(
     private readonly api: auth.ApiService,
     private readonly router: Router,
-    private readonly fcmDeviceService: FcmDeviceService,
   ) { }
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
@@ -268,23 +266,9 @@ export class LoginComponent {
       next: (res: { token: string; user: unknown }) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
-
-        this.fcmDeviceService.ensureRegistered(true).subscribe({
-          next: (registerResult) => {
-            if (!registerResult.ok) {
-              this.showNotification('Đăng nhập thành công. Bạn chưa bật thông báo cho thiết bị này.', 'warning');
-            } else {
-              this.showNotification('Đăng nhập thành công', 'success');
-            }
-            this.router.navigate(['/dashboard']);
-            this.loading = false;
-          },
-          error: () => {
-            this.showNotification('Đăng nhập thành công. Không thể đăng ký thiết bị thông báo.', 'warning');
-            this.router.navigate(['/dashboard']);
-            this.loading = false;
-          },
-        });
+        this.showNotification('Đăng nhập thành công', 'success');
+        this.router.navigate(['/dashboard']);
+        this.loading = false;
       },
       error: (err: { error?: { message?: string } }) => {
         this.showNotification(err.error?.message || 'Đăng nhập thất bại.', 'error');
