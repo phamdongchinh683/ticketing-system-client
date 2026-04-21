@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -18,15 +18,12 @@ export interface MainNavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainSidebarComponent {
-  @Input() collapsed = false;
   @Input({ required: true }) items: MainNavItem[] = [];
   @Input() currentUrl = '';
   @Input() userInitial = 'U';
   @Input() userName = 'Người dùng';
   @Input() userRole = '';
   @Input() userEmail = '';
-
-  @Output() toggleCollapse = new EventEmitter<void>();
 
   constructor(private readonly sanitizer: DomSanitizer) {}
 

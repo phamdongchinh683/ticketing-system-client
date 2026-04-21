@@ -1,5 +1,3 @@
-/* Company modals — shared with company form / delete dialogs */
-
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -109,7 +107,7 @@
   background: var(--color-primary);
   border: none;
   border-radius: var(--radius-md);
-  color: white;
+  color: var(--color-text-inverse);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -130,7 +128,7 @@
   background: var(--color-red);
   border: none;
   border-radius: var(--radius-md);
-  color: white;
+  color: var(--color-text-inverse);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -196,7 +194,7 @@
   background: var(--color-primary);
   border: none;
   border-radius: var(--radius-md);
-  color: #fff;
+  color: var(--color-text-inverse);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;

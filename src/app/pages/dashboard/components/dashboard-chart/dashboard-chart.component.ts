@@ -66,7 +66,6 @@ export class DashboardChartComponent implements AfterViewInit, OnChanges, OnDest
     return datasetLabel ? `${datasetLabel}: ${n.toLocaleString()}` : n.toLocaleString();
   }
 
-  /** One dataset: slices = periods. Multiple datasets: slices = series totals (share of sum). */
   private buildArcChartData(): ChartConfiguration<'doughnut' | 'pie'>['data'] {
     if (this.datasets.length === 1) {
       const d0 = this.datasets[0];

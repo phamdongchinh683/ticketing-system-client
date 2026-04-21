@@ -1,7 +1,7 @@
-<aside class="sidebar" [class.sidebar--collapsed]="collapsed">
+<aside class="sidebar">
   <div class="sidebar__brand">
     <div class="brand-icon">TS</div>
-    <span *ngIf="!collapsed" class="brand-text">Hệ thống vé</span>
+    <span class="brand-text">Hệ thống vé</span>
   </div>
 
   <nav class="sidebar__nav">
@@ -13,7 +13,7 @@
         [title]="item.label"
       >
         <span class="nav-item__icon" [innerHTML]="asSafeIcon(item.icon)"></span>
-        <span *ngIf="!collapsed" class="nav-item__label">{{ item.label }}</span>
+        <span class="nav-item__label">{{ item.label }}</span>
       </a>
     }
   </nav>
@@ -21,22 +21,11 @@
   <div class="sidebar__footer">
     <div class="user-block">
       <div class="user-avatar">{{ userInitial }}</div>
-      <div *ngIf="!collapsed" class="user-info">
-        <span class="user-name">{{ userName }}</span>
+      <div class="user-info">
+        <span class="user-name">Quản trị viên cấp cao</span>
         <span class="user-email">{{ userEmail }}</span>
         <span class="user-role">{{ userRole }}</span>
       </div>
     </div>
-    <button
-      type="button"
-      class="btn-collapse"
-      (click)="toggleCollapse.emit()"
-      title="Thu gọn/mở rộng thanh bên"
-      [attr.aria-label]="collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'"
-    >
-      <svg [class.rotate]="collapsed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="15 18 9 12 15 6" />
-      </svg>
-    </button>
   </div>
 </aside>

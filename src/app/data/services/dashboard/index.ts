@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { constant } from '../../constants';
 import { DashboardResponse } from '../../interfaces/dashboard';
 import type { RevenueExportQuery } from '../../interfaces/dashboard/revenue-export';
 import type { DashboardStatsQuery } from '../../interfaces/dashboard/stats';
+import { buildCacheKey, CacheEntry, readCache, writeCache } from '../cache-utils';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private readonly dashboardOverviewCache = new Map<string, CacheEntry<DashboardResponse>>();
+  private readonly dashboardStatsCache = new Map<string, CacheEntry<unknown>>();
+  private readonly DASHBOARD_TTL_MS = 1 * 60 * 1000;
+
   constructor(private http: HttpClient) {}
 
   private authHeaders() {
@@ -43,31 +49,78 @@ export class ApiService {
   }
 
   getDashboard(): Observable<DashboardResponse> {
-    return this.http.get<DashboardResponse>(`${constant.baseUrl}/super-admin/dashboard`, {
-      headers: this.authHeaders(),
-    });
+    const cacheKey = 'dashboard-overview';
+    const cached = readCache(this.dashboardOverviewCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get<DashboardResponse>(`${constant.baseUrl}/super-admin/dashboard`, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap((res) => writeCache(this.dashboardOverviewCache, cacheKey, res, this.DASHBOARD_TTL_MS)));
   }
 
-  /** Raw JSON — shape varies; normalize with dashboard-stats.mapper */
   getDashboardBooking(q: DashboardStatsQuery): Observable<unknown> {
-    return this.http.get(`${constant.baseUrl}/super-admin/dashboard/booking`, {
-      headers: this.authHeaders(),
-      params: this.statsParams(q),
+    const params = this.statsParams(q);
+    const cacheKey = buildCacheKey('dashboard-booking', {
+      type: q.type,
+      year: q.year,
+      month: q.month,
+      status: q.status,
+      role: q.role,
+      method: q.method,
     });
+    const cached = readCache(this.dashboardStatsCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get(`${constant.baseUrl}/super-admin/dashboard/booking`, {
+        headers: this.authHeaders(),
+        params,
+      })
+      .pipe(tap((res) => writeCache(this.dashboardStatsCache, cacheKey, res, this.DASHBOARD_TTL_MS)));
   }
 
   getDashboardRevenue(q: DashboardStatsQuery): Observable<unknown> {
-    return this.http.get(`${constant.baseUrl}/super-admin/dashboard/revenue`, {
-      headers: this.authHeaders(),
-      params: this.statsParams(q),
+    const params = this.statsParams(q);
+    const cacheKey = buildCacheKey('dashboard-revenue', {
+      type: q.type,
+      year: q.year,
+      month: q.month,
+      status: q.status,
+      role: q.role,
+      method: q.method,
     });
+    const cached = readCache(this.dashboardStatsCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get(`${constant.baseUrl}/super-admin/dashboard/revenue`, {
+        headers: this.authHeaders(),
+        params,
+      })
+      .pipe(tap((res) => writeCache(this.dashboardStatsCache, cacheKey, res, this.DASHBOARD_TTL_MS)));
   }
 
   getDashboardUser(q: DashboardStatsQuery): Observable<unknown> {
-    return this.http.get(`${constant.baseUrl}/super-admin/dashboard/user`, {
-      headers: this.authHeaders(),
-      params: this.statsParams(q),
+    const params = this.statsParams(q);
+    const cacheKey = buildCacheKey('dashboard-user', {
+      type: q.type,
+      year: q.year,
+      month: q.month,
+      status: q.status,
+      role: q.role,
+      method: q.method,
     });
+    const cached = readCache(this.dashboardStatsCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get(`${constant.baseUrl}/super-admin/dashboard/user`, {
+        headers: this.authHeaders(),
+        params,
+      })
+      .pipe(tap((res) => writeCache(this.dashboardStatsCache, cacheKey, res, this.DASHBOARD_TTL_MS)));
   }
 
   exportRevenueReport(q: RevenueExportQuery): Observable<HttpResponse<Blob>> {

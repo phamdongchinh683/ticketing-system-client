@@ -57,7 +57,6 @@ export class DashboardComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   yearOptions: number[] = [];
 
-  /** Chuỗi rỗng = Tất cả (không gửi query param). */
   bookingStatusFilter = '';
   revenueMethodFilter = '';
   revenueStatusFilter = '';
@@ -70,7 +69,6 @@ export class DashboardComponent implements OnInit {
   readonly userStatuses = [...USER_STATUS_KEYS];
   readonly userRoles = [...USER_ROLE_KEYS];
 
-  /** Visual only — does not refetch data. */
   userChartKind: DashboardTrendChartKind = 'line';
   bookingChartKind: DashboardTrendChartKind = 'bar';
   revenueChartKind: DashboardTrendChartKind = 'doughnut';
@@ -136,7 +134,6 @@ export class DashboardComponent implements OnInit {
     return q;
   }
 
-  /** Thay đổi chu kỳ / năm sẽ tác động đến toàn bộ biểu đồ xu hướng. */
   loadAllTrendCharts() {
     this.loadUserChart();
     this.loadBookingChart();
@@ -211,7 +208,6 @@ export class DashboardComponent implements OnInit {
     this.loadRevenueChart();
   }
 
-  /** Sum of all points in the current chart (matches stacked bar totals). */
   trendTotal(chart: DashboardChartSeries): number {
     return chartSeriesGrandTotal(chart);
   }
@@ -266,6 +262,8 @@ export class DashboardComponent implements OnInit {
         return 'Tiền mặt';
       case 'vnpay':
         return 'VNPay';
+      case 'stripe':
+        return 'Stripe';
       default:
         return value;
     }

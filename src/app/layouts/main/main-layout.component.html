@@ -1,13 +1,11 @@
 <div class="layout">
   <app-main-sidebar
-    [collapsed]="collapsed"
     [items]="items"
     [currentUrl]="currentUrl"
     [userInitial]="userInitial"
     [userName]="userName"
     [userRole]="userRole"
     [userEmail]="userEmail"
-    (toggleCollapse)="collapsed = !collapsed"
   />
 
   <main class="main-content">

@@ -6,7 +6,7 @@
   margin-bottom: 10px;
   padding: 10px 14px;
   border-radius: var(--radius-lg, 10px);
-  background: color-mix(in srgb, var(--color-primary, #2563eb) 6%, var(--color-surface, #fff));
+  background: color-mix(in srgb, var(--color-primary, #15803d) 6%, var(--color-surface, #fff));
   border: 1px solid var(--color-border, #e5e7eb);
 }
 
@@ -29,7 +29,6 @@
   font-size: 16px;
 }
 
-/* Spacing when filters are projected above summary */
 ::ng-deep .chart-block__filters {
   display: flex;
   flex-wrap: wrap;

@@ -47,7 +47,6 @@ export class UserNotificationModalComponent implements OnChanges {
   }
 
   submit(ev?: Event): void {
-    // Prevent browser default form submit (can cause full page reload).
     ev?.preventDefault();
     if (this.form.invalid) {
       this.form.markAllAsTouched();

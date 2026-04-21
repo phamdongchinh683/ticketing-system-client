@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { constant } from '../../constants';
 import { CompanyListResponse } from '../../interfaces/company';
+import { buildCacheKey, CacheEntry, readCache, writeCache } from '../cache-utils';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private readonly companiesCache = new Map<string, CacheEntry<CompanyListResponse>>();
+  private readonly COMPANIES_TTL_MS = 5 * 60 * 1000;
+
   constructor(private http: HttpClient) {}
 
   getCompanies(limit: number, next?: number, name?: string): Observable<CompanyListResponse> {
@@ -13,6 +18,12 @@ export class ApiService {
     if (next !== undefined && next !== null) params['next'] = String(next);
     if (name) params['name'] = name;
 
-    return this.http.get<CompanyListResponse>(`${constant.baseUrl}/public/company`, { params });
+    const cacheKey = buildCacheKey('public-companies', params);
+    const cached = readCache(this.companiesCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http.get<CompanyListResponse>(`${constant.baseUrl}/public/company`, { params }).pipe(
+      tap((res) => writeCache(this.companiesCache, cacheKey, res, this.COMPANIES_TTL_MS)),
+    );
   }
 }

@@ -12,7 +12,7 @@ const META = new Set(['year', 'month', 'day', 'id', 'label', 'period', 'name', '
 export const BOOKING_STATUS_KEYS = ['pending', 'paid', 'cancelled', 'expired'] as const;
 export const USER_STATUS_KEYS = ['active', 'inactive', 'banned'] as const;
 export const USER_ROLE_KEYS = ['admin', 'customer', 'driver'] as const;
-export const REVENUE_METHOD_KEYS = ['cash', 'vnpay'] as const;
+export const REVENUE_METHOD_KEYS = ['cash', 'vnpay', 'stripe'] as const;
 export const REVENUE_STATUS_KEYS = ['pending', 'success', 'failed', 'refunded'] as const;
 export const REVENUE_EXTRA_KEYS = [
   'vnpay',
@@ -25,7 +25,6 @@ export const REVENUE_EXTRA_KEYS = [
   'amount',
 ] as const;
 
-/** API returns either a bare array or `{ data: [...] }` of `[period, value]` pairs. */
 function getRootArray(raw: unknown): unknown[] | null {
   if (Array.isArray(raw)) return raw;
   if (raw && typeof raw === 'object') {
@@ -39,10 +38,6 @@ function getRootArray(raw: unknown): unknown[] | null {
   return null;
 }
 
-/**
- * Parses tuple series: monthly `[month, count]`, yearly `[year, count]`.
- * Returns `[]` for an empty array response, `null` if the payload is not tuple-shaped.
- */
 export function tryParseTupleSeries(raw: unknown): [number, number][] | null {
   const arr = getRootArray(raw);
   if (arr === null) return null;
@@ -192,7 +187,6 @@ function labelForTupleKey(timeType: DashboardTimeType, key: string, yearForMonth
   return y;
 }
 
-/** Single series from `[period, value][]` (month index or year). */
 export function tuplesToSingleSeries(
   tuples: [number, number][],
   timeType: DashboardTimeType,
@@ -427,9 +421,6 @@ export function resolveRevenueChartSeries(api: StatsApi, q: DashboardStatsQuery)
   return api.getDashboardRevenue(q).pipe(map((raw) => chartFromResponse(raw, q, year, 'Revenue', REVENUE_EXTRA_KEYS)));
 }
 
-/**
- * Grand total of all values in the chart (per period, sums all datasets — correct for stacked series).
- */
 export function chartSeriesGrandTotal(chart: DashboardChartSeries): number {
   const n = chart.labels.length;
   if (n === 0 || !chart.datasets.length) return 0;

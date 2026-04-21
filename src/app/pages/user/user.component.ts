@@ -405,7 +405,7 @@ export class UserComponent implements OnInit {
         this.closeDeleteModal();
       },
       error: (err: { error?: { message?: string } }) => {
-        this.showNotification(err.error?.message || 'Xóa người dùng thất bại.', 'error');
+        this.showNotification('Không thể xóa người dùng này.', 'error');
         this.deletingUserLoading = false;
       },
     });

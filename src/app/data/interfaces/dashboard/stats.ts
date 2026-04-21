@@ -1,4 +1,3 @@
-/** Query params for GET /super-admin/dashboard/{booking|revenue|user} */
 export type DashboardTimeType = 'monthly' | 'yearly';
 
 export interface DashboardStatsQuery {
@@ -15,5 +14,4 @@ export interface DashboardChartSeries {
   datasets: { label: string; data: number[]; backgroundColor?: string }[];
 }
 
-/** Visual style for trend charts (Chart.js). */
 export type DashboardTrendChartKind = 'bar' | 'line' | 'doughnut' | 'pie';

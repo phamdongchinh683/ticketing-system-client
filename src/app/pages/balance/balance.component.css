@@ -1,4 +1,3 @@
-/* —— Page shell —— */
 .page {
   padding: 14px 8px 56px;
   max-width: 1040px;
@@ -6,7 +5,6 @@
   min-height: min(70vh, 720px);
 }
 
-/* —— Header —— */
 .page-header {
   display: grid;
   grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
@@ -66,7 +64,6 @@
   justify-content: center;
 }
 
-/* —— Buttons —— */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -101,7 +98,7 @@
   width: 14px;
   height: 14px;
   border: 2px solid #cbd5e1;
-  border-top-color: #475569;
+  border-top-color: var(--color-text-subtle);
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
 }
@@ -117,11 +114,11 @@
 }
 
 .btn-primary {
-  color: #fff;
+  color: var(--color-text-inverse);
   background: linear-gradient(
     145deg,
     var(--color-primary) 0%,
-    color-mix(in srgb, var(--color-primary) 72%, #312e81) 100%
+    color-mix(in srgb, var(--color-primary) 82%, #052e16) 100%
   );
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.1),
@@ -150,7 +147,7 @@
 }
 
 .btn-danger {
-  color: #fff;
+  color: var(--color-text-inverse);
   background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.1),
@@ -162,7 +159,7 @@
 }
 
 .btn-ghost {
-  color: #334155;
+  color: var(--color-text-body);
   background: #ffffff;
   border-color: #cbd5e1;
 }
@@ -179,7 +176,6 @@
   cursor: wait;
 }
 
-/* —— Export panel —— */
 .export-panel {
   position: relative;
   margin-bottom: 30px;
@@ -201,7 +197,7 @@
   background: linear-gradient(
     180deg,
     var(--color-primary) 0%,
-    color-mix(in srgb, var(--color-primary) 65%, #4f46e5) 100%
+    color-mix(in srgb, var(--color-primary) 78%, #14532d) 100%
   );
 }
 
@@ -358,7 +354,6 @@
   }
 }
 
-/* —— Balance cards —— */
 .balance-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -559,13 +554,13 @@
 
 .btn-chip:hover:not(:disabled) {
   border-color: var(--color-primary);
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
   color: var(--color-primary);
 }
 
 .btn-chip--active {
   border-color: var(--color-primary);
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
   color: var(--color-primary);
 }
 
@@ -619,7 +614,7 @@
   -webkit-backdrop-filter: blur(1px);
   backdrop-filter: blur(1px);
   z-index: 2;
-  color: #475569;
+  color: var(--color-text-subtle);
   font-size: 13px;
   font-weight: 600;
 }
@@ -654,7 +649,7 @@
 .payout-table th {
   font-size: 12px;
   letter-spacing: 0.02em;
-  color: #475569;
+  color: var(--color-text-subtle);
   background: #f8fafc;
   position: sticky;
   top: 0;
@@ -683,21 +678,21 @@
 }
 
 .payout-status--paid {
-  color: #166534;
+  color: var(--color-success-text);
   background: #ecfdf5;
   border-color: #bbf7d0;
 }
 
 .payout-status--pending,
 .payout-status--in_transit {
-  color: #92400e;
+  color: var(--color-warning-text);
   background: #fffbeb;
   border-color: #fde68a;
 }
 
 .payout-status--failed,
 .payout-status--canceled {
-  color: #991b1b;
+  color: var(--color-danger-text);
   background: #fef2f2;
   border-color: #fecaca;
 }

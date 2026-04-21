@@ -95,8 +95,6 @@ export class BalanceComponent implements OnInit {
   isUsd(item: BalanceMoneyItem): boolean {
     return item.currency.trim().toLowerCase() === 'usd';
   }
-
-
   balanceContextMessage(item: BalanceMoneyItem, section: 'available' | 'pending'): string {
     if (section === 'pending') {
       if (item.amount < 0) {
@@ -387,9 +385,11 @@ export class BalanceComponent implements OnInit {
     if (code === 'vnd') {
       return this.formatVnd(Math.round(item.amount / 100));
     }
-    if (code === 'usd' && this.usdToVndRate != null) {
+    if (code === 'usd') {
+      const rate = this.usdToVndRate ?? BalanceComponent.FALLBACK_USD_TO_VND_RATE;
+      if (!Number.isFinite(rate) || rate <= 0) return '—';
       const usdMajor = item.amount / 100;
-      return this.formatVnd(Math.round(usdMajor * this.usdToVndRate));
+      return this.formatVnd(Math.round(usdMajor * rate));
     }
     return '—';
   }
@@ -469,9 +469,7 @@ export class BalanceComponent implements OnInit {
     if (star?.[1]) {
       try {
         return decodeURIComponent(star[1].replace(/"/g, ''));
-      } catch {
-        /* fall through */
-      }
+      } catch {}
     }
     const quoted = /filename="([^"]+)"/i.exec(header);
     if (quoted?.[1]) return quoted[1];

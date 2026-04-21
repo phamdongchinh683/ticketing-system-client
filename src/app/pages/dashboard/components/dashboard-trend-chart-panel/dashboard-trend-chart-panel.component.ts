@@ -19,6 +19,5 @@ export class DashboardTrendChartPanelComponent {
   @Input({ required: true }) chartKind!: DashboardTrendChartKind;
   @Input({ required: true }) stacked!: boolean;
   @Input({ required: true }) total!: number;
-  /** Matches `app-dashboard-chart` yFormat — drives summary formatting. */
   @Input() summaryFormat: 'number' | 'currency' = 'number';
 }

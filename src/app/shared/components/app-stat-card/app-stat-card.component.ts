@@ -11,5 +11,5 @@ import { CommonModule } from '@angular/common';
 export class AppStatCardComponent {
   @Input() label = '';
   @Input() value: string | number | null = '';
-  @Input() color: 'blue' | 'green' | 'orange' | 'purple' = 'blue';
+  @Input() color: 'blue' | 'green' | 'orange' | 'primary' = 'blue';
 }

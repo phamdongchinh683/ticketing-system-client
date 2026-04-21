@@ -2,14 +2,12 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Messaging } from '@angular/fire/messaging';
-import { getToken, isSupported } from 'firebase/messaging';
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 import { navItems } from '../../data/mocks';
-import { auth, device } from '../../data/services';
-import { firebaseVapidKey } from '../../data/constants';
+import { auth } from '../../data/services';
 import { MainSidebarComponent, type MainNavItem } from './components/main-sidebar/main-sidebar.component';
 import { MainTopbarComponent } from './components/main-topbar/main-topbar.component';
+import { FcmDeviceService } from '../../core/services/fcm-device.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -19,7 +17,6 @@ import { MainTopbarComponent } from './components/main-topbar/main-topbar.compon
   styleUrl: './main-layout.component.css',
 })
 export class MainLayoutComponent implements OnInit {
-  collapsed = false;
   currentUrl = '';
   userName = 'Người dùng';
   userEmail = '';
@@ -41,8 +38,7 @@ export class MainLayoutComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(auth.ApiService);
-  private readonly deviceApi = inject(device.ApiService);
-  private readonly messaging = inject(Messaging);
+  private readonly fcmDeviceService = inject(FcmDeviceService);
 
   get pageTitle(): string {
     return this.pageTitles[this.currentUrl] || 'Tổng quan';
@@ -63,7 +59,8 @@ export class MainLayoutComponent implements OnInit {
   }
 
   logout() {
-    this.deleteCurrentDeviceToken()
+    this.fcmDeviceService
+      .removeCurrentDeviceToken()
       .pipe(
         switchMap(() => this.api.logout()),
         catchError(() => of(null)),
@@ -86,50 +83,12 @@ export class MainLayoutComponent implements OnInit {
       this.userEmail = user.email || '';
       this.userRole = (user.staffProfileRole || user.role || '').replace(/_/g, ' ');
       this.userInitial = this.userName.charAt(0).toUpperCase();
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }
 
   private handleLogoutSuccess() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
-  }
-
-  private deleteCurrentDeviceToken(): Observable<void> {
-    return from(this.getCurrentFcmToken()).pipe(
-      switchMap((fcmToken) => {
-        if (!fcmToken) return of(void 0);
-        return this.deviceApi.getFcmTokens().pipe(
-          switchMap((tokens) => {
-            const currentDevice = tokens.find((item) => item.fcmToken === fcmToken);
-            if (!currentDevice) return of(void 0);
-            return this.deviceApi.deleteFcmToken(currentDevice.id).pipe(map(() => void 0));
-          }),
-          catchError(() => of(void 0)),
-        );
-      }),
-      catchError(() => of(void 0)),
-    );
-  }
-
-  private async getCurrentFcmToken(): Promise<string | null> {
-    if (typeof window === 'undefined') return null;
-    if (!(await isSupported())) return null;
-    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return null;
-
-    const registration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-    if (!registration) return null;
-
-    try {
-      const token = await getToken(this.messaging, {
-        vapidKey: firebaseVapidKey,
-        serviceWorkerRegistration: registration,
-      });
-      return token || null;
-    } catch {
-      return null;
-    }
   }
 }

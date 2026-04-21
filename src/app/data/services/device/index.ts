@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { constant } from '../../constants';
 import { DeviceFcmToken, SaveDeviceFcmTokenBody } from '../../interfaces/device';
+import { CacheEntry, clearCacheByPrefix, readCache, writeCache } from '../cache-utils';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private readonly deviceCache = new Map<string, CacheEntry<DeviceFcmToken[]>>();
+  private readonly DEVICE_TTL_MS = 3 * 60 * 1000;
+
   constructor(private readonly http: HttpClient) {}
 
   private authHeaders() {
@@ -16,20 +21,30 @@ export class ApiService {
   }
 
   getFcmTokens(): Observable<DeviceFcmToken[]> {
-    return this.http.get<DeviceFcmToken[]>(`${constant.baseUrl}/auth/device/fcm-token`, {
-      headers: this.authHeaders(),
-    });
+    const cacheKey = 'device-fcm-tokens';
+    const cached = readCache(this.deviceCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get<DeviceFcmToken[]>(`${constant.baseUrl}/auth/device/fcm-token`, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap((res) => writeCache(this.deviceCache, cacheKey, res, this.DEVICE_TTL_MS)));
   }
 
   saveFcmToken(body: SaveDeviceFcmTokenBody): Observable<DeviceFcmToken> {
-    return this.http.post<DeviceFcmToken>(`${constant.baseUrl}/auth/device/fcm-token`, body, {
-      headers: this.authHeaders(),
-    });
+    return this.http
+      .post<DeviceFcmToken>(`${constant.baseUrl}/auth/device/fcm-token`, body, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap(() => clearCacheByPrefix(this.deviceCache, 'device-fcm-tokens')));
   }
 
   deleteFcmToken(id: number): Observable<unknown> {
-    return this.http.delete(`${constant.baseUrl}/auth/device/fcm-token/${id}`, {
-      headers: this.authHeaders(),
-    });
+    return this.http
+      .delete(`${constant.baseUrl}/auth/device/fcm-token/${id}`, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap(() => clearCacheByPrefix(this.deviceCache, 'device-fcm-tokens')));
   }
 }

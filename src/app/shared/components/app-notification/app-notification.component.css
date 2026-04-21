@@ -4,52 +4,103 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-  min-width: 300px;
-  max-width: 500px;
+  min-width: 320px;
+  max-width: min(560px, calc(100vw - 28px));
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
-  border-radius: 8px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
-  animation: slideIn 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: notification-in 0.22s ease-out;
+  box-shadow:
+    0 6px 18px rgba(2, 6, 23, 0.12),
+    0 2px 6px rgba(2, 6, 23, 0.08);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 .notification--success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+  background: #ecfdf3;
+  color: var(--color-success-text);
+  border: 1px solid #bbf7d0;
 }
 .notification--error {
-  background: #fce4ec;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
+  background: #fef2f2;
+  color: var(--color-danger-text);
+  border: 1px solid #fecaca;
 }
 .notification--warning {
-  background: #fff3e0;
-  color: #e65100;
-  border: 1px solid #ffcc80;
+  background: #fff7ed;
+  color: var(--color-warning-text);
+  border: 1px solid #fdba74;
 }
 .notification--info {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1px solid #90caf9;
+  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+  color: var(--color-primary);
+  border: 1px solid rgba(44, 122, 75, 0.28);
 }
 .notification__icon {
-  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: rgba(255, 255, 255, 0.55);
 }
 .notification__message {
   flex: 1;
+  line-height: 1.45;
+  font-weight: 500;
+  padding-top: 1px;
 }
 .notification__close {
-  background: none;
-  border: none;
-  font-size: 18px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.45);
+  font-size: 17px;
   cursor: pointer;
   color: inherit;
-  opacity: 0.6;
+  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    opacity 0.14s ease,
+    background-color 0.14s ease,
+    transform 0.14s ease;
 }
 .notification__close:hover {
   opacity: 1;
+  background: rgba(255, 255, 255, 0.78);
+  transform: scale(1.04);
+}
+
+@keyframes notification-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 640px) {
+  .notification {
+    top: 16px;
+    min-width: 0;
+    width: calc(100vw - 20px);
+    padding: 11px 12px;
+  }
 }

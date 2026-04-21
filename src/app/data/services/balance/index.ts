@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { constant } from '../../constants';
 import { BalanceResponse } from '../../interfaces/balance';
+import { CacheEntry, clearCacheByPrefix, readCache, writeCache } from '../cache-utils';
 
 export interface WithdrawBalanceRequest {
   amount: number;
@@ -38,6 +40,9 @@ export interface PayoutListQuery {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private readonly balanceCache = new Map<string, CacheEntry<BalanceResponse>>();
+  private readonly BALANCE_TTL_MS = 5 * 1000;
+
   constructor(private http: HttpClient) {}
 
   private authHeaders() {
@@ -48,15 +53,23 @@ export class ApiService {
   }
 
   getBalance(): Observable<BalanceResponse> {
-    return this.http.get<BalanceResponse>(`${constant.baseUrl}/super-admin/balance`, {
-      headers: this.authHeaders(),
-    });
+    const cacheKey = 'balance-overview';
+    const cached = readCache(this.balanceCache, cacheKey);
+    if (cached) return of(cached);
+
+    return this.http
+      .get<BalanceResponse>(`${constant.baseUrl}/super-admin/balance`, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap((res) => writeCache(this.balanceCache, cacheKey, res, this.BALANCE_TTL_MS)));
   }
 
   withdrawBalance(payload: WithdrawBalanceRequest): Observable<WithdrawBalanceResponse> {
-    return this.http.post<WithdrawBalanceResponse>(`${constant.baseUrl}/super-admin/balance/withdraw`, payload, {
-      headers: this.authHeaders(),
-    });
+    return this.http
+      .post<WithdrawBalanceResponse>(`${constant.baseUrl}/super-admin/balance/withdraw`, payload, {
+        headers: this.authHeaders(),
+      })
+      .pipe(tap(() => clearCacheByPrefix(this.balanceCache, 'balance-overview')));
   }
 
   getPayouts(query: PayoutListQuery = {}): Observable<PayoutListResponse> {

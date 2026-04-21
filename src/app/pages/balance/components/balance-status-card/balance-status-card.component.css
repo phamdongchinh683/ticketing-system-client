@@ -21,7 +21,7 @@
 }
 
 .balance-card--available {
-  border-top: 3px solid color-mix(in srgb, var(--color-primary) 88%, #1e1b4b);
+  border-top: 3px solid color-mix(in srgb, var(--color-primary) 90%, #052e16);
 }
 
 .balance-card--pending {
@@ -115,7 +115,7 @@
   max-width: 420px;
   font-size: 13px;
   line-height: 1.56;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .balance-list__context--negative {
@@ -124,7 +124,7 @@
 }
 
 .balance-list__context--positive {
-  color: #166534;
+  color: var(--color-success-text);
   font-weight: 500;
 }
 
@@ -133,18 +133,18 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  color: #0f172a;
+  color: var(--color-text-title);
 }
 
 .balance-list__amount--negative {
-  color: #b91c1c;
+  color: var(--color-danger-text);
 }
 
 .balance-list__amount-secondary {
   font-size: 13px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #64748b;
+  color: var(--color-text-muted);
   line-height: 1.4;
 }
 

@@ -1,5 +1,3 @@
-/* Shared form controls + modals — used by user page and user modal components */
-
 .field {
   display: flex;
   flex-direction: column;
