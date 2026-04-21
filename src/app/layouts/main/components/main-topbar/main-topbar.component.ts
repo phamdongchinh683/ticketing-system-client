@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
+import { timeout } from 'rxjs/operators';
 import { notification } from '../../../../data/services';
 import { NotificationItem, VerifyAccountStatus } from '../../../../data/interfaces/notification';
 import { Messaging } from '@angular/fire/messaging';
@@ -42,6 +43,7 @@ export class MainTopbarComponent implements OnInit {
   selectedNotification: NotificationItem | null = null;
   isVerifyDialogOpen = false;
   isVerifyingAccount = false;
+  verifyErrorMessage = '';
 
   readonly verifyStatuses: Array<{ value: VerifyAccountStatus; label: string }> = [
     { value: 'active', label: 'Hoạt động' },
@@ -107,9 +109,10 @@ export class MainTopbarComponent implements OnInit {
   }
 
   closeVerifyDialog() {
-    if (this.isVerifyingAccount) return;
     this.isVerifyDialogOpen = false;
     this.selectedNotification = null;
+    this.verifyErrorMessage = '';
+    this.isVerifyingAccount = false;
 
     this.cdr.markForCheck();
   }
@@ -119,15 +122,18 @@ export class MainTopbarComponent implements OnInit {
 
     const accountId = this.resolveUserNewAccountId(this.selectedNotification);
     if (accountId === '' || accountId === null || accountId === undefined) {
+      this.verifyErrorMessage = 'Không tìm thấy mã tài khoản để xác minh.';
       this.cdr.markForCheck();
       return;
     }
 
+    this.verifyErrorMessage = '';
     this.isVerifyingAccount = true;
     this.notificationApi
       .verifyAccount({ id: Number(accountId), status })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        timeout(15000),
         finalize(() => {
           this.isVerifyingAccount = false;
           this.cdr.markForCheck();
@@ -138,7 +144,9 @@ export class MainTopbarComponent implements OnInit {
           this.isVerifyDialogOpen = false;
           this.selectedNotification = null;
         },
-        error: () => {},
+        error: (err: unknown) => {
+          this.verifyErrorMessage = this.extractErrorMessage(err);
+        },
       });
   }
 
@@ -269,8 +277,22 @@ export class MainTopbarComponent implements OnInit {
   private openVerifyDialog(noti: NotificationItem) {
     this.selectedNotification = noti;
     this.isVerifyDialogOpen = true;
+    this.verifyErrorMessage = '';
 
     this.cdr.markForCheck();
+  }
+
+  private extractErrorMessage(err: unknown): string {
+    if (typeof err === 'object' && err !== null) {
+      const maybeError = err as { error?: { message?: unknown }; message?: unknown };
+      if (typeof maybeError.error?.message === 'string' && maybeError.error.message.trim() !== '') {
+        return maybeError.error.message;
+      }
+      if (typeof maybeError.message === 'string' && maybeError.message.trim() !== '') {
+        return maybeError.message;
+      }
+    }
+    return 'Xác minh tài khoản thất bại. Vui lòng thử lại.';
   }
 
   private normalizeNotification(item: NotificationItem): NotificationItem {

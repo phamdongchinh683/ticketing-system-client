@@ -94,7 +94,6 @@
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 10px 20px;
-  padding: 16px 0;
 }
 
 .balance-list__row:last-child .balance-list__line {

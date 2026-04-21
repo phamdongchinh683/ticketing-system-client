@@ -20,6 +20,7 @@ import { BalanceStatusCardComponent } from './components/balance-status-card/bal
 })
 export class BalanceComponent implements OnInit {
   private static readonly MIN_WITHDRAW_VND = 500000;
+  private static readonly FALLBACK_USD_TO_VND_RATE = 26000;
   data: BalanceResponse | null = null;
   loading = true;
 
@@ -102,7 +103,7 @@ export class BalanceComponent implements OnInit {
         return 'Số dư đang âm và đang chờ xử lý — vui lòng thanh toán cho nền tảng. Thời gian cập nhật thường khoảng 2–3 ngày.';
       }
       if (item.amount > 0) {
-        return 'Đang chờ — thường cần khoảng 2–3 ngày để chuyển sang số dư khả dụng.';
+        return 'Khoản này thường là tiền hoa hồng chờ về từ những công ty nhà xe ở nền tảng Stripe.';
       }
       return 'Đang chờ xác nhận — thường khoảng 2–3 ngày để cập nhật.';
     }
@@ -131,8 +132,7 @@ export class BalanceComponent implements OnInit {
   }
 
   formatUsdAsVnd(item: BalanceMoneyItem): string {
-    const rate = this.usdToVndRate;
-    if (rate == null) return '';
+    const rate = this.usdToVndRate ?? BalanceComponent.FALLBACK_USD_TO_VND_RATE;
     const major = item.amount / 100;
     const vnd = Math.round(major * rate);
     return this.formatVnd(vnd);
@@ -146,8 +146,30 @@ export class BalanceComponent implements OnInit {
   }
 
   formatUsdAsVndSecondary(item: BalanceMoneyItem): string {
-    if (!this.isUsd(item)) return '';
-    return this.formatUsdAsVnd(item);
+    const code = item.currency.trim().toLowerCase();
+    const rate = this.usdToVndRate ?? BalanceComponent.FALLBACK_USD_TO_VND_RATE;
+    if (!Number.isFinite(rate) || rate <= 0) return '';
+
+    if (code === 'usd') {
+      return this.formatUsdAsVnd(item);
+    }
+
+    if (code === 'vnd') {
+      const vndMajor = Math.round(item.amount / 100);
+      const usdMajor = vndMajor / rate;
+      try {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(usdMajor);
+      } catch {
+        return `${usdMajor.toFixed(2)} USD`;
+      }
+    }
+
+    return '';
   }
 
   formatMoney(item: BalanceMoneyItem): string {

@@ -59,7 +59,7 @@ export class AdminComponent implements OnInit {
     private readonly api: companyAdmin.ApiService,
     private readonly publicCompanies: publicApi.ApiService,
     private readonly authApi: auth.ApiService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadCompaniesForSelect();
@@ -231,7 +231,7 @@ export class AdminComponent implements OnInit {
   }
 
   private loadCompaniesForSelect() {
-    this.publicCompanies.getCompanies(100).subscribe({
+    this.publicCompanies.getCompanies(50).subscribe({
       next: (r) => {
         this.companies = r.companies ?? [];
       },
