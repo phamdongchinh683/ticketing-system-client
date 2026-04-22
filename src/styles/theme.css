@@ -47,18 +47,18 @@
   --radius-lg: 10px;
   --radius-xl: 12px;
 
-  --sidebar-bg: #14532d;
-  --sidebar-border: rgba(255, 255, 255, 0.14);
-  --sidebar-hover: rgba(255, 255, 255, 0.08);
-  --sidebar-hover-bg: rgba(220, 252, 231, 0.1);
-  --sidebar-active-bg: rgba(63, 153, 99, 0.16);
-  --sidebar-active-border: rgba(134, 239, 172, 0.62);
-  --sidebar-text: rgba(220, 252, 231, 0.7);
-  --sidebar-text-hover: rgba(236, 253, 243, 0.9);
-  --sidebar-text-active: #a7f3d0;
-  --sidebar-text-muted: rgba(220, 252, 231, 0.56);
+  --sidebar-bg: #f8fcf9;
+  --sidebar-border: #dbe9de;
+  --sidebar-hover: #f5fbf6;
+  --sidebar-hover-bg: #f1faf3;
+  --sidebar-active-bg: #eaf7ed;
+  --sidebar-active-border: #4caf50;
+  --sidebar-text: #4caf50;
+  --sidebar-text-hover: #3f9142;
+  --sidebar-text-active: #2f7d32;
+  --sidebar-text-muted: #7ea987;
   --sidebar-width: 260px;
   --sidebar-collapsed: 72px;
-  --topbar-bg: linear-gradient(180deg, #f6fbf7 0%, #edf7f0 100%);
-  --topbar-border: #bbf7d0;
+  --topbar-bg: linear-gradient(180deg, #fbfefc 0%, #f4faf6 100%);
+  --topbar-border: #dbe9de;
 }

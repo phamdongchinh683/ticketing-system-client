@@ -4,10 +4,6 @@
 </div>
 
 <div *ngIf="!loading" class="page-body">
-  <div class="summary">
-    <span>{{ users.length }} người dùng</span>
-  </div>
-
   <div class="table-wrap" *ngIf="users.length > 0; else emptyState">
     <table class="table">
       <thead>

@@ -86,8 +86,8 @@ select.company-select option {
 select.select option:checked,
 select.limit-select option:checked,
 select.company-select option:checked {
-  background: #e8f5e9;
-  color: #1f2937;
+  background: #4caf50;
+  color: #ffffff;
 }
 
 .dropdown {
@@ -129,9 +129,10 @@ select.company-select option:checked {
 }
 
 .dropdown-item:hover {
-  background: #f3fbf4;
-  border-color: #cdeed3;
+  background: #4caf50;
+  border-color: #8fd29a;
   box-shadow: inset 3px 0 0 #4caf50;
+  color: #ffffff;
 }
 
 .dropdown-item:focus-visible {

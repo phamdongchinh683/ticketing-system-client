@@ -45,7 +45,7 @@
   border: 1px solid var(--color-border);
   border-radius: 9999px;
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg));
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   cursor: pointer;
   transition:
     color 0.15s ease,
@@ -60,8 +60,8 @@
 }
 
 .btn-notification:hover {
-  color: var(--color-text-title);
-  border-color: rgba(44, 122, 75, 0.35);
+  color: var(--color-primary);
+  border-color: rgba(76, 175, 80, 0.35);
   background: color-mix(in srgb, var(--color-primary) 8%, #ffffff);
   transform: translateY(-1px);
 }
@@ -260,7 +260,7 @@
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg));
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  color: var(--color-text-body);
+  color: var(--color-primary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -277,9 +277,9 @@
 }
 
 .btn-logout:hover {
-  background: color-mix(in srgb, var(--color-red) 8%, #ffffff);
-  border-color: rgba(220, 38, 38, 0.35);
-  color: var(--color-danger-text);
+  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+  border-color: rgba(76, 175, 80, 0.35);
+  color: var(--color-primary);
   transform: translateY(-1px);
 }
 
