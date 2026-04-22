@@ -1,5 +1,5 @@
 <div class="cards-grid">
-  <app-stat-card label="Tổng người dùng" [value]="overview.totalUsers" color="blue">
+  <app-stat-card label="Người dùng" [value]="overview.totalUsers" color="blue">
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -15,7 +15,7 @@
     </svg>
   </app-stat-card>
 
-  <app-stat-card label="Tổng lượt đặt vé" [value]="overview.totalBookings" color="green">
+  <app-stat-card label="Lượt đặt vé" [value]="overview.totalBookings" color="green">
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -30,7 +30,7 @@
   </app-stat-card>
 
   <app-stat-card
-    label="Tổng doanh thu"
+    label="Doanh thu"
     [value]="overview.totalRevenue | currency: 'VND' : 'symbol' : '1.0-0'"
     color="orange"
   >
@@ -47,7 +47,7 @@
     </svg>
   </app-stat-card>
 
-  <app-stat-card label="Tổng nhà xe" [value]="overview.totalCompanies" color="primary">
+  <app-stat-card label="Nhà xe" [value]="overview.totalCompanies" color="primary">
     <svg
       viewBox="0 0 24 24"
       fill="none"

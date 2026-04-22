@@ -78,7 +78,7 @@
             <label class="filter">
               <span>Trạng thái đặt vé</span>
               <select class="select" [(ngModel)]="bookingStatusFilter" (ngModelChange)="onBookingChartFiltersChange()">
-                <option [ngValue]="''">Tất cả (xếp chồng theo trạng thái)</option>
+                <option [ngValue]="''">Tất cả</option>
                 @for (s of bookingStatuses; track s) {
                   <option [ngValue]="s">{{ displayStatusLabel(s) }}</option>
                 }

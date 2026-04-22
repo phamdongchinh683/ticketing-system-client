@@ -294,49 +294,10 @@
   position: relative;
 }
 
-.field__control::after {
-  content: '';
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid var(--color-text-muted);
-  pointer-events: none;
-  opacity: 0.65;
-}
-
 .select {
   width: 100%;
   min-width: 0;
-  padding: 11px 36px 11px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: #fafbfc;
-  color: var(--color-text-dark);
-  font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
-  appearance: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.select:hover {
-  border-color: color-mix(in srgb, var(--color-border) 40%, var(--color-primary));
-  background: #fff;
-}
-
-.select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background: #fff;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
 }
 
 @keyframes spin {
