@@ -67,7 +67,9 @@
             }
           },
           "defaultConfiguration": "development",
-          "options": {}
+          "options": {
+            "prebundle": false
+          }
         }
       }
     }
