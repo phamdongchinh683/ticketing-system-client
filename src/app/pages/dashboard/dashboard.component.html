@@ -36,7 +36,7 @@
         >
           <div class="chart-block__filters">
             <label class="filter">
-              <span>Trạng thái người dùng</span>
+              <span>Trạng thái</span>
               <select class="select" [(ngModel)]="userStatusFilter" (ngModelChange)="onUserChartFiltersChange()">
                 <option [ngValue]="''">Tất cả</option>
                 @for (s of userStatuses; track s) {
@@ -45,7 +45,7 @@
               </select>
             </label>
             <label class="filter">
-              <span>Vai trò người dùng</span>
+              <span>Vai trò</span>
               <select class="select" [(ngModel)]="userRoleFilter" (ngModelChange)="onUserChartFiltersChange()">
                 <option [ngValue]="''">Tất cả</option>
                 @for (r of userRoles; track r) {

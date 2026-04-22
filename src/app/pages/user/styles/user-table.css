@@ -53,6 +53,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 900px;
+  table-layout: fixed;
 }
 
 th,
@@ -62,6 +63,7 @@ td {
   border-bottom: 1px solid var(--color-border);
   font-size: 13px;
   color: var(--color-text-dark);
+  vertical-align: middle;
 }
 
 th {
@@ -77,6 +79,30 @@ th {
 
 tbody tr:hover td {
   background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+}
+
+/* Keep table stable when new rows contain long values */
+th:nth-child(1),
+td:nth-child(1) {
+  width: 56px;
+}
+
+th:nth-child(2),
+td:nth-child(2),
+th:nth-child(3),
+td:nth-child(3),
+th:nth-child(4),
+td:nth-child(4),
+th:nth-child(5),
+td:nth-child(5) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+  width: 170px;
 }
 
 .pill {

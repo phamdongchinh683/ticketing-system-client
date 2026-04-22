@@ -1,10 +1,10 @@
 .chart-block__summary {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 10px;
-  padding: 10px 14px;
+  padding: 5px 14px;
   border-radius: var(--radius-lg, 10px);
   background: color-mix(in srgb, var(--color-primary, #15803d) 6%, var(--color-surface, #fff));
   border: 1px solid var(--color-border, #e5e7eb);
