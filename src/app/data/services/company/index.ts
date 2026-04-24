@@ -30,7 +30,14 @@ export class ApiService {
       .pipe(tap((res) => writeCache(this.companiesCache, cacheKey, res, this.COMPANIES_TTL_MS)));
   }
 
-  createCompany(name: string, hotline: string, logoUrl: string): Observable<CreateCompanyResponse> {
+  createCompany(
+    name: string,
+    hotline: string,
+    logoUrl: string,
+    address: string,
+    latitude?: number,
+    longitude?: number,
+  ): Observable<CreateCompanyResponse> {
     return this.http
       .post<CreateCompanyResponse>(
       `${constant.baseUrl}/super-admin/bus-company`,
@@ -38,6 +45,9 @@ export class ApiService {
         name,
         hotline,
         logoUrl,
+        address,
+        latitude,
+        longitude,
       },
       {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -48,7 +58,7 @@ export class ApiService {
 
   updateCompany(
     id: number,
-    data: Partial<{ name: string; hotline: string; logoUrl: string }>,
+    data: Partial<{ name: string; hotline: string; logoUrl: string; address: string; latitude: number | null; longitude: number | null }>,
   ): Observable<CreateCompanyResponse> {
     return this.http
       .put<CreateCompanyResponse>(`${constant.baseUrl}/super-admin/bus-company/${id}`, data, {

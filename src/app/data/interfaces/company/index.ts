@@ -3,6 +3,9 @@ export interface Company {
   name: string;
   hotline: string;
   logoUrl: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface CompanyListResponse {

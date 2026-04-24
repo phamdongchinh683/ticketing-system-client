@@ -39,61 +39,74 @@ export class ApiService {
 
   async resizeImageFile(
     file: File,
-    options?: { maxDimension?: number; outputType?: string; quality?: number },
+    options?: { maxDimension?: number; outputType?: string; quality?: number; minFileSize?: number },
   ): Promise<File> {
     const maxDimension = options?.maxDimension ?? 512;
     const outputType = options?.outputType ?? 'image/jpeg';
     const quality = options?.quality ?? 0.85;
+    const minFileSize = options?.minFileSize ?? 600 * 1024;
 
-    if (file.size < 800 * 1024) return file;
+    if (!file.type.startsWith('image/')) return file;
+    if (file.size < minFileSize) return file;
 
-    const image = await this.loadImageBitmap(file);
+    const image = await this.loadImageSource(file);
     const { width, height } = image;
+    if (!width || !height) return file;
 
     const scale = Math.min(maxDimension / width, maxDimension / height, 1);
-    if (scale === 1) return file;
+    const nextWidth = Math.max(1, Math.round(width * scale));
+    const nextHeight = Math.max(1, Math.round(height * scale));
+    const shouldResize = nextWidth < width || nextHeight < height;
 
     const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(width * scale));
-    canvas.height = Math.max(1, Math.round(height * scale));
+    canvas.width = nextWidth;
+    canvas.height = nextHeight;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return file;
 
     try {
-      ctx.drawImage(image as unknown as CanvasImageSource, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image.source, 0, 0, canvas.width, canvas.height);
     } finally {
-      if (typeof (image as ImageBitmap | { close?: () => void }).close === 'function') {
-        (image as ImageBitmap | { close?: () => void }).close?.();
-      }
+      image.close?.();
     }
 
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), outputType, quality));
     if (!blob) return file;
+    if (!shouldResize && blob.size >= file.size) return file;
 
     const newExt = outputType === 'image/png' ? 'png' : outputType === 'image/webp' ? 'webp' : 'jpg';
     const baseName = file.name.replace(/\.[^/.]+$/, '');
     return new File([blob], `${baseName}.${newExt}`, { type: outputType });
   }
 
-  private async loadImageBitmap(file: File): Promise<ImageBitmap | { width: number; height: number }> {
+  private async loadImageSource(
+    file: File,
+  ): Promise<{ source: CanvasImageSource; width: number; height: number; close?: () => void }> {
     if ('createImageBitmap' in window) {
-      return await createImageBitmap(file);
+      const bitmap = await createImageBitmap(file);
+      return {
+        source: bitmap,
+        width: bitmap.width,
+        height: bitmap.height,
+        close: () => bitmap.close(),
+      };
     }
 
     return await new Promise((resolve) => {
       const url = URL.createObjectURL(file);
       const img = document.createElement('img');
-      img.onload = () =>
-        resolve({ width: img.naturalWidth, height: img.naturalHeight } as { width: number; height: number });
-      img.onerror = () => resolve({ width: 0, height: 0 });
       img.onload = () => {
         URL.revokeObjectURL(url);
-        resolve({ width: img.naturalWidth, height: img.naturalHeight } as { width: number; height: number });
+        resolve({
+          source: img,
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        resolve({ width: 0, height: 0 });
+        resolve({ source: img, width: 0, height: 0 });
       };
       img.src = url;
     });

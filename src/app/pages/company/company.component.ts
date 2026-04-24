@@ -57,6 +57,9 @@ export class CompanyComponent implements OnInit {
       name: [''],
       hotline: [''],
       logoUrl: [''],
+      address: [''],
+      latitude: [null as number | null],
+      longitude: [null as number | null],
     });
   }
 
@@ -114,7 +117,7 @@ export class CompanyComponent implements OnInit {
 
   openCreateModal() {
     this.editingCompany = null;
-    this.companyForm.reset({ name: '', hotline: '', logoUrl: '' });
+    this.companyForm.reset({ name: '', hotline: '', logoUrl: '', address: '', latitude: null, longitude: null });
     this.showModal = true;
   }
 
@@ -124,6 +127,9 @@ export class CompanyComponent implements OnInit {
       name: c.name,
       hotline: c.hotline,
       logoUrl: c.logoUrl,
+      address: c.address ?? '',
+      latitude: c.latitude ?? null,
+      longitude: c.longitude ?? null,
     });
     this.showModal = true;
   }
@@ -136,10 +142,14 @@ export class CompanyComponent implements OnInit {
   private readonly NAME_REGEX = /^[a-zA-ZÀ-ỹ\s]{5,}$/;
 
   onSubmit() {
-    const { name: rawName, hotline: rawHotline, logoUrl: rawLogo } = this.companyForm.getRawValue();
+    const { name: rawName, hotline: rawHotline, logoUrl: rawLogo, address: rawAddress, latitude: rawLatitude, longitude: rawLongitude } =
+      this.companyForm.getRawValue();
     const name = (rawName ?? '').trim();
     const hotline = (rawHotline ?? '').trim();
     const logoUrl = (rawLogo ?? '').trim();
+    const address = (rawAddress ?? '').trim();
+    const latitude = this.toNullableNumber(rawLatitude);
+    const longitude = this.toNullableNumber(rawLongitude);
 
     if (!name) {
       this.showNotification('Tên là bắt buộc.', 'warning');
@@ -149,18 +159,57 @@ export class CompanyComponent implements OnInit {
       this.showNotification('Tên phải có ít nhất 5 ký tự và chỉ chứa chữ cái.', 'warning');
       return;
     }
-    if (hotline && (hotline.length < 10 || !/^\d+$/.test(hotline))) {
-      this.showNotification('Hotline phải có ít nhất 11 chữ số.', 'warning');
+    if (hotline && (hotline.length <= 9 || !/^\d+$/.test(hotline))) {
+      this.showNotification('Hotline phải có ít nhất 10 chữ số.', 'warning');
+      return;
+    }
+    const originalAddress = (this.editingCompany?.address ?? '').trim();
+    const isAddressChanged = !this.editingCompany || address !== originalAddress;
+    if (isAddressChanged) {
+      if (!address) {
+        this.showNotification('Địa chỉ là bắt buộc.', 'warning');
+        return;
+      }
+      if (address.length < 6) {
+        this.showNotification('Địa chỉ quá ngắn.', 'warning');
+        return;
+      }
+      if (latitude === null || longitude === null) {
+        this.showNotification('Vui lòng kiểm tra địa chỉ trên bản đồ để lấy tọa độ.', 'warning');
+        return;
+      }
+    }
+    if ((latitude === null) !== (longitude === null)) {
+      this.showNotification('Vui lòng nhập đầy đủ cả latitude và longitude.', 'warning');
+      return;
+    }
+    if (latitude !== null && (latitude < -90 || latitude > 90)) {
+      this.showNotification('Latitude phải trong khoảng -90 đến 90.', 'warning');
+      return;
+    }
+    if (longitude !== null && (longitude < -180 || longitude > 180)) {
+      this.showNotification('Longitude phải trong khoảng -180 đến 180.', 'warning');
       return;
     }
 
     this.submitting = true;
 
     if (this.editingCompany) {
-      const data: Record<string, string> = {};
+      const data: Partial<{ name: string; hotline: string; logoUrl: string; address: string; latitude: number | null; longitude: number | null }> =
+        {};
       if (name !== this.editingCompany.name) data['name'] = name;
       if (hotline !== this.editingCompany.hotline) data['hotline'] = hotline;
       if (logoUrl !== this.editingCompany.logoUrl) data['logoUrl'] = logoUrl;
+      if (address !== originalAddress) data['address'] = address;
+      const originalLatitude = this.toNullableNumber(this.editingCompany.latitude);
+      const originalLongitude = this.toNullableNumber(this.editingCompany.longitude);
+      if (latitude !== originalLatitude) data['latitude'] = latitude;
+      if (longitude !== originalLongitude) data['longitude'] = longitude;
+      if (Object.keys(data).length === 0) {
+        this.showNotification('Không có thay đổi để cập nhật.', 'info');
+        this.submitting = false;
+        return;
+      }
 
       this.api.updateCompany(this.editingCompany.id, data).subscribe({
         next: (res) => {
@@ -175,7 +224,7 @@ export class CompanyComponent implements OnInit {
         },
       });
     } else {
-      this.api.createCompany(name, hotline, logoUrl).subscribe({
+      this.api.createCompany(name, hotline, logoUrl, address, latitude ?? undefined, longitude ?? undefined).subscribe({
         next: (res) => {
           this.companies = [res.company, ...this.companies];
           this.showNotification('Tạo nhà xe thành công!', 'success');
@@ -188,6 +237,12 @@ export class CompanyComponent implements OnInit {
         },
       });
     }
+  }
+
+  private toNullableNumber(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
   }
 
   onDelete(c: Company) {
