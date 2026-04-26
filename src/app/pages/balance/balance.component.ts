@@ -98,7 +98,7 @@ export class BalanceComponent implements OnInit {
   balanceContextMessage(item: BalanceMoneyItem, section: 'available' | 'pending'): string {
     if (section === 'pending') {
       if (item.amount < 0) {
-        return 'Số dư đang âm và đang chờ xử lý — vui lòng thanh toán cho nền tảng. Thời gian cập nhật thường khoảng 2–3 ngày.';
+        return 'Số dư đang âm và đang chờ xử lý';
       }
       if (item.amount > 0) {
         return 'Tiền hoa hồng chờ về từ các công ty nhà xe.';
@@ -107,7 +107,7 @@ export class BalanceComponent implements OnInit {
     }
 
     if (item.amount < 0) {
-      return 'Hiện tại số dư đang âm — vui lòng thanh toán cho nền tảng để tiếp tục sử dụng dịch vụ và tránh gián đoạn.';
+      return 'Hiện tại số dư đang âm.';
     }
     if (item.amount > 0) {
       return 'Tiền hoa hồng nhận được từ các công ty nhà xe.';
