@@ -67,8 +67,8 @@ export class UserCreateModalComponent implements OnChanges {
         return 'Tài xế';
       case 'customer':
         return 'Khách hàng';
-      case 'admin':
-        return 'Quản trị viên';
+      case 'operator':
+        return 'Nhà xe';
       default:
         return value;
     }

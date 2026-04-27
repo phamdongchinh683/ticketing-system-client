@@ -1,5 +1,5 @@
 export type UserStatus = 'active' | 'inactive' | 'banned';
-export type UserRole = 'driver' | 'customer' | 'admin';
+export type UserRole = 'driver' | 'customer' | 'operator';
 
 export interface User {
   id: number;
@@ -56,4 +56,4 @@ export interface DeleteUserResponse {
 }
 
 export const USER_STATUSES: UserStatus[] = ['active', 'inactive', 'banned'];
-export const USER_ROLES: UserRole[] = ['driver', 'customer', 'admin'];
+export const USER_ROLES: UserRole[] = ['driver', 'customer', 'operator'];

@@ -11,7 +11,7 @@ const META = new Set(['year', 'month', 'day', 'id', 'label', 'period', 'name', '
 
 export const BOOKING_STATUS_KEYS = ['pending', 'paid', 'cancelled', 'expired'] as const;
 export const USER_STATUS_KEYS = ['active', 'inactive', 'banned'] as const;
-export const USER_ROLE_KEYS = ['admin', 'customer', 'driver'] as const;
+export const USER_ROLE_KEYS = ['operator', 'customer', 'driver'] as const;
 export const REVENUE_METHOD_KEYS = ['cash', 'vnpay', 'stripe'] as const;
 export const REVENUE_STATUS_KEYS = ['pending', 'success', 'failed', 'refunded'] as const;
 export const REVENUE_EXTRA_KEYS = [

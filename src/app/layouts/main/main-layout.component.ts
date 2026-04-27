@@ -29,7 +29,7 @@ export class MainLayoutComponent implements OnInit {
   private readonly pageTitles: Record<string, string> = {
     '/dashboard': 'Tổng quan',
     '/companies': 'Nhà xe',
-    '/admins': 'Quản trị công ty',
+    '/operators': 'Tài khoản nhà xe',
     '/users': 'Người dùng',
     '/devices': 'Thiết bị',
     '/balance': 'Số dư',

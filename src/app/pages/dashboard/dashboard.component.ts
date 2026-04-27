@@ -245,8 +245,8 @@ export class DashboardComponent implements OnInit {
 
   displayRoleLabel(value: string): string {
     switch (value) {
-      case 'admin':
-        return 'Quản trị viên';
+      case 'operator':
+        return 'Nhà xe';
       case 'customer':
         return 'Khách hàng';
       case 'driver':

@@ -27,7 +27,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/company/company.component').then((m) => m.CompanyComponent),
       },
       {
-        path: 'admins',
+        path: 'operators',
         loadComponent: () => import('./pages/admin/admin.component').then((m) => m.AdminComponent),
       },
       {
