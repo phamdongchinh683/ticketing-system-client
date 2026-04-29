@@ -24,6 +24,10 @@
   --color-primary: #059669;
   --color-primary-light: #10b981;
   --color-primary-bg: rgba(5, 150, 105, 0.08);
+  /* Derived primary button states (so updating --color-primary updates all buttons) */
+  --color-primary-hover-bg: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+  --color-primary-disabled-hover-bg: color-mix(in srgb, var(--color-primary) 6%, #ffffff);
+  --color-primary-disabled-hover-border: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
 
   --color-blue: #15803d;
   --color-blue-bg: #dcfce7;

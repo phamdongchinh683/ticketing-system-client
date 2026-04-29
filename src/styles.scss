@@ -33,7 +33,7 @@ input[type='reset'],
 .btn,
 .app-btn,
 [class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back) {
-  color: #059669 !important;
+  color: var(--color-primary) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
@@ -42,16 +42,16 @@ button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forg
 .btn:hover,
 .app-btn:hover,
 [class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):hover {
-  background: #e8f6ef !important;
-  border-color: #059669 !important;
+  background: var(--color-primary-hover-bg) !important;
+  border-color: var(--color-primary) !important;
 }
 
 button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back):disabled:hover,
 .btn:disabled:hover,
 .app-btn:disabled:hover,
 [class*='btn-']:not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):disabled:hover {
-  background: #f1faf5 !important;
-  border-color: #b7dcca !important;
+  background: var(--color-primary-disabled-hover-bg) !important;
+  border-color: var(--color-primary-disabled-hover-border) !important;
 }
 
 .btn-password-toggle:hover,

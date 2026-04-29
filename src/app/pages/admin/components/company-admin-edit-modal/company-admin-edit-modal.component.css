@@ -81,7 +81,7 @@
   font-weight: 600;
   cursor: pointer;
   background: #ffffff;
-  color: #059669;
+  color: var(--color-primary);
   box-shadow: none;
 }
 
@@ -91,12 +91,12 @@
 }
 
 .btn:hover:not(:disabled) {
-  background: #e8f6ef;
-  border-color: #059669;
+  background: var(--color-primary-hover-bg);
+  border-color: var(--color-primary);
 }
 
 .btn--ghost {
   background: #ffffff;
   border: 1px solid var(--color-border);
-  color: #059669;
+  color: var(--color-primary);
 }

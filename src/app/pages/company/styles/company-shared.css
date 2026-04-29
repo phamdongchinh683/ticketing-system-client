@@ -67,7 +67,7 @@
 }
 
 .modal-input:hover {
-  border-color: #8fd29a;
+  border-color: var(--color-primary);
 }
 
 .modal-input:focus {
@@ -120,8 +120,7 @@ select.modal-input::-ms-expand {
 
 .btn-submit {
   padding: 8px 20px;
-  background: var(--color-primary);
-  border: 1px solid #3f9142;
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   color: var(--color-text-inverse);
   font-size: 13px;
@@ -191,7 +190,7 @@ select.modal-input::-ms-expand {
   width: fit-content;
   padding: 11px 12px;
   background: color-mix(in srgb, var(--color-primary) 12%, #ffffff);
-  border: 1px solid #9fd8a6;
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   color: var(--color-primary);
   font-size: 12px;
@@ -253,9 +252,7 @@ select.modal-input::-ms-expand {
 
 .btn-upload {
   padding: 10px 14px;
-  background: var(--color-primary);
-  border: 1px solid #3f9142;
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-primary);
   color: var(--color-text-inverse);
   font-size: 13px;
   font-weight: 600;
@@ -275,7 +272,6 @@ select.modal-input::-ms-expand {
 .btn-upload:hover:not(:disabled) {
   background: color-mix(in srgb, var(--color-primary) 92%, #ffffff 8%);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
 .btn-upload:disabled {
