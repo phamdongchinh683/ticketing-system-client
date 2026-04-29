@@ -143,13 +143,19 @@ tbody tr:hover {
 }
 
 .btn-delete {
-  background: #fef2f2;
-  color: var(--color-danger-text);
-  border-radius: 8px;
+  background: #ffffff;
+  color: #059669;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
   font-size: 12px;
   font-weight: 600;
   padding: 6px 10px;
   cursor: pointer;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #e8f6ef;
+  border-color: #059669;
 }
 
 .btn-delete:disabled {
