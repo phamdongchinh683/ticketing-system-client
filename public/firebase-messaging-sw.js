@@ -12,6 +12,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
+const DEFAULT_NOTIFICATION_URL = '/';
+
+function resolveTargetUrl(payloadData) {
+  if (!payloadData) return DEFAULT_NOTIFICATION_URL;
+  const candidate = payloadData.url || payloadData.link || payloadData.click_action || payloadData.clickAction;
+  if (typeof candidate !== 'string' || candidate.trim() === '') return DEFAULT_NOTIFICATION_URL;
+  return candidate;
+}
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -22,10 +30,14 @@ self.addEventListener('activate', (event) => {
 });
 
 onBackgroundMessage(messaging, (payload) => {
+  const targetUrl = resolveTargetUrl(payload.data);
   self.registration.showNotification(payload.notification?.title || 'Thông báo mới', {
     body: payload.notification?.body || '',
     icon: '/favicon.ico',
-    data: payload.data || {},
+    data: {
+      ...(payload.data || {}),
+      targetUrl,
+    },
   });
 
   self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
@@ -40,14 +52,23 @@ onBackgroundMessage(messaging, (payload) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  const targetUrl = event.notification?.data?.targetUrl || DEFAULT_NOTIFICATION_URL;
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if (client.url.includes(targetUrl) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+
       for (const client of clients) {
         if ('focus' in client) {
           return client.focus();
         }
       }
+
+      return self.clients.openWindow(targetUrl);
     }),
   );
 });

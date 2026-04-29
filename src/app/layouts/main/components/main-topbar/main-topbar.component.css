@@ -313,12 +313,14 @@
 
 .verify-dialog {
   position: relative;
-  width: min(460px, calc(100vw - 24px));
+  width: min(520px, calc(100vw - 24px));
   border-radius: 16px;
   border: 1px solid #dbe3ef;
   background: #fff;
-  box-shadow: none;
-  padding: 20px;
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.12),
+    0 2px 8px rgba(15, 23, 42, 0.06);
+  padding: 22px;
 }
 
 .verify-dialog__close-top {
@@ -386,15 +388,62 @@
   color: var(--color-text-muted);
 }
 
-.verify-dialog__body {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-text-body);
+.verify-dialog__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 12px;
+}
+
+.verify-dialog__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border: 1px solid #dbe3ef;
+  border-radius: 999px !important;
+  background: #f8fafc;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.verify-dialog__badge--verify {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, #ffffff);
+  color: var(--color-primary);
+}
+
+.verify-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.verify-dialog__field {
   padding: 10px 12px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   background: #f8fafc;
+}
+
+.verify-dialog__field-label {
+  margin: 0 0 5px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.verify-dialog__field-value {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-body);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .verify-dialog__meta {
@@ -407,6 +456,14 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.verify-dialog__action-hint {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .verify-btn {

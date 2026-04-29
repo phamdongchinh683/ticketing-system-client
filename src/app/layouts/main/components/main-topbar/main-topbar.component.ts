@@ -108,6 +108,12 @@ export class MainTopbarComponent implements OnInit {
     this.openVerifyDialog(noti);
   }
 
+  canShowVerifyActions(noti: NotificationItem | null): boolean {
+    if (!noti) return false;
+    const normalizedTitle = this.normalizeTextForMatching(noti.title);
+    return normalizedTitle.includes('yeu cau');
+  }
+
   closeVerifyDialog() {
     this.isVerifyDialogOpen = false;
     this.selectedNotification = null;
@@ -332,5 +338,14 @@ export class MainTopbarComponent implements OnInit {
     }
     if (typeof raw === 'object' && !Array.isArray(raw)) return raw as Record<string, unknown>;
     return null;
+  }
+
+  private normalizeTextForMatching(value: string | null | undefined): string {
+    if (!value) return '';
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 }

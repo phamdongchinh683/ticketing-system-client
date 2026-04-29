@@ -104,15 +104,33 @@
         </svg>
       </span>
       <div>
-        <h3 class="verify-dialog__title">Xác minh tài khoản</h3>
-        <p class="verify-dialog__subtitle">Vui lòng chọn trạng thái xác minh cho tài khoản này.</p>
+        <h3 class="verify-dialog__title">Thông báo</h3>
+        <p class="verify-dialog__subtitle">Chi tiết thông báo hệ thống.</p>
       </div>
     </div>
-    <p class="verify-dialog__body">
-      {{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}
-    </p>
 
-    <div class="verify-dialog__actions">
+    <div class="verify-dialog__meta-row">
+      <span class="verify-dialog__badge">Thông báo hệ thống</span>
+      <span class="verify-dialog__badge verify-dialog__badge--verify" *ngIf="canShowVerifyActions(selectedNotification)">
+        Yêu cầu xác minh
+      </span>
+    </div>
+
+    <div class="verify-dialog__content">
+      <div class="verify-dialog__field" *ngIf="selectedNotification?.title">
+        <p class="verify-dialog__field-label">Tiêu đề</p>
+        <p class="verify-dialog__field-value">{{ selectedNotification?.title }}</p>
+      </div>
+      <div class="verify-dialog__field">
+        <p class="verify-dialog__field-label">Nội dung</p>
+        <p class="verify-dialog__field-value">
+          {{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="verify-dialog__actions" *ngIf="canShowVerifyActions(selectedNotification)">
+      <p class="verify-dialog__action-hint">Chọn trạng thái tài khoản cần xác minh</p>
       <button
         type="button"
         class="verify-btn verify-btn--active"
