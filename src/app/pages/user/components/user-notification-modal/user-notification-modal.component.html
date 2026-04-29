@@ -1,16 +1,22 @@
 <div *ngIf="open" class="modal-overlay" (click)="close()">
-  <div class="modal" (click)="stopPropagation($event)">
+  <div class="modal modal--notification" (click)="stopPropagation($event)">
     <h3>Gửi thông báo</h3>
 
-    <form class="modal-form modal-form--single" [formGroup]="form" (ngSubmit)="submit($event)">
+    <form class="modal-form modal-form--single notification-form" [formGroup]="form" (ngSubmit)="submit($event)">
       <label class="field">
         <span class="label">Tiêu đề</span>
-        <input class="input" formControlName="title" [disabled]="submitting" />
+        <input class="input" formControlName="title" [disabled]="submitting" placeholder="Nhập tiêu đề thông báo" />
       </label>
 
       <label class="field">
         <span class="label">Nội dung</span>
-        <textarea class="input" formControlName="body" rows="4" [disabled]="submitting"></textarea>
+        <textarea
+          class="input"
+          formControlName="body"
+          rows="4"
+          [disabled]="submitting"
+          placeholder="Nhập nội dung cần gửi đến người dùng"
+        ></textarea>
       </label>
 
       <div class="modal-actions">

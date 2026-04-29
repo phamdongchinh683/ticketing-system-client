@@ -5,7 +5,7 @@
 }
 
 .page-header {
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 
 .page-header h2 {
@@ -26,29 +26,38 @@
 }
 
 .btn-create {
-  padding: 10px 18px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    color-mix(in srgb, var(--color-primary) 82%, #052e16) 100%
-  );
-  color: white;
-  font-size: 13px;
-  font-weight: var(--font-weight-semibold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  width: 48px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: #ffffff;
+  color: #059669;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  box-shadow: none;
   transition:
-    transform 0.12s ease,
-    box-shadow 0.15s ease;
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.btn-create svg {
+  width: 14px;
+  height: 14px;
 }
 
 .btn-create:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 40%, transparent);
+  border-color: #059669;
+  background: #e8f6ef;
 }
 
 .btn-create:active {
-  transform: translateY(0);
+  background: #e1f3ea;
 }

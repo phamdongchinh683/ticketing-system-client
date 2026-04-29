@@ -10,11 +10,16 @@
   width: var(--sidebar-width);
   height: 100%;
   min-height: 0;
-  background: var(--sidebar-bg);
+  background:
+    linear-gradient(90deg, rgba(5, 150, 105, 0.05) 1px, transparent 1px) 0 0 / 64px 100%,
+    linear-gradient(rgba(5, 150, 105, 0.025) 1px, transparent 1px) 0 0 / 100% 44px,
+    var(--sidebar-bg);
   color: var(--sidebar-text);
   display: flex;
   flex-direction: column;
-  box-shadow: inset -1px 0 0 var(--sidebar-border);
+  box-shadow:
+    inset -1px 0 0 var(--sidebar-border),
+    inset 0 0 0 1px rgba(5, 150, 105, 0.08);
   flex-shrink: 0;
   flex: 1;
 }
@@ -23,29 +28,29 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 13px 16px;
+  gap: 8px;
+  padding: 11px 12px;
   border-bottom: 1px solid var(--sidebar-border);
+  min-height: 64px;
+  background: color-mix(in srgb, #ffffff 88%, transparent);
 }
 
 .brand-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(145deg, #f5fbf6, #edf7ef);
-  border: 1px solid #d7e8db;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 650;
-  font-size: 15px;
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+  background: #ffffff;
+  display: block;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
 .brand-text {
-  font-size: 17px;
-  font-weight: 640;
-  letter-spacing: 0;
+  font-family: var(--font-family-title);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--sidebar-text-active);
   white-space: nowrap;
 }
@@ -53,7 +58,7 @@
 .sidebar__nav {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 12px 10px;
+  padding: 9px 8px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -63,13 +68,16 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 11px;
-  border-radius: var(--radius-md);
+  gap: 8px;
+  padding: 15px 12px;
+  border-radius: 0;
+  border: 1px solid transparent;
   color: var(--sidebar-text);
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 520;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   position: relative;
   transition:
     background-color 0.18s ease,
@@ -86,12 +94,14 @@
 .nav-item:hover {
   background: var(--sidebar-hover-bg);
   color: var(--sidebar-text-hover);
+  border-color: #8bc6ae;
 }
 
 .nav-item--active {
   background: var(--sidebar-active-bg);
   color: var(--sidebar-text-active);
-  box-shadow: inset 0 0 0 1px rgba(76, 175, 80, 0.2);
+  border-color: rgba(5, 150, 105, 0.5);
+  box-shadow: none;
 }
 
 .nav-item--active::before {
@@ -101,13 +111,13 @@
   top: 7px;
   bottom: 7px;
   width: 3px;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--sidebar-active-border);
 }
 
 .nav-item__icon {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,15 +126,16 @@
 }
 
 .nav-item__icon ::ng-deep svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .sidebar__footer {
   flex-shrink: 0;
   margin-top: auto;
-  padding: 12px 10px 14px;
+  padding: 10px 8px 12px;
   border-top: 1px solid var(--sidebar-border);
+  background: color-mix(in srgb, #ffffff 84%, transparent);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -135,17 +146,17 @@
   align-items: center;
   gap: 10px;
   padding: 10px 11px;
-  border-radius: var(--radius-md);
-  border: 1px solid #dbe9de;
-  background: #f8fcf9;
+  border-radius: 0;
+  border: 1px solid #bfd5c6;
+  background: #edf7f1;
 }
 
 .user-avatar {
   width: 36px;
   height: 36px;
-  background: linear-gradient(145deg, #f5fbf6, #edf7ef);
-  border: 1px solid #d7e8db;
-  border-radius: 50%;
+  background: #e6f6ee;
+  border: 1px solid #9ecfb8;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,9 +173,11 @@
 }
 
 .user-name {
-  font-size: 13px;
-  font-weight: 620;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--sidebar-text-active);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,6 +186,7 @@
 .user-email {
   font-size: 11px;
   color: var(--sidebar-text-muted);
+  font-family: var(--font-family-mono);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -180,9 +194,9 @@
 
 .user-role {
   font-size: 10px;
-  color: var(--sidebar-text);
+  color: #059669;
   font-weight: 620;
-  letter-spacing: 0.03em;
-  text-transform: capitalize;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 

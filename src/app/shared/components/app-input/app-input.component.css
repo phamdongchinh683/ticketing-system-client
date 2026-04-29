@@ -51,17 +51,18 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
+  border: none !important;
+  border-radius: 0;
+  background: transparent !important;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.15s;
 }
 
 .btn-password-toggle:hover:not(:disabled) {
-  background: #f3f4f6;
-  color: var(--color-text-body);
+  background: transparent !important;
+  color: var(--color-text-muted);
+  border-color: transparent !important;
 }
 
 .btn-password-toggle:disabled {

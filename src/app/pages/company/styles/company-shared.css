@@ -190,7 +190,7 @@ select.modal-input::-ms-expand {
 
 .btn-geo {
   width: fit-content;
-  padding: 8px 12px;
+  padding: 11px 12px;
   background: color-mix(in srgb, var(--color-primary) 12%, #ffffff);
   border: 1px solid #9fd8a6;
   border-radius: var(--radius-md);

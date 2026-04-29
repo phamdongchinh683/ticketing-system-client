@@ -28,7 +28,9 @@
           <td>{{ a.id }}</td>
           <td>{{ a.username }}</td>
           <td>{{ a.fullName }}</td>
-          <td>{{ a.email }}</td>
+          <td class="col-email">
+            <span class="email-text" [title]="a.email">{{ a.email }}</span>
+          </td>
           <td>{{ a.phone }}</td>
           <td>{{ a.companyName }}</td>
           <td>

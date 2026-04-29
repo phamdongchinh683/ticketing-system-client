@@ -5,6 +5,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  border-radius: 0 !important;
 }
 
 body {
@@ -18,6 +19,48 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-family-base);
+}
+
+button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back),
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+.btn,
+.app-btn,
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back) {
+  color: #059669 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back):hover,
+.btn:hover,
+.app-btn:hover,
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):hover {
+  background: #e8f6ef !important;
+  border-color: #059669 !important;
+}
+
+button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back):disabled:hover,
+.btn:disabled:hover,
+.app-btn:disabled:hover,
+[class*='btn-']:not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):disabled:hover {
+  background: #f1faf5 !important;
+  border-color: #b7dcca !important;
+}
+
+.btn-password-toggle:hover,
+.btn-eye:hover {
+  background: transparent !important;
+  color: var(--color-text-muted) !important;
+  border-color: transparent !important;
+}
+
 h1,
 h2,
 h3,
@@ -28,3 +71,31 @@ h6 {
   letter-spacing: var(--letter-spacing-title);
   color: var(--color-text-title);
 }
+
+.btn-load-more {
+  padding: 8px 24px !important;
+  background: var(--color-surface) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-load-more:hover:not(:disabled) {
+  border-color: var(--color-primary) !important;
+  background: var(--color-primary-bg) !important;
+}
+
+.btn-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-load-more:disabled:hover {
+  border-color: var(--color-border) !important;
+  background: var(--color-surface) !important;
+}
+

@@ -1,11 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&display=swap');
+
 :root {
-  --font-family-base: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-family-title: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-base: 'Be Vietnam Pro', sans-serif;
+  --font-family-title: 'Be Vietnam Pro', sans-serif;
+  --font-family-mono: 'Be Vietnam Pro', sans-serif;
   --letter-spacing-title: -0.01em;
   --font-weight-semibold: 600;
   --font-weight-title: 620;
 
-  --color-bg: #f4fbf6;
+  --color-bg: #ffffff;
   --color-text: #4b5563;
   --color-surface: #ffffff;
 
@@ -18,9 +21,9 @@
   --color-text-subtle: #6a7b90;
   --color-text-placeholder: #94a3b8;
 
-  --color-primary: #4caf50;
-  --color-primary-light: #66bb6a;
-  --color-primary-bg: rgba(76, 175, 80, 0.08);
+  --color-primary: #059669;
+  --color-primary-light: #10b981;
+  --color-primary-bg: rgba(5, 150, 105, 0.08);
 
   --color-blue: #15803d;
   --color-blue-bg: #dcfce7;
@@ -35,30 +38,40 @@
   --color-warning-text: #9a5a1a;
   --color-danger-text: #9f1d1d;
 
-  --color-border: #b7e4cc;
+  --color-border: #bfd5c6;
 
   --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.1);
   --shadow-md:
     0 10px 22px rgba(15, 23, 42, 0.12),
     0 2px 8px rgba(15, 23, 42, 0.08);
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 12px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 
-  --sidebar-bg: #f8fcf9;
-  --sidebar-border: #dbe9de;
-  --sidebar-hover: #f5fbf6;
-  --sidebar-hover-bg: #f1faf3;
-  --sidebar-active-bg: #eaf7ed;
-  --sidebar-active-border: #4caf50;
-  --sidebar-text: #4caf50;
-  --sidebar-text-hover: #3f9142;
-  --sidebar-text-active: #2f7d32;
-  --sidebar-text-muted: #7ea987;
-  --sidebar-width: 260px;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #bfd5c6;
+  --sidebar-hover: #edf7f1;
+  --sidebar-hover-bg: #edf7f1;
+  --sidebar-active-bg: #e1f4eb;
+  --sidebar-active-border: #059669;
+  --sidebar-text: #059669;
+  --sidebar-text-hover: #047857;
+  --sidebar-text-active: #065f46;
+  --sidebar-text-muted: #3f7f66;
+  --sidebar-width: 236px;
   --sidebar-collapsed: 72px;
-  --topbar-bg: linear-gradient(180deg, #fbfefc 0%, #f4faf6 100%);
-  --topbar-border: #dbe9de;
+  --topbar-bg: linear-gradient(180deg, #f7fcf9 0%, #f0f8f3 100%);
+  --topbar-border: #bfd5c6;
+}
+
+*,
+*::before,
+*::after {
+  border-radius: 0;
+}
+
+body {
+  background: var(--color-bg);
 }

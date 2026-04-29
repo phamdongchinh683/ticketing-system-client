@@ -14,31 +14,29 @@
   font-size: 14px;
   cursor: pointer;
   animation: notification-in 0.22s ease-out;
-  box-shadow:
-    0 6px 18px rgba(2, 6, 23, 0.12),
-    0 2px 6px rgba(2, 6, 23, 0.08);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .notification--success {
-  background: #ecfdf3;
+  background: #ffffff;
   color: var(--color-success-text);
   border: 1px solid #bbf7d0;
 }
 .notification--error {
-  background: #fef2f2;
+  background: #ffffff;
   color: var(--color-danger-text);
   border: 1px solid #fecaca;
 }
 .notification--warning {
-  background: #fff7ed;
+  background: #ffffff;
   color: var(--color-warning-text);
   border: 1px solid #fdba74;
 }
 .notification--info {
-  background: color-mix(in srgb, var(--color-primary) 10%, #ffffff);
+  background: #ffffff;
   color: var(--color-primary);
-  border: 1px solid rgba(44, 122, 75, 0.28);
+  border: 1px solid rgba(5, 150, 105, 0.35);
 }
 .notification__icon {
   width: 24px;
@@ -101,6 +99,9 @@
     top: 16px;
     min-width: 0;
     width: calc(100vw - 20px);
+    left: 10px;
+    right: 10px;
+    transform: none;
     padding: 11px 12px;
   }
 }

@@ -44,7 +44,7 @@
 .table-wrap {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  background: var(--color-surface);
+  background: #ffffff;
   overflow: auto;
   box-shadow: var(--shadow-sm);
 }
@@ -71,7 +71,7 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.35px;
   color: var(--color-text-muted);
-  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-border));
+  background: #ffffff;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -163,30 +163,6 @@ td:nth-child(8) {
 .pagination {
   display: flex;
   justify-content: center;
-}
-
-.btn-load-more {
-  padding: 10px 28px;
-  background: var(--color-surface);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
-}
-
-.btn-load-more:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  background: var(--color-primary-bg);
-}
-
-.btn-load-more:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 }
 
 .row-actions {

@@ -3,20 +3,26 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 20px;
+  padding: 24px;
+  background:
+    linear-gradient(90deg, rgba(5, 150, 105, 0.05) 1px, transparent 1px) 0 0 / 76px 100%,
+    linear-gradient(rgba(5, 150, 105, 0.025) 1px, transparent 1px) 0 0 / 100% 52px,
+    #f7faf8;
 }
 .login-box {
   width: 100%;
-  max-width: 380px;
-  padding: 35px;
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  max-width: 450px;
+  padding: 26px 30px;
+  background: #ffffff;
+  border: 1px solid #b7dcca;
 }
 h1 {
   text-align: center;
-  color: var(--color-text-dark);
-  margin-top: 0;
+  color: #059669;
+  margin: 0 0 18px;
+  font-size: 44px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .forgot-toggle {
@@ -26,8 +32,11 @@ h1 {
   color: var(--color-primary);
   text-align: right;
   cursor: pointer;
-  margin: -8px 0 10px;
-  font-size: 14px;
+  margin: -4px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .forgot-toggle:disabled {
@@ -38,9 +47,7 @@ h1 {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.48);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  background: rgba(20, 24, 22, 0.24);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,11 +60,9 @@ h1 {
   max-width: 520px;
   max-height: 90vh;
   overflow-y: auto;
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: 22px;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
+  background: #f7f9f8;
+  padding: 20px;
+  border: 1px solid #c8d5cf;
 }
 
 .modal--sm {
@@ -66,17 +71,18 @@ h1 {
 
 .forgot-modal h2 {
   margin: 0;
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
-  color: var(--color-text-dark);
-  letter-spacing: -0.02em;
+  color: #059669;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .forgot-hint {
   margin: 0 0 14px;
   font-size: 14px;
   line-height: 1.45;
-  color: var(--color-text-muted);
+  color: #5f6f68;
 }
 
 .otp-field {
@@ -132,8 +138,8 @@ h1 {
   letter-spacing: 0;
   padding: 0 4px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  border-radius: 0;
+  background: #f3f6f4;
   color: var(--color-text-dark);
   outline: none;
   transition:
@@ -147,7 +153,8 @@ h1 {
 
 .otp-box:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  box-shadow: none;
+  background: #ffffff;
 }
 
 .otp-box:disabled {
@@ -171,7 +178,7 @@ h1 {
   width: 36px;
   height: 36px;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -182,7 +189,7 @@ h1 {
 
 .forgot-modal__close:hover:not(:disabled) {
   background: var(--color-primary-bg);
-  color: var(--color-text-dark);
+  color: var(--color-primary);
 }
 
 .forgot-modal__close:disabled {
@@ -194,8 +201,8 @@ h1 {
   width: 100%;
   border: 1px solid var(--color-primary);
   color: var(--color-primary);
-  background: transparent;
-  border-radius: var(--radius-sm);
+  background: #f4f8f6;
+  border-radius: 0;
   padding: 10px 12px;
   font-weight: 600;
   cursor: pointer;
@@ -245,10 +252,10 @@ h1 {
   flex: 0 0 auto;
   padding: 12px 18px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-surface);
+  border-radius: 0;
+  background: #f4f8f6;
   color: var(--color-text-muted);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -258,7 +265,7 @@ h1 {
 
 .btn-forgot-cancel:hover:not(:disabled) {
   background: var(--color-primary-bg);
-  border-color: var(--color-border);
+  border-color: #059669;
 }
 
 .btn-forgot-cancel:disabled {

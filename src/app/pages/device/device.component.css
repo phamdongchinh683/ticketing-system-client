@@ -13,11 +13,11 @@
   flex-wrap: wrap;
 }
 
-h2 {
+.page-header h2 {
   margin: 0;
   font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-weight: var(--font-weight-title);
+  letter-spacing: -0.02em;
   color: var(--color-text-dark);
 }
 
@@ -48,13 +48,14 @@ h2 {
 }
 
 .btn-primary {
-  color: var(--color-text-inverse);
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    color-mix(in srgb, var(--color-primary) 82%, #052e16) 100%
-  );
-  border-color: #3f9142;
+  color: #059669;
+  background: #ffffff;
+  border-color: var(--color-border);
+}
+
+.btn-primary:hover {
+  border-color: #059669;
+  background: #e8f6ef;
 }
 
 .btn-secondary {
@@ -142,7 +143,6 @@ tbody tr:hover {
 }
 
 .btn-delete {
-  border: 1px solid #fca5a5;
   background: #fef2f2;
   color: var(--color-danger-text);
   border-radius: 8px;
@@ -150,10 +150,6 @@ tbody tr:hover {
   font-weight: 600;
   padding: 6px 10px;
   cursor: pointer;
-}
-
-.btn-delete:hover:not(:disabled) {
-  border-color: #ef4444;
 }
 
 .btn-delete:disabled {

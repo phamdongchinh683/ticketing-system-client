@@ -86,7 +86,7 @@ select.company-select option {
 select.select option:checked,
 select.limit-select option:checked,
 select.company-select option:checked {
-  background: #4caf50;
+  background: #059669;
   color: #ffffff;
 }
 
@@ -129,9 +129,9 @@ select.company-select option:checked {
 }
 
 .dropdown-item:hover {
-  background: #4caf50;
+  background: #059669;
   border-color: #8fd29a;
-  box-shadow: inset 3px 0 0 #4caf50;
+  box-shadow: inset 3px 0 0 #059669;
   color: #ffffff;
 }
 
@@ -139,8 +139,8 @@ select.company-select option:checked {
   outline: none;
   border-color: #8fd29a;
   box-shadow:
-    inset 3px 0 0 #4caf50,
-    0 0 0 3px rgba(76, 175, 80, 0.18);
+    inset 3px 0 0 #059669,
+    0 0 0 3px rgba(5, 150, 105, 0.18);
 }
 
 .dropdown-loading,
