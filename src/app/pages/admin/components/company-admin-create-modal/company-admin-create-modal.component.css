@@ -124,13 +124,14 @@
 
 .btn {
   padding: 10px 16px;
-  border: none;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  background: var(--color-primary);
-  color: white;
+  background: #ffffff;
+  color: #059669;
+  box-shadow: none;
 }
 
 .btn:disabled {
@@ -138,8 +139,13 @@
   cursor: not-allowed;
 }
 
+.btn:hover:not(:disabled) {
+  background: #e8f6ef;
+  border-color: #059669;
+}
+
 .btn--ghost {
-  background: none;
+  background: #ffffff;
   border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
+  color: #059669;
 }
