@@ -58,10 +58,10 @@
 .sidebar__nav {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 9px 8px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 10px;
   overflow-y: auto;
 }
 

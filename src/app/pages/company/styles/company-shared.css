@@ -142,7 +142,6 @@ select.modal-input::-ms-expand {
 .btn-danger {
   padding: 8px 20px;
   background: var(--color-red);
-  border: 1px solid #dc2626;
   border-radius: var(--radius-md);
   color: var(--color-text-inverse);
   font-size: 13px;
