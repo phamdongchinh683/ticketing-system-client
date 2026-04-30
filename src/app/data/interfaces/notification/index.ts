@@ -16,6 +16,8 @@ export interface NotificationReadResponse {
   message?: string;
 }
 
+export type NotificationStatus = 0 | 1;
+
 export type VerifyAccountStatus = 'active' | 'inactive' | 'banned';
 
 export interface VerifyAccountRequest {

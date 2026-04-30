@@ -31,8 +31,36 @@
         (scroll)="onNotificationScroll($event)"
       >
         <div class="notification-menu__header">
-          <span class="notification-menu__title">Thông báo từ hệ thống</span>
-          <span class="notification-menu__count" *ngIf="unreadCount > 0">{{ unreadCount }} mới</span>
+          <div class="notification-menu__header-main">
+            <span class="notification-menu__title">Thông báo</span>
+            <span class="notification-menu__count" *ngIf="unreadCount > 0">{{ unreadCount }} mới</span>
+          </div>
+          <div class="notification-menu__filters" aria-label="Lọc thông báo">
+            <button
+              type="button"
+              class="notification-filter-btn"
+              [class.notification-filter-btn--active]="selectedNotificationStatus === null"
+              (click)="setNotificationStatusFilter(null)"
+            >
+              Tất cả
+            </button>
+            <button
+              type="button"
+              class="notification-filter-btn"
+              [class.notification-filter-btn--active]="selectedNotificationStatus === 0"
+              (click)="setNotificationStatusFilter(0)"
+            >
+              Chưa đọc
+            </button>
+            <button
+              type="button"
+              class="notification-filter-btn"
+              [class.notification-filter-btn--active]="selectedNotificationStatus === 1"
+              (click)="setNotificationStatusFilter(1)"
+            >
+              Đã đọc
+            </button>
+          </div>
         </div>
 
         <div *ngIf="isLoadingNotifications" class="notification-state">Đang tải thông báo...</div>
@@ -59,6 +87,11 @@
           </button>
 
           <div *ngIf="notifications.length === 0" class="notification-state">Không có thông báo</div>
+          <div class="notification-load-more-action" *ngIf="nextCursor !== null && !isLoadingMore">
+            <button type="button" class="notification-load-more-btn" (click)="onLoadMoreNotificationsClick($event)">
+              Tải thêm
+            </button>
+          </div>
           <div *ngIf="isLoadingMore" class="notification-state">Đang tải thêm...</div>
         </ng-container>
       </div>

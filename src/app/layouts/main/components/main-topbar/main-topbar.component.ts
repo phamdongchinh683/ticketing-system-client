@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -18,7 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 import { timeout } from 'rxjs/operators';
 import { notification } from '../../../../data/services';
-import { NotificationItem, VerifyAccountStatus } from '../../../../data/interfaces/notification';
+import { NotificationItem, NotificationStatus, VerifyAccountStatus } from '../../../../data/interfaces/notification';
 import { Messaging } from '@angular/fire/messaging';
 import { onMessage } from 'firebase/messaging';
 
@@ -30,7 +29,9 @@ import { onMessage } from 'firebase/messaging';
   styleUrl: './main-topbar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainTopbarComponent implements OnInit, AfterViewInit {
+export class MainTopbarComponent implements OnInit {
+  selectedNotificationStatus: NotificationStatus | null = null;
+
   @Input() pageTitle = '';
 
   @Output() signOut = new EventEmitter<void>();
@@ -40,8 +41,9 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
   isLoadingNotifications = false;
   isLoadingMore = false;
   nextCursor: number | null = null;
-  lastRequestedCursor: number | null = null;
   isFetching = false;
+  private pendingLoadMore = false;
+  private pendingFilterReload = false;
   selectedNotification: NotificationItem | null = null;
   isVerifyDialogOpen = false;
   isVerifyingAccount = false;
@@ -79,10 +81,6 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
     this.loadNotifications();
   }
 
-  ngAfterViewInit(): void {
-    this.cdr.markForCheck();
-  }
-
   get unreadCount(): number {
     return this.notifications.reduce((count, noti) => count + (noti.isRead ? 0 : 1), 0);
   }
@@ -108,10 +106,15 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
   }
 
   onNotificationScroll(event: Event) {
-    const target = event.target as HTMLElement;
-    const threshold = 64;
-    const reachedBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - threshold;
+    if (this.nextCursor === null) return;
+    const target = (event.currentTarget ?? event.target) as HTMLElement | null;
+    if (!target) return;
+    const reachedBottom = this.isMenuNearBottom(target);
     if (!reachedBottom) return;
+    if (this.isFetching) {
+      this.pendingLoadMore = true;
+      return;
+    }
     this.loadMoreNotifications();
   }
 
@@ -121,14 +124,24 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
     this.openVerifyDialog(noti);
   }
 
+  onLoadMoreNotificationsClick(event: Event): void {
+    event.stopPropagation();
+    if (this.isFetching) {
+      this.pendingLoadMore = true;
+      return;
+    }
+    this.loadMoreNotifications();
+  }
+
   isNewNotification(noti: NotificationItem): boolean {
     return this.newNotificationIds.has(String(noti.id));
   }
 
   canShowVerifyActions(noti: NotificationItem | null): boolean {
     if (!noti) return false;
+    if (this.resolveUserNewAccountId(noti) !== undefined) return true;
     const normalizedTitle = this.normalizeTextForMatching(noti.title);
-    return normalizedTitle.includes('yeu cau');
+    return normalizedTitle.includes('hien tai co yeu cau tao');
   }
 
   closeVerifyDialog() {
@@ -185,19 +198,34 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
     return String(noti.id);
   }
 
+  setNotificationStatusFilter(status: NotificationStatus | null): void {
+    this.selectedNotificationStatus = status;
+    this.notifications = [];
+    this.nextCursor = null;
+    this.pendingLoadMore = false;
+    this.cdr.markForCheck();
+    if (this.isFetching) {
+      this.pendingFilterReload = true;
+      return;
+    }
+    this.loadNotifications();
+  }
+
   private loadNotifications() {
     if (this.isFetching) return;
+    this.pendingLoadMore = false;
     this.isFetching = true;
     this.isLoadingNotifications = true;
-    this.lastRequestedCursor = null;
 
     this.notificationApi
-      .getNotifications()
+      .getNotifications(undefined, this.selectedNotificationStatus)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.isFetching = false;
           this.isLoadingNotifications = false;
+          if (this.flushPendingFilterReload()) return;
+          this.flushPendingLoadMore();
         }),
       )
       .subscribe({
@@ -211,49 +239,71 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
   }
 
   private loadMoreNotifications() {
-    if (this.isFetching || this.nextCursor === null) return;
-    if (this.lastRequestedCursor === this.nextCursor && this.notifications.length > 0) return;
+    if (this.nextCursor === null) return;
+    if (this.isFetching) {
+      this.pendingLoadMore = true;
+      return;
+    }
 
     this.isFetching = true;
     this.isLoadingMore = true;
     const next = this.nextCursor;
-    this.lastRequestedCursor = next;
 
     this.notificationApi
-      .getNotifications(next)
+      .getNotifications(next, this.selectedNotificationStatus)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.isFetching = false;
           this.isLoadingMore = false;
+          if (this.flushPendingFilterReload()) return;
+          this.flushPendingLoadMore();
         }),
       )
       .subscribe({
         next: (res) => {
           const incoming = res.notifications ? res.notifications.map((item) => this.normalizeNotification(item)) : [];
-          this.notifications = this.mergeNotifications(this.notifications, incoming);
-          this.nextCursor = res.next ? res.next : null;
-          if (this.nextCursor !== next) this.lastRequestedCursor = null;
+          this.notifications = [...this.notifications, ...incoming];
+          this.nextCursor = this.parseNextCursor(res.next);
+          this.cdr.markForCheck();
+          this.loadMoreIfNearBottom();
+        },
+        error: () => {
           this.cdr.markForCheck();
         },
       });
   }
 
-  private mergeNotifications(current: NotificationItem[], incoming: NotificationItem[]): NotificationItem[] {
-    const merged = [...current];
-    const seen = new Set(current.map((item) => String(item.id)));
-    for (const item of incoming) {
-      const key = String(item.id);
-      if (seen.has(key)) continue;
-      seen.add(key);
-      merged.push(item);
-    }
-    return merged;
+  private loadMoreIfNearBottom(): void {
+    queueMicrotask(() => {
+      const menu = this.notificationMenuRef?.nativeElement;
+      if (!menu || !this.isNotificationOpen || this.isFetching || this.nextCursor === null) return;
+      if (this.isMenuNearBottom(menu)) {
+        this.loadMoreNotifications();
+      }
+    });
+  }
+
+  private isMenuNearBottom(menu: HTMLElement): boolean {
+    const threshold = 120;
+    return menu.scrollHeight - menu.scrollTop - menu.clientHeight <= threshold;
+  }
+
+  private flushPendingLoadMore(): void {
+    if (!this.pendingLoadMore || this.nextCursor === null || this.isFetching) return;
+    this.pendingLoadMore = false;
+    this.loadMoreNotifications();
+  }
+
+  private flushPendingFilterReload(): boolean {
+    if (!this.pendingFilterReload || this.isFetching) return false;
+    this.pendingFilterReload = false;
+    this.loadNotifications();
+    return true;
   }
 
   private parseNextCursor(next: unknown): number | null {
     if (typeof next === 'number' && Number.isFinite(next)) return next;
-    if (typeof next === 'string' && next.trim() !== '' && !Number.isNaN(Number(next))) return Number(next);
     return null;
   }
 
@@ -278,7 +328,7 @@ export class MainTopbarComponent implements OnInit, AfterViewInit {
     const wasNearTop = previousScrollTop <= 8;
 
     const normalizedIncoming = this.normalizeNotification(incoming);
-    this.notifications = this.mergeNotifications([normalizedIncoming], this.notifications);
+    this.notifications = [normalizedIncoming, ...this.notifications];
     this.newNotificationIds.add(String(normalizedIncoming.id));
     setTimeout(() => {
       this.newNotificationIds.delete(String(normalizedIncoming.id));

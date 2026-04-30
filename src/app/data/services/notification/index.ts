@@ -1,37 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { constant } from '../../constants';
 import {
   NotificationListResponse,
   NotificationReadResponse,
+  NotificationStatus,
   VerifyAccountRequest,
   VerifyAccountResponse,
 } from '../../interfaces/notification';
-import { buildCacheKey, CacheEntry, clearCacheByPrefix, readCache, writeCache } from '../cache-utils';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly notificationCache = new Map<string, CacheEntry<NotificationListResponse>>();
-  private readonly NOTIFICATION_TTL_MS = 15 * 1000;
-
   constructor(private readonly http: HttpClient) {}
 
-  getNotifications(next?: number): Observable<NotificationListResponse> {
+  getNotifications(next?: number, status?: NotificationStatus | null): Observable<NotificationListResponse> {
     const params: Record<string, string> = {};
     if (next !== undefined && next !== null) params['next'] = String(next);
-
-    const cacheKey = buildCacheKey('notifications', params);
-    const cached = readCache(this.notificationCache, cacheKey);
-    if (cached) return of(cached);
+    if (status !== undefined && status !== null) params['status'] = String(status);
 
     return this.http
       .get<NotificationListResponse>(`${constant.baseUrl}/auth/notification?limit=10`, {
         params,
         headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` },
-      })
-      .pipe(tap((res) => writeCache(this.notificationCache, cacheKey, res, this.NOTIFICATION_TTL_MS)));
+      });
   }
 
   markAsRead(notificationId: number | string): Observable<NotificationReadResponse> {
@@ -40,8 +32,7 @@ export class ApiService {
         `${constant.baseUrl}/auth/notification/${encodeURIComponent(String(notificationId))}/read`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` } },
-      )
-      .pipe(tap(() => clearCacheByPrefix(this.notificationCache, 'notifications')));
+      );
   }
 
   verifyAccount(payload: VerifyAccountRequest): Observable<VerifyAccountResponse> {

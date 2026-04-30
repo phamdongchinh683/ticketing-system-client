@@ -78,7 +78,6 @@
 .notification-badge {
   position: absolute;
   top: 7px;
-  right: 8px;
   transform: translate(35%, -35%);
   display: inline-flex;
   align-items: center;
@@ -104,7 +103,6 @@
   max-height: 420px;
   overflow-y: auto;
   border: 1px solid #bfd5c6;
-  border-radius: 12px !important;
   background: #ffffff;
   box-shadow:
     0 10px 28px rgba(15, 23, 42, 0.1),
@@ -154,10 +152,60 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 10px 12px;
   border-bottom: 1px solid #dbe8e1;
   background: #ffffff;
   border-radius: 12px 12px 0 0 !important;
+}
+
+.notification-menu__header-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notification-menu__filters {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid #d3e4da;
+  background: #f8fcfa;
+}
+
+.notification-filter-btn {
+  border: none;
+  background: transparent;
+  color: #2f6f58;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px !important;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard);
+}
+
+.notification-filter-btn--active {
+  color: #0f5138;
+  background: #e8f6ef;
+}
+
+.notification-filter-btn:hover {
+  background: #eef7f2;
+  color: #1b5e48;
+}
+
+.notification-filter-btn:active {
+  opacity: 0.85;
+}
+
+.notification-filter-btn:focus-visible {
+  outline: 2px solid rgba(5, 150, 105, 0.35);
+  outline-offset: 1px;
 }
 
 .notification-menu__title {
@@ -280,6 +328,27 @@
   text-align: center;
   letter-spacing: 0.04em;
   text-transform: none;
+}
+
+.notification-load-more-action {
+  display: flex;
+  justify-content: center;
+  padding: 8px 12px 12px;
+}
+
+.notification-load-more-btn {
+  border: 1px solid #cfe3d9;
+  background: #f8fcfa;
+  color: #1b5e48;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px !important;
+  cursor: pointer;
+}
+
+.notification-load-more-btn:hover {
+  background: #eef7f2;
 }
 
 .notification-menu::-webkit-scrollbar {

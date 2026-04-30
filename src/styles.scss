@@ -127,7 +127,7 @@ input[type='submit'],
 input[type='reset'],
 .btn,
 .app-btn,
-[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back) {
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn) {
   color: var(--color-primary) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
@@ -149,7 +149,7 @@ input[type='submit']::after,
 input[type='reset']::after,
 .btn::after,
 .app-btn::after,
-[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back)::after {
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn)::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -167,7 +167,7 @@ input[type='reset']::after,
 button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back):hover,
 .btn:hover,
 .app-btn:hover,
-[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):hover {
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn):hover {
   background: var(--color-primary-hover-bg) !important;
   border-color: var(--color-primary) !important;
   transform: translate3d(0, -1px, 0) scale(1.03);
@@ -180,14 +180,14 @@ input[type='submit']:hover::after,
 input[type='reset']:hover::after,
 .btn:hover::after,
 .app-btn:hover::after,
-[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):hover::after {
+[class*='btn-']:not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn):hover::after {
   animation: app-energy-sweep var(--motion-slow) var(--ease-flow);
 }
 
 button:not(.btn-password-toggle):not(.btn-eye):not(.forgot-toggle):not(.btn-forgot-back):disabled:hover,
 .btn:disabled:hover,
 .app-btn:disabled:hover,
-[class*='btn-']:not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):disabled:hover {
+[class*='btn-']:not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn):disabled:hover {
   background: var(--color-primary-disabled-hover-bg) !important;
   border-color: var(--color-primary-disabled-hover-border) !important;
 }
@@ -248,7 +248,7 @@ button:focus-visible {
 button:not(:disabled):active,
 .btn:not(:disabled):active,
 .app-btn:not(:disabled):active,
-[class*='btn-']:not(:disabled):not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):active {
+[class*='btn-']:not(:disabled):not(.btn-notification):not(.btn-logout):not(.btn-password-toggle):not(.btn-eye):not(.btn-forgot-back):not(.notification-filter-btn):active {
   transform: translate3d(0, 0, 0) scale(0.98);
   box-shadow: none;
 }
