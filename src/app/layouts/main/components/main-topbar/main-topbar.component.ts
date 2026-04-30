@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -10,6 +11,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -28,7 +30,7 @@ import { onMessage } from 'firebase/messaging';
   styleUrl: './main-topbar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainTopbarComponent implements OnInit {
+export class MainTopbarComponent implements OnInit, AfterViewInit {
   @Input() pageTitle = '';
 
   @Output() signOut = new EventEmitter<void>();
@@ -44,6 +46,10 @@ export class MainTopbarComponent implements OnInit {
   isVerifyDialogOpen = false;
   isVerifyingAccount = false;
   verifyErrorMessage = '';
+  private readonly newNotificationIds = new Set<string>();
+
+  @ViewChild('notificationMenu') private notificationMenuRef?: ElementRef<HTMLElement>;
+  @ViewChild('notificationRoot') private notificationRootRef?: ElementRef<HTMLElement>;
 
   readonly verifyStatuses: Array<{ value: VerifyAccountStatus; label: string }> = [
     { value: 'active', label: 'Hoạt động' },
@@ -73,6 +79,10 @@ export class MainTopbarComponent implements OnInit {
     this.loadNotifications();
   }
 
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
+  }
+
   get unreadCount(): number {
     return this.notifications.reduce((count, noti) => count + (noti.isRead ? 0 : 1), 0);
   }
@@ -82,8 +92,10 @@ export class MainTopbarComponent implements OnInit {
     if (!this.isNotificationOpen || this.isVerifyDialogOpen) return;
     const target = event.target as Node | null;
     if (!target) return;
-    if (!this.host.nativeElement.contains(target)) {
+    const root = this.notificationRootRef?.nativeElement ?? this.host.nativeElement;
+    if (!root.contains(target)) {
       this.isNotificationOpen = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -103,9 +115,14 @@ export class MainTopbarComponent implements OnInit {
     this.loadMoreNotifications();
   }
 
-  onNotificationClick(noti: NotificationItem) {
+  onNotificationClick(event: Event, noti: NotificationItem) {
+    event.stopPropagation();
     this.markNotificationAsRead(noti);
     this.openVerifyDialog(noti);
+  }
+
+  isNewNotification(noti: NotificationItem): boolean {
+    return this.newNotificationIds.has(String(noti.id));
   }
 
   canShowVerifyActions(noti: NotificationItem | null): boolean {
@@ -255,7 +272,29 @@ export class MainTopbarComponent implements OnInit {
       data: payload.data,
       isRead: false,
     };
-    this.notifications = this.mergeNotifications([this.normalizeNotification(incoming)], this.notifications);
+    const menu = this.notificationMenuRef?.nativeElement;
+    const previousScrollTop = menu?.scrollTop ?? 0;
+    const previousScrollHeight = menu?.scrollHeight ?? 0;
+    const wasNearTop = previousScrollTop <= 8;
+
+    const normalizedIncoming = this.normalizeNotification(incoming);
+    this.notifications = this.mergeNotifications([normalizedIncoming], this.notifications);
+    this.newNotificationIds.add(String(normalizedIncoming.id));
+    setTimeout(() => {
+      this.newNotificationIds.delete(String(normalizedIncoming.id));
+      this.cdr.markForCheck();
+    }, 2200);
+
+    queueMicrotask(() => {
+      const currentMenu = this.notificationMenuRef?.nativeElement;
+      if (!currentMenu || !this.isNotificationOpen) return;
+      if (wasNearTop) {
+        currentMenu.scrollTop = 0;
+        return;
+      }
+      const nextScrollHeight = currentMenu.scrollHeight;
+      currentMenu.scrollTop = previousScrollTop + (nextScrollHeight - previousScrollHeight);
+    });
 
     this.cdr.markForCheck();
   }

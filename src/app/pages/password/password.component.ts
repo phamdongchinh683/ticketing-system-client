@@ -50,13 +50,33 @@ export class PasswordComponent {
     const oldPwd = oldPassword.trim();
     const newPwd = newPassword.trim();
 
-    if (!oldPwd || !newPwd) {
-      this.showNotification('Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới.', 'warning');
+    if (!oldPwd && !newPwd) {
+      this.showNotification('Vui lòng nhập mật khẩu cũ và mật khẩu mới.', 'warning');
+      return;
+    }
+
+    if (!oldPwd) {
+      this.showNotification('Vui lòng nhập mật khẩu cũ.', 'warning');
+      return;
+    }
+
+    if (!newPwd) {
+      this.showNotification('Vui lòng nhập mật khẩu mới.', 'warning');
+      return;
+    }
+
+    if (!isValidPassword(oldPwd)) {
+      this.showNotification(`Mật khẩu cũ không đúng định dạng. ${PASSWORD_MESSAGE}`, 'warning');
       return;
     }
 
     if (!isValidPassword(newPwd)) {
       this.showNotification(PASSWORD_MESSAGE, 'warning');
+      return;
+    }
+
+    if (oldPwd === newPwd) {
+      this.showNotification('Mật khẩu mới phải khác mật khẩu cũ.', 'warning');
       return;
     }
 

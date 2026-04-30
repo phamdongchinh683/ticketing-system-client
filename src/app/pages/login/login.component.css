@@ -20,7 +20,7 @@ h1 {
   text-align: center;
   color: #059669;
   margin: 0 0 18px;
-  font-size: 44px;
+  font-size: 40px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -46,7 +46,11 @@ h1 {
 
 .modal-overlay {
   position: fixed;
+  top: 0;
+  left: 0;
   inset: 0;
+  width: 100vw;
+  height: 100dvh;
   background: rgba(20, 24, 22, 0.24);
   display: flex;
   align-items: center;

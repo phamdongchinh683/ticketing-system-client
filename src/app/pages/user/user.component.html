@@ -55,46 +55,46 @@
     (deleteUser)="openDeleteModal($event)"
     (notifyUser)="openNotificationModal($event)"
   />
-
-  <app-user-create-modal
-    [open]="showCreateModal"
-    [form]="createForm"
-    [submitting]="creatingUser"
-    [statuses]="statuses"
-    [roles]="createRoles"
-    (closed)="closeCreateModal()"
-    (submitted)="submitCreateUser()"
-  />
-
-  <app-user-edit-modal
-    [open]="showEditModal"
-    [form]="editForm"
-    [submitting]="editingUserLoading"
-    [statuses]="statuses"
-    (closed)="closeEditModal()"
-    (submitted)="submitEditUser()"
-  />
-
-  <app-user-password-modal
-    [open]="showPasswordModal"
-    [form]="passwordForm"
-    [submitting]="updatingPasswordLoading"
-    (closed)="closePasswordModal()"
-    (submitted)="submitUpdatePassword()"
-  />
-
-  <app-user-delete-modal
-    [open]="showDeleteModal"
-    [user]="selectedActionUser"
-    [deleting]="deletingUserLoading"
-    (closed)="closeDeleteModal()"
-    (confirmDelete)="submitDeleteUser()"
-  />
-
-  <app-user-notification-modal
-    [open]="showNotificationModal"
-    [submitting]="notificationSubmitting"
-    (closed)="closeNotificationModal()"
-    (submitted)="submitNotification($event)"
-  />
 </div>
+
+<app-user-create-modal
+  [open]="showCreateModal"
+  [form]="createForm"
+  [submitting]="creatingUser"
+  [statuses]="statuses"
+  [roles]="createRoles"
+  (closed)="closeCreateModal()"
+  (submitted)="submitCreateUser()"
+/>
+
+<app-user-edit-modal
+  [open]="showEditModal"
+  [form]="editForm"
+  [submitting]="editingUserLoading"
+  [statuses]="statuses"
+  (closed)="closeEditModal()"
+  (submitted)="submitEditUser()"
+/>
+
+<app-user-password-modal
+  [open]="showPasswordModal"
+  [form]="passwordForm"
+  [submitting]="updatingPasswordLoading"
+  (closed)="closePasswordModal()"
+  (submitted)="submitUpdatePassword()"
+/>
+
+<app-user-delete-modal
+  [open]="showDeleteModal"
+  [user]="selectedActionUser"
+  [deleting]="deletingUserLoading"
+  (closed)="closeDeleteModal()"
+  (confirmDelete)="submitDeleteUser()"
+/>
+
+<app-user-notification-modal
+  [open]="showNotificationModal"
+  [submitting]="notificationSubmitting"
+  (closed)="closeNotificationModal()"
+  (submitted)="submitNotification($event)"
+/>

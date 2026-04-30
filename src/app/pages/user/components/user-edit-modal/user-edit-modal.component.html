@@ -1,4 +1,4 @@
-<div *ngIf="open" class="modal-overlay" (click)="close()">
+<div class="modal-overlay" [class.modal-overlay--open]="open" [attr.aria-hidden]="!open" (click)="close()">
   <div class="modal" (click)="stopPropagation($event)">
     <h3>Chỉnh sửa người dùng</h3>
     <form class="modal-form" [formGroup]="form" (ngSubmit)="submitted.emit()">

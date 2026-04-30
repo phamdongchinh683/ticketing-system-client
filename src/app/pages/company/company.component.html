@@ -19,24 +19,6 @@
     ></app-company-toolbar>
   </div>
 
-  <app-company-form-modal
-    [open]="showModal"
-    [form]="companyForm"
-    [editingCompany]="editingCompany"
-    [submitting]="submitting"
-    (closed)="closeModal()"
-    (submitted)="onSubmit()"
-    (logoUploadError)="showNotification($event, 'error')"
-  ></app-company-form-modal>
-
-  <app-company-delete-modal
-    [open]="showDeleteConfirm"
-    [company]="deletingCompany"
-    [submitting]="submitting"
-    (closed)="cancelDelete()"
-    (confirm)="onConfirmDelete()"
-  ></app-company-delete-modal>
-
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Đang tải...</p>
@@ -61,3 +43,21 @@
     </div>
   </div>
 </div>
+
+<app-company-form-modal
+  [open]="showModal"
+  [form]="companyForm"
+  [editingCompany]="editingCompany"
+  [submitting]="submitting"
+  (closed)="closeModal()"
+  (submitted)="onSubmit()"
+  (logoUploadError)="showNotification($event, 'error')"
+></app-company-form-modal>
+
+<app-company-delete-modal
+  [open]="showDeleteConfirm"
+  [company]="deletingCompany"
+  [submitting]="submitting"
+  (closed)="cancelDelete()"
+  (confirm)="onConfirmDelete()"
+></app-company-delete-modal>

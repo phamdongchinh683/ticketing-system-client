@@ -1,19 +1,21 @@
 <div
   *ngIf="visible"
   class="notification"
-  [class]="'notification--' + type"
+  [ngClass]="['notification--' + type, isClosing ? 'notification--closing' : '']"
   (click)="close()"
   role="status"
   aria-live="polite"
 >
-  <span class="notification__icon">{{ icon }}</span>
-  <span class="notification__message">{{ message }}</span>
-  <button
-    type="button"
-    class="notification__close"
-    aria-label="Đóng thông báo"
-    (click)="$event.stopPropagation(); close()"
-  >
-    &times;
-  </button>
+  <div class="notification__content">
+    <span class="notification__icon">{{ icon }}</span>
+    <span class="notification__message">{{ message }}</span>
+    <button
+      type="button"
+      class="notification__close"
+      aria-label="Đóng thông báo"
+      (click)="$event.stopPropagation(); close()"
+    >
+      &times;
+    </button>
+  </div>
 </div>

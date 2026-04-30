@@ -1,6 +1,6 @@
 <header class="topbar">
   <div class="topbar__actions">
-    <div class="notification">
+    <div class="notification" #notificationRoot>
       <button
         type="button"
         class="btn-notification"
@@ -23,9 +23,15 @@
         <span *ngIf="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
       </button>
 
-      <div *ngIf="isNotificationOpen" class="notification-menu" (scroll)="onNotificationScroll($event)">
+      <div
+        #notificationMenu
+        class="notification-menu"
+        [class.notification-menu--open]="isNotificationOpen"
+        [attr.aria-hidden]="!isNotificationOpen"
+        (scroll)="onNotificationScroll($event)"
+      >
         <div class="notification-menu__header">
-          <span class="notification-menu__title">Thông báo</span>
+          <span class="notification-menu__title">Thông báo từ hệ thống</span>
           <span class="notification-menu__count" *ngIf="unreadCount > 0">{{ unreadCount }} mới</span>
         </div>
 
@@ -36,7 +42,8 @@
             class="notification-item"
             [class.notification-item--unread]="!noti.isRead"
             *ngFor="let noti of notifications; trackBy: trackByNotificationId"
-            (click)="onNotificationClick(noti)"
+            [class.notification-item--new]="isNewNotification(noti)"
+            (click)="onNotificationClick($event, noti)"
           >
             <span class="notification-item__avatar" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -74,9 +81,26 @@
   </div>
 </header>
 
-<div class="verify-dialog-backdrop" *ngIf="isVerifyDialogOpen" (click)="closeVerifyDialog()">
+<div
+  class="verify-dialog-backdrop"
+  [class.verify-dialog-backdrop--open]="isVerifyDialogOpen"
+  [attr.aria-hidden]="!isVerifyDialogOpen"
+  (click)="closeVerifyDialog()"
+>
   <section class="verify-dialog" (click)="$event.stopPropagation()">
-    <button
+    <div class="verify-dialog__head">
+      <span class="verify-dialog__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </span>
+      <div>
+        <h3 class="verify-dialog__title">Thông báo</h3>
+        <p class="verify-dialog__subtitle">Chi tiết thông báo hệ thống.</p>
+      </div>
+
+      <button
       type="button"
       class="verify-dialog__close-top"
       aria-label="Đóng hộp thoại"
@@ -96,19 +120,8 @@
         <path d="m6 6 12 12" />
       </svg>
     </button>
-    <div class="verify-dialog__head">
-      <span class="verify-dialog__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-      </span>
-      <div>
-        <h3 class="verify-dialog__title">Thông báo</h3>
-        <p class="verify-dialog__subtitle">Chi tiết thông báo hệ thống.</p>
-      </div>
     </div>
-
+  
     <div class="verify-dialog__meta-row">
       <span class="verify-dialog__badge">Thông báo hệ thống</span>
       <span class="verify-dialog__badge verify-dialog__badge--verify" *ngIf="canShowVerifyActions(selectedNotification)">
@@ -118,14 +131,14 @@
 
     <div class="verify-dialog__content">
       <div class="verify-dialog__field" *ngIf="selectedNotification?.title">
-        <p class="verify-dialog__field-label">Tiêu đề</p>
-        <p class="verify-dialog__field-value">{{ selectedNotification?.title }}</p>
+        <div class="verify-dialog__field-label">Tiêu đề</div>
+        <div class="verify-dialog__field-value">{{ selectedNotification?.title }}</div>
       </div>
       <div class="verify-dialog__field">
-        <p class="verify-dialog__field-label">Nội dung</p>
-        <p class="verify-dialog__field-value">
+        <div class="verify-dialog__field-label">Nội dung</div>
+        <div class="verify-dialog__field-value">
           {{ selectedNotification?.body || selectedNotification?.title || 'Không có nội dung' }}
-        </p>
+        </div>
       </div>
     </div>
 

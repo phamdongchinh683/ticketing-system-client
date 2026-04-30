@@ -14,7 +14,9 @@ export class AppNotificationComponent implements OnInit, OnDestroy {
   @Output() closed = new EventEmitter<void>();
 
   visible = true;
+  isClosing = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
+  private closeTimer: ReturnType<typeof setTimeout> | null = null;
 
   get icon(): string {
     const icons: Record<string, string> = {
@@ -31,17 +33,25 @@ export class AppNotificationComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.visible = false;
+    if (this.isClosing || !this.visible) return;
+    this.isClosing = true;
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = null;
     }
-    this.closed.emit();
+    this.closeTimer = setTimeout(() => {
+      this.visible = false;
+      this.closed.emit();
+      this.closeTimer = null;
+    }, 180);
   }
 
   ngOnDestroy() {
     if (this.timer) {
       clearTimeout(this.timer);
+    }
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
     }
   }
 }

@@ -1,4 +1,4 @@
-<div *ngIf="open" class="modal-overlay" (click)="close()">
+<div class="modal-overlay" [class.modal-overlay--open]="open" [attr.aria-hidden]="!open" (click)="close()">
   <div class="modal modal--notification" (click)="stopPropagation($event)">
     <h3>Gửi thông báo</h3>
 

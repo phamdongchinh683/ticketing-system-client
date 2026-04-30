@@ -1,4 +1,4 @@
-<div *ngIf="open" class="modal-overlay" (click)="close()">
+<div class="modal-overlay" [class.modal-overlay--open]="open" [attr.aria-hidden]="!open" (click)="close()">
   <div class="modal" (click)="stopPropagation($event)">
     <h3>{{ editingCompany ? 'Chỉnh sửa nhà xe' : 'Thêm nhà xe' }}</h3>
     <form class="modal-body" [formGroup]="form" (ngSubmit)="submitted.emit()">
@@ -65,8 +65,8 @@
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" type="button" (click)="close()">Hủy</button>
-        <button class="btn-submit" type="submit" [disabled]="submitting">
-          {{ submitting ? 'Đang lưu...' : editingCompany ? 'Cập nhật' : 'Tạo mới' }}
+        <button class="btn-submit" type="submit" [disabled]="submitting || uploadingLogo">
+          {{ submitting ? 'Đang lưu...' : uploadingLogo ? 'Đang tải logo...' : editingCompany ? 'Cập nhật' : 'Tạo mới' }}
         </button>
       </div>
     </form>

@@ -2,21 +2,39 @@
   position: fixed;
   top: 24px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate3d(-50%, 0, 0);
   z-index: 9999;
   min-width: 320px;
   max-width: min(560px, calc(100vw - 28px));
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: 12px 14px;
   border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
-  animation: notification-in 0.22s ease-out;
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  -webkit-tap-highlight-color: transparent;
+  backface-visibility: hidden;
+  will-change: opacity, transform;
+  transition:
+    opacity var(--motion-fast, 140ms) var(--ease-standard, ease),
+    transform var(--motion-fast, 140ms) var(--ease-standard, ease);
+}
+
+.notification__content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification--closing {
+  opacity: 0;
+  transform: translate3d(-50%, -4px, 0);
+  pointer-events: none;
 }
 .notification--success {
   background: #ffffff;
@@ -83,6 +101,10 @@
   transform: scale(1.04);
 }
 
+.notification:active {
+  transform: translate3d(-50%, 0, 0) scale(0.995);
+}
+
 @keyframes notification-in {
   from {
     opacity: 0;
@@ -103,5 +125,9 @@
     right: 10px;
     transform: none;
     padding: 11px 12px;
+  }
+
+  .notification--closing {
+    transform: translate3d(0, -4px, 0);
   }
 }

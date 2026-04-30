@@ -389,7 +389,11 @@
 
 .modal-overlay {
   position: fixed;
+  top: 0;
+  left: 0;
   inset: 0;
+  width: 100vw;
+  height: 100dvh;
   background: rgba(15, 23, 42, 0.42);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
