@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,8 +19,10 @@ import {
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
+  private static readonly OTP_COOLDOWN_SECONDS = 120;
   private readonly fb = inject(FormBuilder);
+  private resendOtpTimerId: ReturnType<typeof setInterval> | null = null;
 
   @ViewChildren('otpBox') otpBoxRefs!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -43,6 +45,7 @@ export class LoginComponent {
   forgotPasswordOpen = false;
   otpSent = false;
   otpTarget: { field: 'email' | 'phone'; value: string } | null = null;
+  resendOtpCooldownSeconds = 0;
   notification: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' } = {
     show: false,
     message: '',
@@ -53,6 +56,10 @@ export class LoginComponent {
     private readonly api: auth.ApiService,
     private readonly router: Router,
   ) { }
+
+  ngOnDestroy(): void {
+    this.clearResendOtpTimer();
+  }
 
   showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
     this.notification = { show: true, message, type };
@@ -96,6 +103,8 @@ export class LoginComponent {
     this.forgotPasswordOpen = false;
     this.otpSent = false;
     this.otpTarget = null;
+    this.clearResendOtpTimer();
+    this.resendOtpCooldownSeconds = 0;
     this.forgotForm.reset();
   }
 
@@ -162,8 +171,28 @@ export class LoginComponent {
     this.resetOtpDigits();
   }
 
+  get canSendOtp(): boolean {
+    return !this.sendingOtp && this.resendOtpCooldownSeconds === 0;
+  }
+
+  get resendOtpCooldownLabel(): string {
+    const minutes = Math.floor(this.resendOtpCooldownSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (this.resendOtpCooldownSeconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
+
+  get isOtpExpired(): boolean {
+    return this.otpSent && this.resendOtpCooldownSeconds === 0;
+  }
+
   sendOtp(): void {
     this.notification.show = false;
+    if (!this.canSendOtp) {
+      this.showNotification(`Vui lòng chờ ${this.resendOtpCooldownLabel} để gửi lại OTP.`, 'info');
+      return;
+    }
     const account = this.forgotForm.controls.account.value;
     const target = this.parseForgotAccount(account);
 
@@ -178,6 +207,7 @@ export class LoginComponent {
         this.resetOtpDigits();
         this.otpSent = true;
         this.otpTarget = target;
+        this.startResendOtpCooldown();
         this.showNotification('Đã gửi OTP thành công vui lòng kiểm tra email hoặc số điện thoại nếu không nhận được vui lòng kiểm tra thư rác.', 'info');
         setTimeout(() => this.focusOtpBox(0), 50);
       },
@@ -191,6 +221,26 @@ export class LoginComponent {
     });
   }
 
+  private startResendOtpCooldown(): void {
+    this.clearResendOtpTimer();
+    this.resendOtpCooldownSeconds = LoginComponent.OTP_COOLDOWN_SECONDS;
+    this.resendOtpTimerId = setInterval(() => {
+      if (this.resendOtpCooldownSeconds <= 1) {
+        this.clearResendOtpTimer();
+        this.resendOtpCooldownSeconds = 0;
+        return;
+      }
+      this.resendOtpCooldownSeconds -= 1;
+    }, 1000);
+  }
+
+  private clearResendOtpTimer(): void {
+    if (this.resendOtpTimerId) {
+      clearInterval(this.resendOtpTimerId);
+      this.resendOtpTimerId = null;
+    }
+  }
+
   submitForgotPassword(): void {
     if (!this.otpSent) {
       return;
@@ -201,6 +251,11 @@ export class LoginComponent {
     const target = this.otpTarget ?? this.parseForgotAccount(this.forgotForm.controls.account.value);
     if (!target) {
       this.showNotification('Vui lòng nhập email hợp lệ hoặc số điện thoại hợp lệ trước khi xác nhận OTP.', 'warning');
+      return;
+    }
+
+    if (this.isOtpExpired) {
+      this.showNotification('Mã OTP đã hết hạn. Vui lòng gửi lại OTP mới.', 'warning');
       return;
     }
 
