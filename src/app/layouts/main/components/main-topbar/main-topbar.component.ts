@@ -97,6 +97,25 @@ export class MainTopbarComponent implements OnInit {
     }
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Escape') return;
+
+    if (this.isVerifyDialogOpen) {
+      if (!this.isVerifyingAccount) {
+        event.preventDefault();
+        this.closeVerifyDialog();
+      }
+      return;
+    }
+
+    if (this.isNotificationOpen) {
+      event.preventDefault();
+      this.isNotificationOpen = false;
+      this.cdr.markForCheck();
+    }
+  }
+
   toggleNotifications() {
     this.isNotificationOpen = !this.isNotificationOpen;
     this.cdr.markForCheck();
